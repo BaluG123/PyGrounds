@@ -1,13 +1,24 @@
 import type { ComponentType } from 'react';
 import type { LucideProps } from 'lucide-react-native';
 
-export type LibraryId = 'numpy' | 'pandas' | 'matplotlib';
+export type LibraryId =
+  | 'python-basics'
+  | 'python-advanced'
+  | 'numpy'
+  | 'pandas'
+  | 'matplotlib'
+  | 'math-ai'
+  | 'linear-algebra'
+  | 'scikit-learn'
+  | 'deep-learning'
+  | 'ai-projects';
 
 export type LessonBlock =
   | { type: 'paragraph'; text: string }
   | { type: 'formula'; expression: string; note?: string }
   | { type: 'code'; code: string }
-  | { type: 'bullets'; items: string[] };
+  | { type: 'bullets'; items: string[] }
+  | { type: 'playground'; code: string; expectedOutput?: string };
 
 export type QuizQuestion = {
   id: string;

@@ -1,14 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import auth, { type FirebaseAuthTypes } from '@react-native-firebase/auth';
-import { Bell, LogIn, LogOut } from 'lucide-react-native';
+import firebase from '@react-native-firebase/app';
+import { Bell, LogIn, LogOut, User } from 'lucide-react-native';
 import { requestLearningNotifications, signInWithGoogle } from '../services/firebase';
+import { courses } from '../content/courses';
+import { useProgress } from '../services/ProgressContext';
 import { colors } from '../theme/theme';
 
-export function AccountScreen() {
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(auth().currentUser);
+function getSafeUser(): FirebaseAuthTypes.User | null {
+  try {
+    return firebase.apps.length ? auth().currentUser : null;
+  } catch (e) {
+    return null;
+  }
+}
 
-  useEffect(() => auth().onAuthStateChanged(setUser), []);
+export function AccountScreen() {
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(getSafeUser());
+  const { progress } = useProgress();
+
+  useEffect(() => {
+    if (firebase.apps.length) {
+      return auth().onAuthStateChanged(setUser);
+    }
+  }, []);
+
+  const totalLessons = courses.reduce((sum, c) => sum + c.lessons.length, 0);
+  const completedLessons = Object.values(progress.completedLessons).filter(Boolean).length;
+  const quizzesTaken = Object.keys(progress.quizScores).length;
+  const labsTried = Object.keys(progress.practiceRuns).length;
 
   async function handleGoogleSignIn() {
     try {
@@ -29,17 +50,36 @@ export function AccountScreen() {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Learner Account</Text>
-      <Text style={styles.subtitle}>
-        Google authentication connects your quiz scores and learning progress to Firestore when Firebase config files are added.
-      </Text>
-
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>{user ? user.displayName ?? 'Signed in learner' : 'Guest learner'}</Text>
-        <Text style={styles.meta}>{user?.email ?? 'Progress is stored offline until sign-in is configured.'}</Text>
+      <View style={styles.profileSection}>
+        {user?.photoURL ? (
+          <Image source={{ uri: user.photoURL }} style={styles.avatar} />
+        ) : (
+          <View style={styles.avatarPlaceholder}>
+            <User color={colors.muted} size={40} />
+          </View>
+        )}
+        <Text style={styles.title}>{user ? user.displayName ?? 'Signed in learner' : 'Guest Learner'}</Text>
+        <Text style={styles.subtitle}>
+          {user?.email ?? 'Sign in with Google to sync your progress across devices.'}
+        </Text>
       </View>
 
-      <Pressable style={styles.button} onPress={user ? () => auth().signOut() : handleGoogleSignIn}>
+      <View style={styles.statsRow}>
+        <View style={styles.stat}>
+          <Text style={styles.statValue}>{completedLessons}/{totalLessons}</Text>
+          <Text style={styles.statLabel}>Lessons</Text>
+        </View>
+        <View style={styles.stat}>
+          <Text style={styles.statValue}>{quizzesTaken}</Text>
+          <Text style={styles.statLabel}>Quizzes</Text>
+        </View>
+        <View style={styles.stat}>
+          <Text style={styles.statValue}>{labsTried}</Text>
+          <Text style={styles.statLabel}>Labs</Text>
+        </View>
+      </View>
+
+      <Pressable style={styles.button} onPress={user ? () => { if (firebase.apps.length) auth().signOut() } : handleGoogleSignIn}>
         {user ? <LogOut color={colors.surface} size={20} /> : <LogIn color={colors.surface} size={20} />}
         <Text style={styles.buttonText}>{user ? 'Sign Out' : 'Sign In with Google'}</Text>
       </Pressable>
@@ -48,24 +88,56 @@ export function AccountScreen() {
         <Bell color={colors.ink} size={20} />
         <Text style={styles.secondaryText}>Enable Learning Reminders</Text>
       </Pressable>
+
+      <View style={styles.info}>
+        <Text style={styles.infoTitle}>About PyGrounds</Text>
+        <Text style={styles.infoText}>
+          A free, open learning platform for anyone who wants to master Python and AI — from absolute basics to deep learning projects.
+        </Text>
+        <Text style={styles.infoText}>
+          {courses.length} courses · {totalLessons} lessons · {courses.reduce((s, c) => s + c.quiz.length, 0)} quiz questions · {courses.reduce((s, c) => s + c.practice.length, 0)} practice exercises
+        </Text>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background, padding: 20 },
-  title: { color: colors.ink, fontSize: 30, fontWeight: '900' },
-  subtitle: { color: colors.muted, lineHeight: 22, marginTop: 8, marginBottom: 20 },
-  card: {
-    backgroundColor: colors.surface,
-    borderRadius: 8,
-    padding: 18,
-    borderWidth: 1,
+  profileSection: { alignItems: 'center', marginBottom: 20 },
+  avatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 3,
+    borderColor: colors.green,
+    marginBottom: 14,
+  },
+  avatarPlaceholder: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: colors.mint,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 3,
     borderColor: colors.line,
     marginBottom: 14,
   },
-  cardTitle: { color: colors.ink, fontSize: 18, fontWeight: '900' },
-  meta: { color: colors.muted, marginTop: 6, lineHeight: 20 },
+  title: { color: colors.ink, fontSize: 24, fontWeight: '900', textAlign: 'center' },
+  subtitle: { color: colors.muted, lineHeight: 22, marginTop: 6, textAlign: 'center' },
+  statsRow: { flexDirection: 'row', gap: 10, marginBottom: 20 },
+  stat: {
+    flex: 1,
+    backgroundColor: colors.surface,
+    borderRadius: 8,
+    padding: 14,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.line,
+  },
+  statValue: { color: colors.ink, fontSize: 22, fontWeight: '900' },
+  statLabel: { color: colors.muted, fontSize: 12, marginTop: 4 },
   button: {
     minHeight: 52,
     borderRadius: 8,
@@ -79,4 +151,14 @@ const styles = StyleSheet.create({
   secondary: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.line },
   buttonText: { color: colors.surface, fontWeight: '900', fontSize: 16 },
   secondaryText: { color: colors.ink, fontWeight: '900', fontSize: 16 },
+  info: {
+    backgroundColor: colors.surface,
+    borderRadius: 8,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: colors.line,
+    marginTop: 8,
+  },
+  infoTitle: { color: colors.ink, fontSize: 16, fontWeight: '900', marginBottom: 8 },
+  infoText: { color: colors.muted, lineHeight: 21, marginBottom: 6 },
 });

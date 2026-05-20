@@ -6,7 +6,7 @@ export function CodeBlock({ code }: { code: string }) {
   return (
     <View style={styles.block}>
       <Text selectable style={styles.code}>
-        {code}
+        {code.replace(/\\n/g, '\n')}
       </Text>
     </View>
   );

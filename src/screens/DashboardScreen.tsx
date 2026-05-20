@@ -6,30 +6,49 @@ import { CourseCard } from '../components/CourseCard';
 import { ProgressRing } from '../components/ProgressRing';
 import { courses } from '../content/courses';
 import type { RootDrawerParamList } from '../navigation/types';
+import type { LibraryId } from '../types/course';
 import { useProgress } from '../services/ProgressContext';
 import { colors } from '../theme/theme';
 
 type Props = DrawerScreenProps<RootDrawerParamList, 'Dashboard'>;
-const drawerScreens = {
+
+const drawerScreens: Record<LibraryId, keyof RootDrawerParamList> = {
+  'python-basics': 'Python Basics',
+  'python-advanced': 'Python Advanced',
   numpy: 'NumPy',
   pandas: 'Pandas',
   matplotlib: 'Matplotlib',
-} as const;
+  'math-ai': 'Math for AI',
+  'linear-algebra': 'Linear Algebra',
+  'scikit-learn': 'Scikit-Learn',
+  'deep-learning': 'Deep Learning',
+  'ai-projects': 'AI Projects',
+};
+
+type SectionDef = { title: string; ids: LibraryId[] };
+const sections: SectionDef[] = [
+  { title: '🐍 Python Fundamentals', ids: ['python-basics', 'python-advanced'] },
+  { title: '📊 Data Science Toolkit', ids: ['numpy', 'pandas', 'matplotlib'] },
+  { title: '🧮 Mathematics', ids: ['math-ai', 'linear-algebra'] },
+  { title: '🤖 Machine Learning & AI', ids: ['scikit-learn', 'deep-learning', 'ai-projects'] },
+];
 
 export function DashboardScreen({ navigation }: Props) {
   const { progress } = useProgress();
   const totalLessons = courses.reduce((sum, course) => sum + course.lessons.length, 0);
   const completed = Object.values(progress.completedLessons).filter(Boolean).length;
   const overall = totalLessons ? completed / totalLessons : 0;
+  const totalQuiz = courses.reduce((sum, c) => sum + c.quiz.length, 0);
+  const totalPractice = courses.reduce((sum, c) => sum + c.practice.length, 0);
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <View style={styles.hero}>
         <View style={styles.heroText}>
           <Text style={styles.kicker}>PyGrounds AI Lab</Text>
-          <Text style={styles.title}>Learn the data stack that AI is built on.</Text>
+          <Text style={styles.title}>Master Python & AI from zero to hero.</Text>
           <Text style={styles.copy}>
-            Start with NumPy, Pandas, and Matplotlib. Read the concepts, run small exercises, answer quizzes, and keep your progress synced.
+            {courses.length} courses · {totalLessons} lessons · {totalQuiz} quiz questions · {totalPractice} practice labs
           </Text>
         </View>
         <ProgressRing value={overall} label="course" />
@@ -53,18 +72,24 @@ export function DashboardScreen({ navigation }: Props) {
         </View>
       </View>
 
-      <Text style={styles.sectionTitle}>Core Libraries</Text>
-      {courses.map(course => {
-        const courseDone = course.lessons.filter(lesson => progress.completedLessons[lesson.id]).length;
-        return (
-          <CourseCard
-            key={course.id}
-            course={course}
-            progress={courseDone / course.lessons.length}
-            onPress={() => navigation.navigate(drawerScreens[course.id])}
-          />
-        );
-      })}
+      {sections.map(section => (
+        <View key={section.title}>
+          <Text style={styles.sectionTitle}>{section.title}</Text>
+          {section.ids.map(id => {
+            const course = courses.find(c => c.id === id);
+            if (!course) { return null; }
+            const courseDone = course.lessons.filter(lesson => progress.completedLessons[lesson.id]).length;
+            return (
+              <CourseCard
+                key={course.id}
+                course={course}
+                progress={courseDone / course.lessons.length}
+                onPress={() => navigation.navigate(drawerScreens[course.id])}
+              />
+            );
+          })}
+        </View>
+      ))}
     </ScrollView>
   );
 }
@@ -97,8 +122,8 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.surface,
-    fontSize: 29,
-    lineHeight: 34,
+    fontSize: 26,
+    lineHeight: 32,
     fontWeight: '900',
   },
   copy: {
@@ -135,5 +160,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '900',
     marginBottom: 12,
+    marginTop: 8,
   },
 });

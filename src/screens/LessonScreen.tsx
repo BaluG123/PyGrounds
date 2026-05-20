@@ -3,6 +3,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Check } from 'lucide-react-native';
 import { CodeBlock } from '../components/CodeBlock';
+import { InlinePlayground } from '../components/InlinePlayground';
 import { MathText } from '../components/MathText';
 import { courses } from '../content/courses';
 import type { CourseStackParamList } from '../navigation/types';
@@ -18,8 +19,8 @@ export function LessonScreen({ route, navigation }: Props) {
   const done = progress.completedLessons[lesson.id];
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.kicker}>{course.title} - {lesson.duration}</Text>
+    <ScrollView style={styles.screen} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <Text style={styles.kicker}>{course.title} · {lesson.duration}</Text>
       <Text style={styles.title}>{lesson.title}</Text>
       <Text style={styles.objective}>{lesson.objective}</Text>
 
@@ -32,6 +33,9 @@ export function LessonScreen({ route, navigation }: Props) {
         }
         if (block.type === 'code') {
           return <CodeBlock key={index} code={block.code} />;
+        }
+        if (block.type === 'playground') {
+          return <InlinePlayground key={index} code={block.code} expectedOutput={block.expectedOutput} />;
         }
         return (
           <View key={index} style={styles.bullets}>
