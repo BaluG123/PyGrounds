@@ -13,12 +13,38 @@ export type LibraryId =
   | 'deep-learning'
   | 'ai-projects';
 
+export type CalloutVariant = 'tip' | 'warning' | 'info' | 'remember';
+
+export type DiagramBox = {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  width?: number;
+  height?: number;
+  color?: string;
+};
+
+export type DiagramArrow = {
+  from: string;
+  to: string;
+  label?: string;
+};
+
 export type LessonBlock =
   | { type: 'paragraph'; text: string }
   | { type: 'formula'; expression: string; note?: string }
   | { type: 'code'; code: string }
   | { type: 'bullets'; items: string[] }
-  | { type: 'playground'; code: string; expectedOutput?: string };
+  | { type: 'playground'; code: string; expectedOutput?: string }
+  | { type: 'heading'; text: string }
+  | { type: 'callout'; variant: CalloutVariant; title: string; body: string }
+  | { type: 'diagram'; title: string; boxes: DiagramBox[]; arrows: DiagramArrow[]; height?: number }
+  | { type: 'table'; headers: string[]; rows: string[][] }
+  | { type: 'stepByStep'; title: string; steps: { title: string; description: string }[] }
+  | { type: 'analogy'; text: string }
+  | { type: 'image'; title: string; imageType: string; data?: Record<string, any> }
+  | { type: 'divider' };
 
 export type QuizQuestion = {
   id: string;

@@ -12,7 +12,12 @@
           "package_name": "com.pygrounds"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "207631666790-phfsosoiuk1qr39rkuolj54mphhokl7u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBAFztdPVhM8Zi3vd8LXuVSuyHFYdFtlAo"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "207631666790-phfsosoiuk1qr39rkuolj54mphhokl7u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

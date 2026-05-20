@@ -5,6 +5,14 @@ import { Check } from 'lucide-react-native';
 import { CodeBlock } from '../components/CodeBlock';
 import { InlinePlayground } from '../components/InlinePlayground';
 import { MathText } from '../components/MathText';
+import { HeadingBlock } from '../components/LessonBlocks/HeadingBlock';
+import { CalloutBlock } from '../components/LessonBlocks/CalloutBlock';
+import { DiagramBlock } from '../components/LessonBlocks/DiagramBlock';
+import { TableBlock } from '../components/LessonBlocks/TableBlock';
+import { StepByStepBlock } from '../components/LessonBlocks/StepByStepBlock';
+import { AnalogyBlock } from '../components/LessonBlocks/AnalogyBlock';
+import { ImageBlock } from '../components/LessonBlocks/ImageBlock';
+import { DividerBlock } from '../components/LessonBlocks/DividerBlock';
 import { courses } from '../content/courses';
 import type { CourseStackParamList } from '../navigation/types';
 import { useProgress } from '../services/ProgressContext';
@@ -18,25 +26,33 @@ export function LessonScreen({ route, navigation }: Props) {
   const { completeLesson, progress } = useProgress();
   const done = progress.completedLessons[lesson.id];
 
-  return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-      <Text style={styles.kicker}>{course.title} · {lesson.duration}</Text>
-      <Text style={styles.title}>{lesson.title}</Text>
-      <Text style={styles.objective}>{lesson.objective}</Text>
-
-      {lesson.blocks.map((block, index) => {
-        if (block.type === 'paragraph') {
-          return <Text key={index} style={styles.paragraph}>{block.text}</Text>;
-        }
-        if (block.type === 'formula') {
-          return <MathText key={index} expression={block.expression} note={block.note} />;
-        }
-        if (block.type === 'code') {
-          return <CodeBlock key={index} code={block.code} />;
-        }
-        if (block.type === 'playground') {
-          return <InlinePlayground key={index} code={block.code} expectedOutput={block.expectedOutput} />;
-        }
+  const renderBlock = (block: (typeof lesson.blocks)[number], index: number) => {
+    switch (block.type) {
+      case 'paragraph':
+        return <Text key={index} style={styles.paragraph}>{block.text}</Text>;
+      case 'formula':
+        return <MathText key={index} expression={block.expression} note={block.note} />;
+      case 'code':
+        return <CodeBlock key={index} code={block.code} />;
+      case 'playground':
+        return <InlinePlayground key={index} code={block.code} expectedOutput={block.expectedOutput} />;
+      case 'heading':
+        return <HeadingBlock key={index} text={block.text} color={course.color} />;
+      case 'callout':
+        return <CalloutBlock key={index} variant={block.variant} title={block.title} body={block.body} />;
+      case 'diagram':
+        return <DiagramBlock key={index} title={block.title} boxes={block.boxes} arrows={block.arrows} height={block.height} />;
+      case 'table':
+        return <TableBlock key={index} headers={block.headers} rows={block.rows} />;
+      case 'stepByStep':
+        return <StepByStepBlock key={index} title={block.title} steps={block.steps} color={course.color} />;
+      case 'analogy':
+        return <AnalogyBlock key={index} text={block.text} />;
+      case 'image':
+        return <ImageBlock key={index} title={block.title} imageType={block.imageType} data={block.data} />;
+      case 'divider':
+        return <DividerBlock key={index} />;
+      case 'bullets':
         return (
           <View key={index} style={styles.bullets}>
             {block.items.map(item => (
@@ -47,7 +63,18 @@ export function LessonScreen({ route, navigation }: Props) {
             ))}
           </View>
         );
-      })}
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <ScrollView style={styles.screen} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <Text style={styles.kicker}>{course.title} · {lesson.duration}</Text>
+      <Text style={styles.title}>{lesson.title}</Text>
+      <Text style={styles.objective}>{lesson.objective}</Text>
+
+      {lesson.blocks.map(renderBlock)}
 
       <Pressable
         style={[styles.button, { backgroundColor: done ? colors.green : course.color }]}

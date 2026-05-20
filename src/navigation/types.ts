@@ -15,6 +15,14 @@ export type RootDrawerParamList = {
   Roadmap: undefined;
   Playground: { starterCode?: string; practiceId?: string } | undefined;
   Account: undefined;
+  'Refresh Mind': undefined;
+};
+
+import type { MindCategory, Difficulty } from '../types/mindQuiz';
+
+export type RefreshMindStackParamList = {
+  RefreshMindHome: undefined;
+  MindQuiz: { category: MindCategory; difficulty: Difficulty };
 };
 
 export type CourseStackParamList = {

@@ -20,6 +20,7 @@ import {
   TerminalSquare,
   User,
   Workflow,
+  Sparkles,
 } from 'lucide-react-native';
 import type { RootDrawerParamList } from './types';
 import { AccountScreen } from '../screens/AccountScreen';
@@ -27,6 +28,7 @@ import { DashboardScreen } from '../screens/DashboardScreen';
 import { PlaygroundScreen } from '../screens/PlaygroundScreen';
 import { RoadmapScreen } from '../screens/RoadmapScreen';
 import { CourseStack } from './CourseStack';
+import { RefreshMindStack } from './RefreshMindStack';
 import { colors } from '../theme/theme';
 
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
@@ -73,6 +75,9 @@ function PlaygroundIcon({ color, size }: { color: string; size: number }) {
 }
 function AccountIcon({ color, size }: { color: string; size: number }) {
   return <User color={color} size={size} {...iconProps} />;
+}
+function RefreshMindIcon({ color, size }: { color: string; size: number }) {
+  return <Sparkles color={color} size={size} {...iconProps} />;
 }
 
 function PythonBasicsStack() { return <CourseStack courseId="python-basics" />; }
@@ -156,6 +161,7 @@ export function AppNavigator() {
         <Drawer.Screen name="AI Projects" component={AIProjectsStack} options={{ drawerIcon: AIProjectsIcon }} />
         <Drawer.Screen name="Roadmap" component={RoadmapScreen} options={{ drawerIcon: RoadmapIcon }} />
         <Drawer.Screen name="Playground" component={PlaygroundScreen} options={{ drawerIcon: PlaygroundIcon }} />
+        <Drawer.Screen name="Refresh Mind" component={RefreshMindStack} options={{ drawerIcon: RefreshMindIcon }} />
         <Drawer.Screen name="Account" component={AccountScreen} options={{ drawerIcon: AccountIcon }} />
       </Drawer.Navigator>
     </NavigationContainer>
