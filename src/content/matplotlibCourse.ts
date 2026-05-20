@@ -31,14 +31,47 @@ export const matplotlibCourse: CourseModule = {
       duration: '18 min',
       objective: 'Understand the objects behind every plot.',
       blocks: [
-        { type: 'paragraph', text: 'A figure is the full canvas. Axes are the actual plotting areas. Learning this makes complex layouts much easier.' },
-        { type: 'code', code: "import matplotlib.pyplot as plt\nx = [1, 2, 3]\ny = [2, 4, 9]\nplt.plot(x, y)\nplt.title('Growth')\nplt.show()" },
-        { type: 'playground', code: "import matplotlib.pyplot as plt\nx = [1, 2, 3, 4, 5]\ny = [1, 4, 9, 16, 25]\nplt.plot(x, y, marker='o')\nplt.xlabel('x')\nplt.ylabel('x squared')\nplt.title('Quadratic Growth')\nplt.show()", expectedOutput: 'Plot rendered: line chart titled Quadratic Growth' },
-        { type: 'bullets', items: [
-          'Label axes so future readers know what changed.',
-          'Use scatter plots for relationships and histograms for distributions.',
-          'Plot data before training a model.',
-        ] },
+        { type: 'heading', text: 'The Anatomy of a Plot' },
+        {
+          type: 'paragraph',
+          text: 'In Matplotlib, a plot is built like a painting. The `Figure` is the blank canvas (the entire window), and the `Axes` are the individual paintings (the coordinate grids) attached to that canvas.',
+        },
+        {
+          type: 'diagram',
+          title: 'Figure Hierarchy',
+          boxes: [
+            { id: 'fig', x: 20, y: 30, width: 90, height: 40, label: 'Figure Canvas', color: '#C84D3A' },
+            { id: 'ax', x: 150, y: 15, width: 80, height: 35, label: 'Axes (Plot 1)', color: '#2D8CFF' },
+            { id: 'ax2', x: 150, y: 65, width: 80, height: 35, label: 'Axes (Plot 2)', color: '#1D7A57' },
+          ],
+          arrows: [
+            { from: 'fig', to: 'ax', label: 'Contains' },
+            { from: 'fig', to: 'ax2', label: 'Contains' },
+          ],
+          height: 120,
+        },
+        {
+          type: 'stepByStep',
+          title: 'The State-Machine Workflow',
+          steps: [
+            { title: 'Create Plot', description: 'Call `plt.plot()` to plot data. Matplotlib automatically creates a Figure and Axes if they don\'t exist.' },
+            { title: 'Add Details', description: 'Call `plt.title()`, `plt.xlabel()`, etc. These commands modify the current active Axes.' },
+            { title: 'Display', description: 'Call `plt.show()` to render the completed canvas to the screen.' },
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Plotting Quadratic Growth' },
+        {
+          type: 'playground',
+          code: "import matplotlib.pyplot as plt\n\nx = [1, 2, 3, 4, 5]\ny = [1, 4, 9, 16, 25]\n\n# Plot line with circle markers\nplt.plot(x, y, marker='o', color='crimson')\n\n# Add metadata\nplt.xlabel('x')\nplt.ylabel('x squared')\nplt.title('Quadratic Growth')\nplt.grid(True)\n\nplt.show()",
+          expectedOutput: 'Plot rendered: line chart titled Quadratic Growth',
+        },
+        {
+          type: 'callout',
+          variant: 'remember',
+          title: 'Never Skip Labels!',
+          body: 'A plot without labeled axes is completely meaningless to anyone else (and to you in 3 months). Always label your X and Y axes.',
+        },
       ],
     },
     {
@@ -47,9 +80,26 @@ export const matplotlibCourse: CourseModule = {
       duration: '20 min',
       objective: 'Use histograms to detect skew, outliers, and scale problems.',
       blocks: [
-        { type: 'formula', expression: 'good visualization = question + chart + honest scale' },
-        { type: 'code', code: 'import matplotlib.pyplot as plt\nscores = [55, 65, 67, 70, 92]\nplt.hist(scores, bins=3)\nplt.title("Score distribution")\nplt.show()' },
-        { type: 'playground', code: 'import matplotlib.pyplot as plt\nimport numpy as np\nnp.random.seed(42)\ndata = np.random.normal(100, 15, 500)\nplt.hist(data, bins=20, color="steelblue", edgecolor="white")\nplt.title("Normal Distribution (μ=100, σ=15)")\nplt.xlabel("Value")\nplt.ylabel("Frequency")\nplt.show()', expectedOutput: 'Plot rendered: histogram with 20 bins titled Normal Distribution' },
+        { type: 'heading', text: 'The Mighty Histogram' },
+        {
+          type: 'paragraph',
+          text: 'Before feeding data into a machine learning model, you must check its distribution. Are most values clustered together? Are there extreme outliers? A histogram groups values into "bins" and counts them to reveal the shape of the data.',
+        },
+        {
+          type: 'analogy',
+          text: 'Imagine tossing 100 ping pong balls off a building into a row of buckets below. A histogram is just a bar chart showing how many balls landed in each bucket.',
+        },
+        {
+          type: 'playground',
+          code: 'import matplotlib.pyplot as plt\nimport numpy as np\n\n# Generate 500 fake test scores\nnp.random.seed(42)\nscores = np.random.normal(75, 10, 500)\n\n# Plot histogram with 20 bins\nplt.hist(scores, bins=20, color="steelblue", edgecolor="white")\nplt.title("Exam Score Distribution")\nplt.xlabel("Score")\nplt.ylabel("Number of Students")\nplt.show()',
+          expectedOutput: 'Plot rendered: histogram with 20 bins titled Exam Score Distribution',
+        },
+        {
+          type: 'callout',
+          variant: 'tip',
+          title: 'Choosing Bins',
+          body: 'The `bins` parameter dictates how granular your histogram is. Too few bins (e.g., 2) hides the shape of the data. Too many bins (e.g., 200) makes the plot noisy. Usually, 10-30 bins is the sweet spot.',
+        },
       ],
     },
     {
@@ -58,9 +108,27 @@ export const matplotlibCourse: CourseModule = {
       duration: '25 min',
       objective: 'Plot learning curves and errors to debug models.',
       blocks: [
-        { type: 'paragraph', text: 'When a model fails, charts often reveal whether the issue is data quality, underfitting, overfitting, or a bad metric.' },
-        { type: 'code', code: "import matplotlib.pyplot as plt\nepochs = [1, 2, 3, 4]\nloss = [1.2, 0.8, 0.55, 0.5]\nplt.plot(epochs, loss)\nplt.xlabel('epoch')\nplt.ylabel('loss')\nplt.show()" },
-        { type: 'playground', code: "import matplotlib.pyplot as plt\nepochs = list(range(1, 11))\ntrain_loss = [1.0, 0.7, 0.5, 0.35, 0.25, 0.18, 0.12, 0.08, 0.05, 0.03]\nval_loss = [1.0, 0.75, 0.6, 0.55, 0.53, 0.55, 0.6, 0.65, 0.7, 0.78]\nplt.plot(epochs, train_loss, label='Train')\nplt.plot(epochs, val_loss, label='Validation')\nplt.xlabel('Epoch')\nplt.ylabel('Loss')\nplt.legend()\nplt.title('Overfitting Example')\nplt.show()", expectedOutput: 'Plot rendered: two lines showing overfitting pattern' },
+        { type: 'heading', text: 'Visualizing Overfitting' },
+        {
+          type: 'paragraph',
+          text: 'The single most important plot in deep learning is the Training Curve. By plotting loss across epochs (passes through the data), you can visually diagnose underfitting and overfitting.',
+        },
+        {
+          type: 'table',
+          headers: ['Curve Pattern', 'Diagnosis', 'Solution'],
+          rows: [
+            ['Train loss flat / high', 'Underfitting', 'Bigger model, lower learning rate'],
+            ['Val loss goes UP', 'Overfitting', 'Stop training early, add dropout'],
+            ['Both drop smoothly', 'Good Fit', 'Save the model!'],
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Plotting Training Curves' },
+        {
+          type: 'playground',
+          code: "import matplotlib.pyplot as plt\n\nepochs = list(range(1, 9))\ntrain_loss = [1.0, 0.7, 0.5, 0.35, 0.25, 0.18, 0.12, 0.08]\nval_loss = [1.0, 0.75, 0.6, 0.55, 0.55, 0.65, 0.8, 1.05]\n\n# Plot both curves on the same axes\nplt.plot(epochs, train_loss, label='Training Loss', color='blue')\nplt.plot(epochs, val_loss, label='Validation Loss', color='red', linestyle='dashed')\n\nplt.xlabel('Epoch')\nplt.ylabel('Loss')\nplt.legend() # Displays the labels\nplt.title('Classic Overfitting Pattern')\nplt.show()",
+          expectedOutput: 'Plot rendered: two lines showing overfitting pattern',
+        },
       ],
     },
     {
@@ -69,14 +137,21 @@ export const matplotlibCourse: CourseModule = {
       duration: '20 min',
       objective: 'Create multi-panel figures to compare data side by side.',
       blocks: [
-        { type: 'paragraph', text: 'Subplots let you display multiple charts in a single figure. This is essential for comparing different views of the same dataset.' },
-        { type: 'playground', code: "import matplotlib.pyplot as plt\nfig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))\nax1.bar(['A', 'B', 'C'], [30, 50, 40])\nax1.set_title('Sales by Region')\nax2.pie([30, 50, 20], labels=['A', 'B', 'C'])\nax2.set_title('Market Share')\nplt.tight_layout()\nplt.show()", expectedOutput: 'Plot rendered: 2 subplots - bar chart and pie chart' },
-        { type: 'bullets', items: [
-          'fig, axes = plt.subplots(rows, cols) creates a grid.',
-          'Each ax object has its own plot, title, and labels.',
-          'plt.tight_layout() prevents overlapping labels.',
-          'figsize=(width, height) controls the overall figure size.',
-        ] },
+        { type: 'heading', text: 'Building Dashboards' },
+        {
+          type: 'paragraph',
+          text: 'Often, you need to compare two different charts side-by-side. Matplotlib\'s `subplots` function allows you to slice your figure canvas into a grid of independent plotting axes.',
+        },
+        {
+          type: 'formula',
+          expression: 'fig, (ax1, ax2) = plt.subplots(rows, cols)',
+          note: 'This creates the Figure and all Axes instantly in a structured tuple.',
+        },
+        {
+          type: 'playground',
+          code: "import matplotlib.pyplot as plt\n\n# Create 1 row, 2 columns grid\nfig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))\n\n# Left plot: Bar Chart\nax1.bar(['Cat', 'Dog', 'Bird'], [30, 50, 40], color='orange')\nax1.set_title('Pet Counts')\n\n# Right plot: Scatter\nax2.scatter([1, 2, 3], [5, 2, 8], color='purple')\nax2.set_title('Random Scatter')\n\n# Prevent label overlaps\nplt.tight_layout()\nplt.show()",
+          expectedOutput: 'Plot rendered: 2 subplots side by side',
+        },
       ],
     },
     {
@@ -85,14 +160,16 @@ export const matplotlibCourse: CourseModule = {
       duration: '18 min',
       objective: 'Visualize correlation matrices and confusion matrices as heatmaps.',
       blocks: [
-        { type: 'paragraph', text: 'Heatmaps use color intensity to show values in a matrix. They are the standard way to visualize correlation matrices and confusion matrices in ML.' },
-        { type: 'playground', code: "import matplotlib.pyplot as plt\nimport numpy as np\ndata = np.array([[1.0, 0.8, 0.2], [0.8, 1.0, 0.5], [0.2, 0.5, 1.0]])\nlabels = ['Feature A', 'Feature B', 'Feature C']\nplt.imshow(data, cmap='Blues')\nplt.colorbar()\nplt.xticks([0,1,2], labels, rotation=45)\nplt.yticks([0,1,2], labels)\nplt.title('Correlation Matrix')\nplt.show()", expectedOutput: 'Plot rendered: heatmap correlation matrix' },
-        { type: 'bullets', items: [
-          'cmap controls the color scheme: Blues, Reds, viridis, coolwarm.',
-          'plt.colorbar() adds a legend showing value-to-color mapping.',
-          'Use plt.annotate() to add text labels on specific points.',
-          'Seaborn (built on Matplotlib) makes heatmaps even easier.',
-        ] },
+        { type: 'heading', text: 'Color-Coded Matrices' },
+        {
+          type: 'paragraph',
+          text: 'Heatmaps use color intensity to represent values in a matrix. In AI, they are heavily used to visualize Confusion Matrices (how many dogs were misclassified as cats) or Correlation Matrices (which features move together).',
+        },
+        {
+          type: 'playground',
+          code: "import matplotlib.pyplot as plt\nimport numpy as np\n\n# 3x3 Correlation Matrix\ndata = np.array([\n    [1.0, 0.8, 0.1], \n    [0.8, 1.0, 0.5], \n    [0.1, 0.5, 1.0]\n])\n\nlabels = ['Age', 'Salary', 'Height']\n\nplt.imshow(data, cmap='Blues') # Blue color scale\nplt.colorbar() # Shows color-value legend\n\n# Add tick labels\nplt.xticks([0,1,2], labels)\nplt.yticks([0,1,2], labels)\n\nplt.title('Correlation Heatmap')\nplt.show()",
+          expectedOutput: 'Plot rendered: heatmap correlation matrix',
+        },
       ],
     },
   ],

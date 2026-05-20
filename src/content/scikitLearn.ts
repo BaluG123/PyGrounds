@@ -31,14 +31,60 @@ export const scikitLearnCourse: CourseModule = {
       duration: '18 min',
       objective: 'Understand the standard scikit-learn API: fit, predict, score.',
       blocks: [
-        { type: 'paragraph', text: 'Machine learning starts with data splitting. You train on one set and test on another to ensure the model generalizes to new data.' },
-        { type: 'formula', expression: 'model.fit(X_train, y_train) → model.predict(X_test)', note: 'The universal scikit-learn pattern.' },
-        { type: 'playground', code: 'from sklearn.model_selection import train_test_split\nimport numpy as np\nX = np.arange(10).reshape(-1, 1)\ny = np.array([0, 0, 0, 0, 1, 1, 1, 1, 1, 1])\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)\nprint(f"Train size: {len(X_train)}, Test size: {len(X_test)}")', expectedOutput: 'Train size: 7, Test size: 3' },
-        { type: 'bullets', items: [
-          'X is usually a 2D matrix (features). y is a 1D array (labels/targets).',
-          'random_state ensures reproducible splits.',
-          'Never train on your test data! This causes "data leakage".',
-        ] },
+        { type: 'heading', text: 'Democratizing Machine Learning' },
+        {
+          type: 'paragraph',
+          text: 'The power of Scikit-Learn lies in its brilliant, extremely consistent design. Regardless of whether you are training a simple Linear Regression or a complex Random Forest, the exact same three methods form the heartbeat of every pipeline: `.fit()`, `.predict()`, and `.score()`.',
+        },
+        {
+          type: 'analogy',
+          text: 'Using Scikit-Learn is like driving modern cars. Even though the internal mechanics of a gas car and an electric car are completely different, they all use a steering wheel, accelerator, and brake. Once you learn the universal controls, you can drive any vehicle.',
+        },
+        {
+          type: 'diagram',
+          title: 'The Standard Machine Learning Pipeline',
+          boxes: [
+            { id: 'split', x: 10, y: 70, width: 85, height: 45, label: 'Train/Test Split', color: '#2B6CB0' },
+            { id: 'fit', x: 115, y: 70, width: 85, height: 45, label: 'model.fit()', color: '#F89939' },
+            { id: 'pred', x: 220, y: 70, width: 85, height: 45, label: 'model.predict()', color: '#1D7A57' },
+          ],
+          arrows: [
+            { from: 'split', to: 'fit', label: 'Data' },
+            { from: 'fit', to: 'pred', label: 'Weights' },
+          ],
+          height: 180,
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Splitting the Dataset' },
+        {
+          type: 'paragraph',
+          text: 'To build a robust model, you must split your data into a Training Set (to learn patterns) and a Testing Set (to evaluate performance). Never evaluate a model on the same data it was trained on — it will cheat by simply memorizing the inputs.',
+        },
+        {
+          type: 'formula',
+          expression: 'X_{train}, X_{test}, y_{train}, y_{test} = \\text{split}(X, y)',
+          note: 'The fundamental data partition.',
+        },
+        {
+          type: 'playground',
+          code: 'from sklearn.model_selection import train_test_split\nimport numpy as np\n\nX = np.arange(10).reshape(-1, 1)\ny = np.array([0, 0, 0, 0, 1, 1, 1, 1, 1, 1])\n\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\nprint(f"Train samples (X_train):\\n{X_train.ravel()}")\nprint(f"Test samples (X_test):\\n{X_test.ravel()}")',
+          expectedOutput: 'Train samples (X_train):\n[7 2 9 4 3 6 8]\nTest samples (X_test):\n[8 1 5]',
+        },
+        {
+          type: 'callout',
+          variant: 'remember',
+          title: 'Dimensions of ML Matrices',
+          body: 'Features matrix (X) must always be 2D (Samples × Features), even if you have only one feature. The target array (y) is usually 1D containing labels.',
+        },
+        {
+          type: 'stepByStep',
+          title: 'Three Universal Scikit-Learn Operations',
+          steps: [
+            { title: 'model.fit(X_train, y_train)', description: 'The training phase where the model discovers and learns mathematical relationships.' },
+            { title: 'model.predict(X_test)', description: 'The inference phase where the model outputs predictions for new, unseen feature sets.' },
+            { title: 'model.score(X_test, y_test)', description: 'The evaluation phase that compares predictions to actual ground-truth targets.' },
+          ],
+        },
       ],
     },
     {
@@ -47,14 +93,46 @@ export const scikitLearnCourse: CourseModule = {
       duration: '22 min',
       objective: 'Train a model to categorize data into classes.',
       blocks: [
-        { type: 'paragraph', text: 'Classification predicts discrete labels (e.g., spam vs. not spam). Logistic Regression is a simple, powerful baseline model.' },
-        { type: 'playground', code: 'from sklearn.linear_model import LogisticRegression\nimport numpy as np\nX_train = np.array([[1], [2], [8], [9]])\ny_train = np.array([0, 0, 1, 1])\nmodel = LogisticRegression().fit(X_train, y_train)\nprint(f"Predict for X=3: {model.predict([[3]])}")\nprint(f"Predict for X=7: {model.predict([[7]])}")', expectedOutput: 'Predict for X=3: [0]\nPredict for X=7: [1]' },
-        { type: 'bullets', items: [
-          'Logistic Regression uses the sigmoid function to output probabilities.',
-          'Decision Trees split data using if/else rules based on features.',
-          'Random Forests build many trees and average their predictions.',
-          'Always scale features (StandardScaler) for algorithms like SVM or KNN.',
-        ] },
+        { type: 'heading', text: 'Continuous vs. Discrete Prediction' },
+        {
+          type: 'paragraph',
+          text: 'Classification is the process of predicting categorical labels (e.g. spam/inbox, fraudulent/legitimate). Logistic Regression, despite its confusing name, is the most robust and widely used baseline model for binary classification.',
+        },
+        {
+          type: 'analogy',
+          text: 'Classification is like sorting letters at the post office. Continuous regression would predict the physical weight of each letter; classification drops each letter into distinct destination bins.',
+        },
+        {
+          type: 'table',
+          headers: ['Algorithm', 'Concept', 'Pros', 'Cons'],
+          rows: [
+            ['Logistic Regression', 'Uses sigmoid curve', 'Fast, interpretable', 'Only linear limits'],
+            ['Decision Trees', 'Nested if-else splits', 'No scaling needed', 'Prone to overfitting'],
+            ['Random Forests', 'Ensemble of trees', 'Highly accurate', 'Slow, hard to read'],
+            ['KNN', 'Closeness to neighbors', 'Simple, non-parametric', 'Heavy memory cost'],
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Fitting a Logistic Regression Model' },
+        {
+          type: 'playground',
+          code: 'from sklearn.linear_model import LogisticRegression\nimport numpy as np\n\n# Train on simple 1D scores\nX_train = np.array([[1], [2], [8], [9]])\ny_train = np.array([0, 0, 1, 1]) # Class 0 or 1\n\nmodel = LogisticRegression().fit(X_train, y_train)\n\nprint(f"Prediction for X=3 (Low Score): {model.predict([[3]])}")\nprint(f"Prediction for X=7 (High Score): {model.predict([[7]])}")',
+          expectedOutput: 'Prediction for X=3 (Low Score): [0]\nPrediction for X=7 (High Score): [1]',
+        },
+        {
+          type: 'callout',
+          variant: 'tip',
+          title: 'Scaling is Key!',
+          body: 'Distance-based algorithms (like KNN and SVM) perform terribly if your features have wildly different scales. Always scale features first using `StandardScaler`.',
+        },
+        {
+          type: 'bullets',
+          items: [
+            'Logistic Regression outputs the probability of class membership.',
+            'Decision Trees partition features to minimize impurity.',
+            'Random Forests reduce variance by averaging independent trees.',
+          ],
+        },
       ],
     },
     {
@@ -63,30 +141,38 @@ export const scikitLearnCourse: CourseModule = {
       duration: '24 min',
       objective: 'Choose the right metric beyond simple accuracy.',
       blocks: [
-        { type: 'paragraph', text: 'Accuracy can be misleading for imbalanced datasets (e.g., predicting a rare disease). You need precision, recall, and the F1 score.' },
-        { type: 'formula', expression: 'Precision = TP / (TP + FP)', note: 'When it predicts positive, how often is it right?' },
-        { type: 'formula', expression: 'Recall = TP / (TP + FN)', note: 'Out of all actual positives, how many did it find?' },
-        { type: 'playground', code: 'from sklearn.metrics import accuracy_score, precision_score, recall_score\ny_true = [0, 1, 0, 0, 1, 0]\ny_pred = [0, 1, 0, 0, 0, 0]\nprint(f"Accuracy: {accuracy_score(y_true, y_pred):.2f}")\nprint(f"Precision: {precision_score(y_true, y_pred):.2f}")\nprint(f"Recall: {recall_score(y_true, y_pred):.2f}")', expectedOutput: 'Accuracy: 0.83\nPrecision: 1.00\nRecall: 0.50' },
-        { type: 'bullets', items: [
-          'F1 Score is the harmonic mean of precision and recall.',
-          'Confusion Matrix shows TP, FP, TN, FN in a grid.',
-          'For regression (predicting continuous values), use Mean Squared Error (MSE) or R².',
-        ] },
-      ],
-    },
-    {
-      id: 'sk-crossval',
-      title: 'Cross-Validation',
-      duration: '20 min',
-      objective: 'Reliably estimate model performance using K-Fold validation.',
-      blocks: [
-        { type: 'paragraph', text: 'A single train/test split might get lucky (or unlucky). Cross-validation splits data into K folds, training K models to get a robust average score.' },
-        { type: 'playground', code: 'from sklearn.model_selection import cross_val_score\nfrom sklearn.linear_model import LogisticRegression\nimport numpy as np\nX = np.arange(20).reshape(-1, 1)\ny = np.array([0]*10 + [1]*10)\nmodel = LogisticRegression()\nscores = cross_val_score(model, X, y, cv=5)\nprint(f"CV Scores: {scores}")\nprint(f"Average: {scores.mean():.2f}")', expectedOutput: 'CV Scores: [1. 1. 1. 1. 1.]\nAverage: 1.00' },
-        { type: 'bullets', items: [
-          'cv=5 means 5-fold cross-validation.',
-          'GridSearchCV combines cross-validation with hyperparameter tuning.',
-          'Hyperparameters are settings you choose (e.g., tree depth), unlike parameters (weights) which the model learns.',
-        ] },
+        { type: 'heading', text: 'The Illusion of Accuracy' },
+        {
+          type: 'paragraph',
+          text: 'Accuracy is often a dangerous metric. In heavily imbalanced datasets (e.g., credit card fraud where only 0.1% of transactions are fraudulent), a dumb model that predicts "always legitimate" achieves a stellar 99.9% accuracy — but fails completely to catch any fraud.',
+        },
+        {
+          type: 'analogy',
+          text: 'Accuracy is like measuring a teacher\'s performance by checking if they graded all tests (easy). Precision and Recall measure if they actually noticed and corrected the spelling mistakes (valuable).',
+        },
+        {
+          type: 'formula',
+          expression: '\\text{Precision} = \\frac{TP}{TP + FP}',
+          note: 'When the model predicts positive, how reliable is it?',
+        },
+        {
+          type: 'formula',
+          expression: '\\text{Recall} = \\frac{TP}{TP + FN}',
+          note: 'Out of all actual positive occurrences, how many did it capture?',
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Metric Calculation in Action' },
+        {
+          type: 'playground',
+          code: 'from sklearn.metrics import accuracy_score, precision_score, recall_score\n\ny_true = [0, 1, 0, 0, 1, 0] # Ground truth\ny_pred = [0, 1, 0, 0, 0, 0] # Model prediction\n\nprint(f"Accuracy:  {accuracy_score(y_true, y_pred):.2f}")\nprint(f"Precision: {precision_score(y_true, y_pred):.2f}")\nprint(f"Recall:    {recall_score(y_true, y_pred):.2f}")',
+          expectedOutput: 'Accuracy:  0.83\nPrecision: 1.00\nRecall:    0.50',
+        },
+        {
+          type: 'callout',
+          variant: 'warning',
+          title: 'The Precision-Recall Tradeoff',
+          body: 'Increasing your model\'s confidence threshold will increase precision (fewer false alerts) but decrease recall (misses more items). The F1 Score represents the harmonic mean balancing both metrics.',
+        },
       ],
     },
   ],

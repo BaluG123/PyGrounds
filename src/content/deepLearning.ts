@@ -31,14 +31,76 @@ export const deepLearningCourse: CourseModule = {
       duration: '20 min',
       objective: 'Understand how a single neuron computes an output.',
       blocks: [
-        { type: 'paragraph', text: 'A neuron takes inputs, multiplies them by weights, adds a bias, and passes the sum through an activation function to decide if it should "fire".' },
-        { type: 'formula', expression: 'y = activation(w₁x₁ + w₂x₂ + ... + wₙxₙ + b)', note: 'This is just a dot product plus a bias.' },
-        { type: 'playground', code: 'import numpy as np\nx = np.array([1.5, 2.0])\nw = np.array([0.8, -0.2])\nbias = 0.5\nz = np.dot(x, w) + bias\n# ReLU activation: max(0, z)\na = max(0, z)\nprint(f"Neuron output: {a:.2f}")', expectedOutput: 'Neuron output: 1.30' },
-        { type: 'bullets', items: [
-          'Weights (w) control the strength of each input.',
-          'Bias (b) shifts the activation threshold.',
-          'Without activation functions, a neural net is just linear regression.',
-        ] },
+        { type: 'heading', text: 'Meet the Perceptron' },
+        {
+          type: 'paragraph',
+          text: 'The fundamental building block of all modern AI is the artificial neuron, originally proposed as the Perceptron. A neuron is a mathematical processor that mimics the biological brain: it receives input signals, weights their importance, aggregates them, and decides whether to send an output signal.',
+        },
+        {
+          type: 'analogy',
+          text: 'Think of an artificial neuron like a committee deciding whether to approve a project. Each member (input) gives a vote, but some members have more seniority (weights). If the combined weighted vote exceeds a certain hurdle (bias), the project is approved (fires).',
+        },
+        {
+          type: 'diagram',
+          title: 'Information Flow in a Single Neuron',
+          boxes: [
+            { id: 'inputs', x: 10, y: 70, width: 80, height: 50, label: 'Inputs (X)', color: '#2B6CB0' },
+            { id: 'neuron', x: 120, y: 70, width: 80, height: 50, label: 'Sum (W·X + b)', color: '#E44D6E' },
+            { id: 'act', x: 230, y: 70, width: 80, height: 50, label: 'Activation', color: '#1D7A57' },
+          ],
+          arrows: [
+            { from: 'inputs', to: 'neuron', label: 'w_i' },
+            { from: 'neuron', to: 'act', label: 'z' },
+          ],
+          height: 180,
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'The Mathematical Formula' },
+        {
+          type: 'paragraph',
+          text: 'Mathematically, we take the dot product of our inputs and weights, add a constant bias to shift the activation point, and pass the sum through an activation function.',
+        },
+        {
+          type: 'formula',
+          expression: 'z = \\sum_{i=1}^n w_i x_i + b = W \\cdot X + b',
+          note: 'The weighted sum plus bias.',
+        },
+        {
+          type: 'formula',
+          expression: 'y = \\text{activation}(z)',
+          note: 'This final step determines the output intensity.',
+        },
+        {
+          type: 'callout',
+          variant: 'remember',
+          title: 'Why Bias Matters',
+          body: 'The bias term (b) shifts the activation function to the left or right. Without a bias, the neuron output would always be 0 when inputs are 0, severely limiting the patterns it can represent.',
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Implementation in Code' },
+        {
+          type: 'playground',
+          code: 'import numpy as np\n\nx = np.array([1.5, 2.0]) # Inputs\nw = np.array([0.8, -0.2]) # Weights\nbias = 0.5\n\n# Weighted sum\nz = np.dot(x, w) + bias\n\n# ReLU activation: max(0, z)\na = max(0, z)\nprint(f"Sum (z): {z:.2f}")\nprint(f"Activated Output (a): {a:.2f}")',
+          expectedOutput: 'Sum (z): 1.30\nActivated Output (a): 1.30',
+        },
+        {
+          type: 'stepByStep',
+          title: 'Computing a Neuron Output',
+          steps: [
+            { title: 'Receive Inputs (X)', description: 'Values represent raw data features (e.g., pixel intensities, token frequencies).' },
+            { title: 'Apply Weights (W)', description: 'Multiply each input by its weight (strength of connection).' },
+            { title: 'Add Bias (b)', description: 'Add a scalar bias value to aggregate the shifted sum.' },
+            { title: 'Apply Activation Function', description: 'Introduce non-linearity (e.g., ReLU) to get the final fired output.' },
+          ],
+        },
+        {
+          type: 'bullets',
+          items: [
+            'Weights (W) determine the scaling factor of incoming signals.',
+            'Bias (b) shifts the activation response up or down.',
+            'Activation functions introduce critical non-linearity.',
+          ],
+        },
       ],
     },
     {
@@ -47,14 +109,46 @@ export const deepLearningCourse: CourseModule = {
       duration: '22 min',
       objective: 'Learn why networks need non-linearity and which functions to use.',
       blocks: [
-        { type: 'paragraph', text: 'Activation functions introduce non-linearity. This allows neural networks to learn complex, curved boundaries instead of just straight lines.' },
-        { type: 'formula', expression: 'ReLU(x) = max(0, x)', note: 'The default choice for hidden layers.' },
-        { type: 'formula', expression: 'Sigmoid(x) = 1 / (1 + e⁻ˣ)', note: 'Squashes values between 0 and 1. Good for binary classification output.' },
-        { type: 'playground', code: 'import numpy as np\ndef relu(x): return np.maximum(0, x)\ndef sigmoid(x): return 1 / (1 + np.exp(-x))\nz = np.array([-2.0, 0.0, 2.0])\nprint(f"ReLU: {relu(z)}")\nprint(f"Sigmoid: {np.round(sigmoid(z), 2)}")', expectedOutput: 'ReLU: [0. 0. 2.]\nSigmoid: [0.12 0.5  0.88]' },
-        { type: 'bullets', items: [
-          'ReLU is fast and avoids the "vanishing gradient" problem.',
-          'Softmax converts a vector of numbers into a probability distribution (summing to 1) — used for multi-class output.',
-        ] },
+        { type: 'heading', text: 'The Secret Ingredient: Non-Linearity' },
+        {
+          type: 'paragraph',
+          text: 'If we stack multiple neural layers without activation functions, the entire system collapses mathematically into a single linear regression. Activation functions give the network its superpowers by introducing curves and complex decision boundaries.',
+        },
+        {
+          type: 'analogy',
+          text: 'Think of activation functions as gates on a highway. A linear gate lets traffic pass in direct proportion to input. A non-linear gate (like ReLU) blocks all negative traffic completely while letting positive traffic stream through untouched.',
+        },
+        {
+          type: 'table',
+          headers: ['Function', 'Formula', 'Range', 'Best For'],
+          rows: [
+            ['ReLU', 'max(0, x)', '[0, ∞)', 'Hidden Layers (Standard)'],
+            ['Sigmoid', '1 / (1 + e^-x)', '(0, 1)', 'Binary Classification Output'],
+            ['Tanh', 'tanh(x)', '(-1, 1)', 'Recurrent Networks (RNNs)'],
+            ['Softmax', 'e^xi / sum(e^xj)', '[0, 1]', 'Multi-Class Output Layer'],
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Interactive Activation Function Test' },
+        {
+          type: 'playground',
+          code: 'import numpy as np\n\ndef relu(x): return np.maximum(0, x)\ndef sigmoid(x): return 1 / (1 + np.exp(-x))\n\nz = np.array([-2.5, 0.0, 2.5])\nprint(f"Inputs: {z}")\nprint(f"ReLU: {relu(z)}")\nprint(f"Sigmoid: {np.round(sigmoid(z), 3)}")',
+          expectedOutput: 'Inputs: [-2.5  0.   2.5]\nReLU: [0.  0.  2.5]\nSigmoid: [0.076 0.5   0.924]',
+        },
+        {
+          type: 'callout',
+          variant: 'tip',
+          title: 'Vanishing Gradients',
+          body: 'Sigmoid and Tanh saturate for extremely large or small values, causing their derivatives to become almost 0. This "freezes" training. ReLU solves this by maintaining a constant slope of 1 for all positive inputs.',
+        },
+        {
+          type: 'bullets',
+          items: [
+            'ReLU is computationally fast to evaluate and optimize.',
+            'Sigmoid squashes outputs into a [0, 1] range, perfect for probabilities.',
+            'Softmax ensures the outputs of all output nodes sum exactly to 1.0.',
+          ],
+        },
       ],
     },
     {
@@ -63,13 +157,58 @@ export const deepLearningCourse: CourseModule = {
       duration: '24 min',
       objective: 'Stack neurons into layers to build a multi-layer network.',
       blocks: [
-        { type: 'paragraph', text: 'A layer is just a collection of neurons. The inputs connect to every neuron in the layer. We compute the whole layer at once using matrix multiplication.' },
-        { type: 'formula', expression: 'Layer Output = Activation(Input @ Weights + Biases)', note: 'This is why GPUs are essential for Deep Learning (they are great at matrix math).' },
-        { type: 'playground', code: 'import numpy as np\nx = np.array([[1.0, 2.0]]) # 1 sample, 2 features\n# Layer with 3 neurons\nW = np.array([[0.1, -0.2, 0.3], \n              [0.4,  0.5, 0.6]])\nb = np.array([0.1, 0.1, 0.1])\nz = np.dot(x, W) + b\na = np.maximum(0, z) # ReLU\nprint(f"Layer output: {np.round(a, 2)}")', expectedOutput: 'Layer output: [[1.  0.9 1.6]]' },
-        { type: 'bullets', items: [
-          'A "Deep" network just has multiple hidden layers (Output = L3(L2(L1(Input)))).',
-          'Shapes must align: If Input is (Batch, Features), Weights must be (Features, Neurons).',
-        ] },
+        { type: 'heading', text: 'Scaling Up: Neural Layers' },
+        {
+          type: 'paragraph',
+          text: 'In practice, we never compute one neuron at a time. We group neurons into parallel layers. Stacking inputs as matrices and weights as matrices allows us to compute hundreds of neurons simultaneously in a single, lightning-fast matrix multiplication.',
+        },
+        {
+          type: 'image',
+          title: 'Data transformations through function processing pipelines',
+          imageType: 'function-flow',
+        },
+        {
+          type: 'diagram',
+          title: 'Architecture of a 2-Layer Neural Network',
+          boxes: [
+            { id: 'i1', x: 20, y: 30, width: 60, height: 35, label: 'Input 1', color: '#2B6CB0' },
+            { id: 'i2', x: 20, y: 90, width: 60, height: 35, label: 'Input 2', color: '#2B6CB0' },
+            { id: 'h1', x: 130, y: 30, width: 60, height: 35, label: 'Hidden 1', color: '#E44D6E' },
+            { id: 'h2', x: 130, y: 90, width: 60, height: 35, label: 'Hidden 2', color: '#E44D6E' },
+            { id: 'out', x: 240, y: 60, width: 60, height: 35, label: 'Output', color: '#1D7A57' },
+          ],
+          arrows: [
+            { from: 'i1', to: 'h1' },
+            { from: 'i1', to: 'h2' },
+            { from: 'i2', to: 'h1' },
+            { from: 'i2', to: 'h2' },
+            { from: 'h1', to: 'out' },
+            { from: 'h2', to: 'out' },
+          ],
+          height: 160,
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Matrix Math in Python' },
+        {
+          type: 'paragraph',
+          text: 'Let\'s represent a simple layer with 2 inputs and 3 hidden neurons using matrix multiplication.',
+        },
+        {
+          type: 'formula',
+          expression: 'H = \\text{ReLU}(X \\cdot W + B)',
+          note: 'Standard representation of a neural network forward pass step.',
+        },
+        {
+          type: 'playground',
+          code: 'import numpy as np\n\n# 1 sample, 2 features\nx = np.array([[1.0, 2.0]]) \n\n# Weights: 2 features -> 3 hidden neurons\nW = np.array([[0.1, -0.2, 0.3], \n              [0.4,  0.5, 0.6]])\n\nb = np.array([0.1, 0.1, 0.1])\n\n# Dot product plus bias\nz = np.dot(x, W) + b\na = np.maximum(0, z) # ReLU activation\n\nprint(f"Pre-activation (z): {z}")\nprint(f"Layer Output (a): {a}")',
+          expectedOutput: 'Pre-activation (z): [[0.9 0.9 1.6]]\nLayer Output (a): [[0.9 0.9 1.6]]',
+        },
+        {
+          type: 'callout',
+          variant: 'remember',
+          title: 'Dimension Matching',
+          body: 'For matrix dot product A @ B to succeed, the column size of A must match the row size of B. If your inputs are (BatchSize, Features), your weights MUST have dimensions (Features, OutputNeurons).',
+        },
       ],
     },
     {
@@ -78,15 +217,51 @@ export const deepLearningCourse: CourseModule = {
       duration: '26 min',
       objective: 'Understand how a network updates its weights to learn.',
       blocks: [
-        { type: 'paragraph', text: 'To train, we need to know how wrong the network is (Loss). We then use Calculus (the Chain Rule) to figure out how to adjust every weight to make the loss smaller (Backpropagation).' },
-        { type: 'formula', expression: 'New Weight = Old Weight - (Learning Rate × Gradient)', note: 'Gradient Descent algorithm.' },
-        { type: 'bullets', items: [
-          'Loss functions: MSE (Regression), Cross-Entropy (Classification).',
-          'Gradient: The direction that increases the loss. We go the opposite way.',
-          'Learning Rate: How big of a step to take. Too big = unstable, too small = slow.',
-          'Epoch: One full pass over the training data.',
-          'Batch Size: Updating weights after looking at a small chunk of data (Stochastic Gradient Descent).',
-        ] },
+        { type: 'heading', text: 'Feedback Loops: How AI Learns' },
+        {
+          type: 'paragraph',
+          text: 'Computing outputs is only half the battle. To learn, the network needs a way to evaluate its performance (Loss Function) and a mathematically sound method to update weights to perform better next time (Backpropagation via the Chain Rule).',
+        },
+        {
+          type: 'analogy',
+          text: 'Imagine a factory assembly line creating complex machines. If the machine turns out wrong (high loss), a supervisor traces the errors backwards from the final output, identifying which workstation (weights) made the biggest errors, and tuning their tools accordingly.',
+        },
+        {
+          type: 'stepByStep',
+          title: 'The Neural Network Training Cycle',
+          steps: [
+            { title: 'Forward Pass', description: 'Process input data through layers to generate predictions.' },
+            { title: 'Calculate Loss', description: 'Compute a penalty value indicating prediction discrepancy (e.g., Mean Squared Error).' },
+            { title: 'Backward Pass (Backprop)', description: 'Use calculus chain rule to compute gradients (slopes of error) for each weight.' },
+            { title: 'Weight Update', description: 'Adjust weights slightly in the direction that lowers the overall loss.' },
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Gradient Descent Weight Update' },
+        {
+          type: 'playground',
+          code: 'w = 0.50 # Current weight\ngradient = -0.25 # Slope of error curve\nlr = 0.1 # Learning rate\n\n# Adjust weight opposite to gradient\nnew_w = w - (lr * gradient)\nprint(f"Old weight: {w:.2f}")\nprint(f"Weight updated: {new_w:.2f}")',
+          expectedOutput: 'Old weight: 0.50\nWeight updated: 0.53',
+        },
+        {
+          type: 'formula',
+          expression: 'W_{new} = W_{old} - \\eta \\cdot \\nabla L',
+          note: 'Gradient descent weight update formula where eta is the learning rate.',
+        },
+        {
+          type: 'callout',
+          variant: 'warning',
+          title: 'Learning Rate Selection',
+          body: 'If the learning rate (eta) is too small, training will take forever. If it is too large, the weight updates will bounce around wildly, overshoot the optimum, and completely fail to converge.',
+        },
+        {
+          type: 'bullets',
+          items: [
+            'Loss functions measure prediction accuracy.',
+            'Epoch represents one complete pass through all training data.',
+            'Batch size divides datasets to perform incremental updates.',
+          ],
+        },
       ],
     },
   ],

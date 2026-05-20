@@ -31,15 +31,42 @@ export const linearAlgebraCourse: CourseModule = {
       duration: '20 min',
       objective: 'Understand vectors as directions in space and the dot product as a similarity measure.',
       blocks: [
-        { type: 'paragraph', text: 'A vector is an ordered list of numbers. In ML, feature vectors represent data points, weight vectors represent learned parameters, and embeddings represent words or images as vectors.' },
-        { type: 'formula', expression: 'a · b = Σ aᵢbᵢ = |a||b|cos(θ)', note: 'The dot product measures how aligned two vectors are.' },
-        { type: 'playground', code: 'import numpy as np\na = np.array([1, 2, 3])\nb = np.array([4, 5, 6])\nprint(f"Dot product: {np.dot(a, b)}")\nprint(f"Magnitude of a: {np.linalg.norm(a):.3f}")', expectedOutput: 'Dot product: 32\nMagnitude of a: 3.742' },
-        { type: 'bullets', items: [
-          'Magnitude (L2 norm): ||v|| = √(Σvᵢ²).',
-          'Unit vector: v / ||v|| — direction without magnitude.',
-          'Cosine similarity: dot product of unit vectors — used in NLP.',
-          'Orthogonal vectors have dot product = 0 (perpendicular).',
-        ] },
+        { type: 'heading', text: 'Vectors: Arrows in Space' },
+        {
+          type: 'paragraph',
+          text: 'In physics, a vector is an arrow with a length and direction. In computer science, a vector is just a list of numbers. In AI, these numbers represent features (e.g. [age, height, weight]) or abstract concepts (like word embeddings).',
+        },
+        {
+          type: 'analogy',
+          text: 'Think of a vector like GPS coordinates. A 2D vector [3, 4] means "walk 3 steps East, then 4 steps North". The hypotenuse of your path is the vector\'s magnitude.',
+        },
+        {
+          type: 'formula',
+          expression: '\\text{Magnitude } ||v|| = \\sqrt{v_1^2 + v_2^2 + \\dots + v_n^2}',
+          note: 'Also known as the L2 Norm or Euclidean distance.',
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'The Dot Product' },
+        {
+          type: 'paragraph',
+          text: 'The dot product is the single most important operation in AI. It multiplies matching components of two vectors and adds them up. Geometrically, it measures how much two vectors point in the same direction (similarity).',
+        },
+        {
+          type: 'formula',
+          expression: '\\vec{a} \\cdot \\vec{b} = \\sum_{i=1}^n a_i b_i = ||a|| ||b|| \\cos(\\theta)',
+          note: 'If the dot product is 0, the vectors are exactly perpendicular (orthogonal).',
+        },
+        {
+          type: 'playground',
+          code: 'import numpy as np\n\na = np.array([1, 2, 3])\nb = np.array([4, 5, 6])\n\nprint(f"Dot product: {np.dot(a, b)}")\nprint(f"Magnitude of a: {np.linalg.norm(a):.3f}")',
+          expectedOutput: 'Dot product: 32\nMagnitude of a: 3.742',
+        },
+        {
+          type: 'callout',
+          variant: 'tip',
+          title: 'Cosine Similarity in NLP',
+          body: 'If you divide the dot product by both magnitudes, you get Cosine Similarity (which ranges from -1 to 1). This is exactly how AI determines if two words or sentences have similar meanings!',
+        },
       ],
     },
     {
@@ -48,16 +75,43 @@ export const linearAlgebraCourse: CourseModule = {
       duration: '24 min',
       objective: 'Multiply matrices, understand shapes, and see why neural networks are matrix math.',
       blocks: [
-        { type: 'paragraph', text: 'A matrix is a 2D grid of numbers. Neural network layers are matrix multiplications: output = input × weights + bias.' },
-        { type: 'formula', expression: '(m×k) @ (k×n) → (m×n)', note: 'Inner dimensions must match. Output shape is outer dimensions.' },
-        { type: 'playground', code: 'import numpy as np\nA = np.array([[1, 2], [3, 4]])\nB = np.array([[5, 6], [7, 8]])\nprint("A @ B =")\nprint(A @ B)\nprint(f"\nTranspose of A =")\nprint(A.T)', expectedOutput: 'A @ B =\n[[19 22]\n [43 50]]\n\nTranspose of A =\n[[1 3]\n [2 4]]' },
-        { type: 'formula', expression: 'Identity: I × A = A × I = A', note: 'The identity matrix is the multiplicative "1" for matrices.' },
-        { type: 'bullets', items: [
-          'Transpose flips rows and columns: shape (m,n) → (n,m).',
-          'Inverse A⁻¹: A @ A⁻¹ = I. Not all matrices have inverses.',
-          'Determinant = 0 means the matrix is singular (no inverse).',
-          'In neural nets: each layer is Y = activation(X @ W + b).',
-        ] },
+        { type: 'heading', text: 'Matrices: Grids of Numbers' },
+        {
+          type: 'paragraph',
+          text: 'A matrix is simply a 2D collection of vectors. When we pass data through a neural network, we are taking an input matrix (our data) and multiplying it by a weight matrix (what the model learned).',
+        },
+        {
+          type: 'diagram',
+          title: 'Matrix Multiplication Dimensions',
+          boxes: [
+            { id: 'm1', x: 20, y: 30, width: 70, height: 40, label: '3 × 2', color: '#2D8CFF' },
+            { id: 'm2', x: 120, y: 30, width: 70, height: 40, label: '2 × 4', color: '#1D7A57' },
+            { id: 'm3', x: 230, y: 30, width: 70, height: 40, label: '3 × 4', color: '#E44D6E' },
+          ],
+          arrows: [
+            { from: 'm1', to: 'm2', label: 'Match' },
+            { from: 'm2', to: 'm3', label: 'Output' },
+          ],
+          height: 120,
+        },
+        {
+          type: 'formula',
+          expression: '(M \\times K) \\cdot (K \\times N) \\longrightarrow (M \\times N)',
+          note: 'Inner dimensions (K) must exactly match, or the code will crash.',
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Matrix Multiplication in Action' },
+        {
+          type: 'playground',
+          code: 'import numpy as np\n\n# 2x2 Matrix\nA = np.array([[1, 2], \n              [3, 4]])\n\n# 2x2 Matrix\nB = np.array([[5, 6], \n              [7, 8]])\n\n# @ is the Python operator for matrix multiplication\nprint("A @ B =")\nprint(A @ B)\n\nprint("\\nTranspose of A (flips rows/cols) =")\nprint(A.T)',
+          expectedOutput: 'A @ B =\n[[19 22]\n [43 50]]\n\nTranspose of A (flips rows/cols) =\n[[1 3]\n [2 4]]',
+        },
+        {
+          type: 'callout',
+          variant: 'remember',
+          title: 'The Identity Matrix',
+          body: 'The Identity matrix (I) is a square matrix with 1s on the diagonal and 0s everywhere else. It acts like the number "1" in normal math. Multiplying any matrix by I leaves it completely unchanged (A @ I = A).',
+        },
       ],
     },
     {
@@ -66,32 +120,69 @@ export const linearAlgebraCourse: CourseModule = {
       duration: '26 min',
       objective: 'Find the natural axes of a transformation and understand PCA.',
       blocks: [
-        { type: 'paragraph', text: 'An eigenvector of matrix A is a direction that A only stretches (not rotates). The eigenvalue is the stretch factor. PCA finds the directions of maximum variance — those are eigenvectors of the covariance matrix.' },
-        { type: 'formula', expression: 'Av = λv', note: 'v is the eigenvector, λ is the eigenvalue.' },
-        { type: 'playground', code: 'import numpy as np\nA = np.array([[4, 2], [1, 3]])\neigenvalues, eigenvectors = np.linalg.eig(A)\nprint(f"Eigenvalues: {eigenvalues}")\nprint(f"Eigenvectors:\n{eigenvectors}")', expectedOutput: 'Eigenvalues: [5. 2.]\nEigenvectors:\n[[ 0.89442719 -0.70710678]\n [ 0.4472136   0.70710678]]' },
-        { type: 'bullets', items: [
-          'Large eigenvalues = directions of high variance = important features.',
-          'PCA keeps the top-k eigenvectors to reduce dimensionality.',
-          'Symmetric matrices always have real eigenvalues.',
-          'Used in: Google PageRank, face recognition, recommender systems.',
-        ] },
+        { type: 'heading', text: 'The Core of a Matrix' },
+        {
+          type: 'paragraph',
+          text: 'When you multiply a vector by a matrix, the vector usually changes direction. However, for a given matrix, there are a few special vectors that do NOT change direction — they only stretch or shrink. These are called Eigenvectors.',
+        },
+        {
+          type: 'formula',
+          expression: 'A \\vec{v} = \\lambda \\vec{v}',
+          note: 'A is the matrix, v is the eigenvector, λ (lambda) is the eigenvalue (stretch factor).',
+        },
+        {
+          type: 'analogy',
+          text: 'Imagine stretching a piece of rubber sheet in one direction. The line drawn exactly along the direction of the stretch doesn\'t rotate, it just gets longer. That line is an Eigenvector, and how much it stretched is the Eigenvalue.',
+        },
+        {
+          type: 'playground',
+          code: 'import numpy as np\nA = np.array([[4, 2], [1, 3]])\neigenvalues, eigenvectors = np.linalg.eig(A)\n\nprint(f"Eigenvalues (stretch factors): {eigenvalues}")\nprint(f"Eigenvectors (directions):\\n{eigenvectors}")',
+          expectedOutput: 'Eigenvalues (stretch factors): [5. 2.]\nEigenvectors (directions):\n[[ 0.89442719 -0.70710678]\n [ 0.4472136   0.70710678]]',
+        },
+        {
+          type: 'callout',
+          variant: 'info',
+          title: 'Principal Component Analysis (PCA)',
+          body: 'PCA uses eigenvectors to reduce the dimensions of massive datasets. By finding the eigenvectors with the largest eigenvalues, we find the "Principal Components" containing the most important variance in the data.',
+        },
       ],
     },
     {
       id: 'la-svd',
-      title: 'SVD and Dimensionality Reduction',
+      title: 'Singular Value Decomposition',
       duration: '22 min',
       objective: 'Decompose any matrix and understand how SVD powers recommendations and compression.',
       blocks: [
-        { type: 'paragraph', text: 'Singular Value Decomposition breaks any matrix into three parts: A = UΣVᵀ. This is the workhorse behind image compression, latent semantic analysis, and recommender systems.' },
-        { type: 'formula', expression: 'A = U × Σ × Vᵀ', note: 'U and V are orthogonal matrices, Σ contains singular values (importance).' },
-        { type: 'playground', code: 'import numpy as np\nA = np.array([[1, 2], [3, 4], [5, 6]])\nU, S, Vt = np.linalg.svd(A, full_matrices=False)\nprint(f"Singular values: {S}")\nreconstructed = U @ np.diag(S) @ Vt\nprint(f"Reconstructed:\n{reconstructed}")', expectedOutput: 'Singular values: [9.52551809 0.51430058]\nReconstructed:\n[[1. 2.]\n [3. 4.]\n [5. 6.]]' },
-        { type: 'bullets', items: [
-          'Keeping only the top-k singular values gives a compressed approximation.',
-          'Truncated SVD is used for topic modeling in NLP.',
-          'SVD is more general than eigendecomposition — works on any matrix shape.',
-          'L2 regularization connects to singular values through the nuclear norm.',
-        ] },
+        { type: 'heading', text: 'The Ultimate Matrix Factorization' },
+        {
+          type: 'paragraph',
+          text: 'Eigendecomposition only works on square matrices. SVD (Singular Value Decomposition) is much more powerful because it works on ANY matrix of any shape. It breaks a matrix down into three simpler matrices.',
+        },
+        {
+          type: 'formula',
+          expression: 'A = U \\cdot \\Sigma \\cdot V^T',
+          note: 'U and V are rotations, Sigma contains the singular values (importance).',
+        },
+        {
+          type: 'table',
+          headers: ['Component', 'Meaning', 'Geometery'],
+          rows: [
+            ['U', 'Left Singular Vectors', 'First Rotation'],
+            ['Σ (Sigma)', 'Singular Values', 'Stretching / Scaling'],
+            ['V^T', 'Right Singular Vectors', 'Second Rotation'],
+          ],
+        },
+        {
+          type: 'playground',
+          code: 'import numpy as np\n\nA = np.array([[1, 2], \n              [3, 4], \n              [5, 6]])\n\n# Perform SVD\nU, S, Vt = np.linalg.svd(A, full_matrices=False)\nprint(f"Singular values (importance): {np.round(S, 2)}")\n\n# Reconstruct original matrix\nreconstructed = U @ np.diag(S) @ Vt\nprint(f"\\nReconstructed Matrix:\\n{np.round(reconstructed, 1)}")',
+          expectedOutput: 'Singular values (importance): [9.53 0.51]\n\nReconstructed Matrix:\n[[1. 2.]\n [3. 4.]\n [5. 6.]]',
+        },
+        {
+          type: 'callout',
+          variant: 'tip',
+          title: 'Data Compression',
+          body: 'In SVD, if you throw away the smallest singular values in Σ and their corresponding vectors, you compress the data heavily while retaining almost all the important information. This is exactly how Netflix built its first recommendation engine!',
+        },
       ],
     },
   ],

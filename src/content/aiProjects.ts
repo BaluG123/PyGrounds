@@ -31,15 +31,35 @@ export const aiProjectsCourse: CourseModule = {
       duration: '22 min',
       objective: 'Build a complete workflow from raw data to trained model.',
       blocks: [
-        { type: 'paragraph', text: 'A real ML project is not just model.fit(). It involves data collection, cleaning, feature engineering, model selection, training, evaluation, and deployment. Each stage has pitfalls.' },
-        { type: 'formula', expression: 'Raw Data → Clean → Features → Split → Train → Evaluate → Deploy', note: 'The standard ML pipeline. Most time is spent in the first three steps.' },
-        { type: 'playground', code: 'steps = [\n    "1. Collect data",\n    "2. Explore & clean",\n    "3. Engineer features",\n    "4. Train/test split",\n    "5. Train model",\n    "6. Evaluate metrics",\n    "7. Tune hyperparameters",\n    "8. Deploy & monitor"\n]\nfor step in steps:\n    print(step)', expectedOutput: '1. Collect data\n2. Explore & clean\n3. Engineer features\n4. Train/test split\n5. Train model\n6. Evaluate metrics\n7. Tune hyperparameters\n8. Deploy & monitor' },
-        { type: 'bullets', items: [
-          '80% of time goes into data preparation, not modeling.',
-          'Feature engineering often matters more than algorithm choice.',
-          'Always establish a baseline (e.g., majority class predictor) before building complex models.',
-          'Version your data and your models.',
-        ] },
+        { type: 'heading', text: 'Beyond model.fit()' },
+        {
+          type: 'paragraph',
+          text: 'A real ML project involves much more than just training a model. It is a continuous loop of data collection, cleaning, feature engineering, model selection, training, evaluation, and deployment.',
+        },
+        {
+          type: 'stepByStep',
+          title: 'The Standard ML Pipeline',
+          steps: [
+            { title: 'Collect & Clean', description: 'Gather raw data, handle missing values, and remove duplicates.' },
+            { title: 'Feature Engineering', description: 'Create new meaningful columns. This often yields higher performance gains than switching algorithms.' },
+            { title: 'Split Data', description: 'Separate data into Train, Validation, and Test sets to prevent data leakage.' },
+            { title: 'Train & Tune', description: 'Train multiple baseline models, select the best, and tune hyperparameters.' },
+            { title: 'Deploy', description: 'Serve the model via an API and monitor its real-world performance.' },
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Establishing a Baseline' },
+        {
+          type: 'playground',
+          code: 'steps = [\n    "1. Collect data",\n    "2. Explore & clean",\n    "3. Engineer features",\n    "4. Train/test split",\n    "5. Train baseline",\n    "6. Evaluate metrics",\n    "7. Tune hyperparameters",\n    "8. Deploy & monitor"\n]\nfor step in steps:\n    print(step)',
+          expectedOutput: '1. Collect data\n2. Explore & clean\n3. Engineer features\n4. Train/test split\n5. Train baseline\n6. Evaluate metrics\n7. Tune hyperparameters\n8. Deploy & monitor',
+        },
+        {
+          type: 'callout',
+          variant: 'remember',
+          title: 'The 80/20 Rule of AI',
+          body: 'Data scientists spend 80% of their time finding, cleaning, and organizing data, and only 20% of their time actually building and tuning models.',
+        },
       ],
     },
     {
@@ -48,16 +68,27 @@ export const aiProjectsCourse: CourseModule = {
       duration: '24 min',
       objective: 'Diagnose overfitting, underfitting, and choose the right model.',
       blocks: [
-        { type: 'paragraph', text: 'A model that memorizes the training data (overfitting) fails on new data. A model that is too simple (underfitting) fails on everything. The goal is the sweet spot in between.' },
-        { type: 'formula', expression: 'Overfitting: Train accuracy ≫ Test accuracy', note: 'The model has memorized noise in the training data.' },
-        { type: 'formula', expression: 'Underfitting: Both train and test accuracy are low', note: 'The model is too simple to capture the pattern.' },
-        { type: 'playground', code: 'train_acc = 0.99\ntest_acc = 0.65\ngap = train_acc - test_acc\nif gap > 0.15:\n    diagnosis = "Overfitting"\nelif train_acc < 0.70:\n    diagnosis = "Underfitting"\nelse:\n    diagnosis = "Good fit"\nprint(f"Train: {train_acc}, Test: {test_acc}")\nprint(f"Diagnosis: {diagnosis}")', expectedOutput: 'Train: 0.99, Test: 0.65\nDiagnosis: Overfitting' },
-        { type: 'bullets', items: [
-          'Fix overfitting: more data, regularization (L1/L2), dropout, simpler model.',
-          'Fix underfitting: more features, more complex model, train longer.',
-          'Learning curves (loss vs epochs) are the best diagnostic tool.',
-          'Compare multiple models: Logistic Regression vs Random Forest vs Neural Net.',
-        ] },
+        { type: 'heading', text: 'The Generalization Gap' },
+        {
+          type: 'paragraph',
+          text: 'A model that perfectly memorizes the training data (overfitting) fails completely when it sees new data. A model that is too simple (underfitting) fails on everything. The goal is to find the sweet spot in between.',
+        },
+        {
+          type: 'table',
+          headers: ['Diagnosis', 'Train Score', 'Test Score', 'The Fix'],
+          rows: [
+            ['Underfitting', 'Low', 'Low', 'More complex model, more features'],
+            ['Overfitting', 'High', 'Low', 'More data, simpler model, regularization'],
+            ['Good Fit', 'High', 'High', 'Deploy to production!'],
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Automated Diagnosis' },
+        {
+          type: 'playground',
+          code: 'train_acc = 0.99\ntest_acc = 0.65\n\ngap = train_acc - test_acc\n\nif gap > 0.15:\n    diagnosis = "Overfitting (Memorizing noise)"\nelif train_acc < 0.70:\n    diagnosis = "Underfitting (Too simple)"\nelse:\n    diagnosis = "Good fit"\n\nprint(f"Train: {train_acc}, Test: {test_acc}")\nprint(f"Diagnosis: {diagnosis}")',
+          expectedOutput: 'Train: 0.99, Test: 0.65\nDiagnosis: Overfitting (Memorizing noise)',
+        },
       ],
     },
     {
@@ -66,16 +97,31 @@ export const aiProjectsCourse: CourseModule = {
       duration: '20 min',
       objective: 'Build AI systems that are fair, transparent, and accountable.',
       blocks: [
-        { type: 'paragraph', text: 'AI models can amplify biases present in training data. A hiring model trained on biased historical data will discriminate. Responsible AI requires awareness, testing, and mitigation.' },
-        { type: 'bullets', items: [
-          'Bias: If training data underrepresents a group, the model will perform poorly on that group.',
-          'Fairness: Equal accuracy across demographic groups.',
-          'Transparency: Can you explain why the model made a prediction?',
-          'Privacy: Anonymize personal data. Follow GDPR and similar regulations.',
-          'Accountability: Who is responsible when the model makes a harmful mistake?',
-        ] },
-        { type: 'paragraph', text: 'Practical steps: audit training data for imbalances, test model performance across subgroups, provide explanations for predictions, and establish human oversight for high-stakes decisions.' },
-        { type: 'playground', code: 'checks = {\n    "Data audit": True,\n    "Bias testing": True,\n    "Explainability": False,\n    "Human oversight": True,\n    "Privacy review": True\n}\npassed = sum(checks.values())\ntotal = len(checks)\nprint(f"Responsible AI Checklist: {passed}/{total}")\nfor check, done in checks.items():\n    status = "✓" if done else "✗"\n    print(f"  {status} {check}")', expectedOutput: 'Responsible AI Checklist: 4/5\n  ✓ Data audit\n  ✓ Bias testing\n  ✗ Explainability\n  ✓ Human oversight\n  ✓ Privacy review' },
+        { type: 'heading', text: 'Ethical Artificial Intelligence' },
+        {
+          type: 'paragraph',
+          text: 'AI models can rapidly amplify biases present in historical data. A resume-screening model trained on historically biased hiring data will actively discriminate. Responsible AI requires rigorous awareness, testing, and mitigation.',
+        },
+        {
+          type: 'analogy',
+          text: 'Imagine training a dog to fetch a newspaper by exclusively practicing in the living room. If you move to the backyard, the dog gets confused. AI acts identically—if it only trains on one specific demographic (the living room), it fails completely when deployed to others (the backyard).',
+        },
+        {
+          type: 'table',
+          headers: ['Pillar', 'Description', 'Mitigation'],
+          rows: [
+            ['Fairness', 'Equal accuracy across groups', 'Audit data representation'],
+            ['Transparency', 'Understanding model logic', 'Use SHAP or simple models'],
+            ['Privacy', 'Protecting user data', 'Anonymization, GDPR rules'],
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'The Deployment Checklist' },
+        {
+          type: 'playground',
+          code: 'checks = {\n    "Data demographic audit": True,\n    "Bias testing on subgroups": True,\n    "Explainability tools active": False,\n    "Human oversight protocol": True,\n    "Privacy & GDPR review": True\n}\n\npassed = sum(checks.values())\ntotal = len(checks)\nprint(f"Responsible AI Checklist: {passed}/{total}\\n")\n\nfor check, done in checks.items():\n    status = "✓" if done else "✗"\n    print(f"[{status}] {check}")',
+          expectedOutput: 'Responsible AI Checklist: 4/5\n\n[✓] Data demographic audit\n[✓] Bias testing on subgroups\n[✗] Explainability tools active\n[✓] Human oversight protocol\n[✓] Privacy & GDPR review',
+        },
       ],
     },
   ],

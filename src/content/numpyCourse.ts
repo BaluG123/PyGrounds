@@ -31,15 +31,60 @@ export const numpyCourse: CourseModule = {
       duration: '18 min',
       objective: 'Read and reshape numerical data without losing track of axes.',
       blocks: [
-        { type: 'paragraph', text: 'AI systems learn from numbers. NumPy gives you one fast object, ndarray, for storing those numbers with a shape and dtype.' },
-        { type: 'formula', expression: 'shape = (rows, columns), axis 0 = down, axis 1 = across', note: 'Most beginner bugs come from mixing up axes.' },
-        { type: 'code', code: 'import numpy as np\nx = np.array([[1, 2, 3], [4, 5, 6]])\nprint(x.shape)\nprint(x.mean(axis=0))' },
-        { type: 'playground', code: 'import numpy as np\nx = np.arange(12).reshape(3, 4)\nprint(f"Shape: {x.shape}")\nprint(f"First row: {x[0]}")\nprint(f"Column 2: {x[:, 2]}")', expectedOutput: 'Shape: (3, 4)\nFirst row: [0 1 2 3]\nColumn 2: [ 2  6 10]' },
-        { type: 'bullets', items: [
-          'Use reshape only when the total element count stays the same.',
-          'Use dtype deliberately: float32 for many ML tensors, int64 for ids.',
-          'Use axis arguments until they feel automatic.',
-        ] },
+        { type: 'heading', text: 'Why NumPy? The AI Fuel' },
+        {
+          type: 'paragraph',
+          text: 'At its core, AI operates on millions of numbers. Pure Python lists are slow and memory-heavy because they store pointers to objects scattered across memory. NumPy solves this by introducing the `ndarray` (N-dimensional array): a continuous, highly efficient block of uniform numbers.',
+        },
+        {
+          type: 'analogy',
+          text: 'A normal Python list is like a shopping cart full of different-sized, individually wrapped boxes. A NumPy array is like a shipping crate containing exactly identical stacked soda cans. You can count, move, and process the soda cans exponentially faster because of their uniform layout.',
+        },
+        {
+          type: 'diagram',
+          title: 'Understanding Array Dimensions (Axes)',
+          boxes: [
+            { id: 'a0', x: 20, y: 30, width: 80, height: 45, label: 'Axis 0 (Rows)', color: '#1D7A57' },
+            { id: 'a1', x: 120, y: 30, width: 90, height: 45, label: 'Axis 1 (Columns)', color: '#2B6CB0' },
+            { id: 'a2', x: 230, y: 30, width: 70, height: 45, label: 'Axis 2 (Depth)', color: '#E44D6E' },
+          ],
+          arrows: [
+            { from: 'a0', to: 'a1', label: '1D -> 2D' },
+            { from: 'a1', to: 'a2', label: '2D -> 3D' },
+          ],
+          height: 120,
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Shapes and Reshaping' },
+        {
+          type: 'paragraph',
+          text: 'An array has a `shape` (a tuple of dimensions) and a `dtype` (the type of numbers inside). You can change an array\'s shape using `.reshape()`, provided the total number of elements remains identical.',
+        },
+        {
+          type: 'formula',
+          expression: '\\text{Elements} = \\prod d_i = d_0 \\times d_1 \\times \\dots \\times d_n',
+          note: 'Total elements must remain constant when reshaping.',
+        },
+        {
+          type: 'playground',
+          code: 'import numpy as np\n\nx = np.arange(12)\nreshaped = x.reshape(3, 4)\n\nprint(f"Original shape: {x.shape}")\nprint(f"Reshaped matrix:\\n{reshaped}")',
+          expectedOutput: 'Original shape: (12,)\nReshaped matrix:\n[[ 0  1  2  3]\n [ 4  5  6  7]\n [ 8  9 10 11]]',
+        },
+        {
+          type: 'callout',
+          variant: 'remember',
+          title: 'Dtype Matters in ML',
+          body: 'Using the correct numeric type is critical. In Deep Learning, tensors usually use `float32` (single-precision float) to balance speed and accuracy, whereas indices use `int64`.',
+        },
+        {
+          type: 'stepByStep',
+          title: 'How NumPy Accesses Memory',
+          steps: [
+            { title: 'Allocate Contiguous Block', description: 'NumPy reserves a continuous space in computer memory for your numbers.' },
+            { title: 'Define Shape & Strides', description: 'Sets indices rules: how many bytes to skip to move to the next row or column.' },
+            { title: 'Zero-Copy Views', description: 'Slicing or reshaping returns a "view" referencing the same block without copying data.' },
+          ],
+        },
       ],
     },
     {
@@ -48,15 +93,46 @@ export const numpyCourse: CourseModule = {
       duration: '22 min',
       objective: 'Replace loops with operations across full arrays.',
       blocks: [
-        { type: 'paragraph', text: 'Broadcasting lets NumPy stretch smaller arrays over larger arrays when dimensions are compatible.' },
-        { type: 'formula', expression: '(m, n) + (n,) -> (m, n)', note: 'Compare shapes from the right side.' },
-        { type: 'code', code: 'import numpy as np\nscores = np.array([[70, 80, 90], [65, 75, 85]])\ncurve = np.array([5, 3, 2])\nprint(scores + curve)' },
-        { type: 'playground', code: 'import numpy as np\nmatrix = np.ones((3, 3))\nrow = np.array([10, 20, 30])\nprint(matrix * row)', expectedOutput: '[[10. 20. 30.]\n [10. 20. 30.]\n [10. 20. 30.]]' },
-        { type: 'bullets', items: [
-          'Vectorized code is shorter and usually much faster.',
-          'Masks create readable filters: x[x > 0].',
-          'Keep dimensions with keepdims=True when a later broadcast needs them.',
-        ] },
+        { type: 'heading', text: 'Vectorization: Speed Without Loops' },
+        {
+          type: 'paragraph',
+          text: 'In pure Python, applying an operation to an array requires a slow for-loop. NumPy uses **vectorization**: pushing loops down into compiled C code, executing element-wise operations almost instantly.',
+        },
+        {
+          type: 'analogy',
+          text: 'Applying a loop in Python is like a librarian scanning books one-by-one by hand. Vectorization is like a scanner checking an entire rack of books simultaneously with a laser bar.',
+        },
+        {
+          type: 'table',
+          headers: ['Operation Type', 'Example', 'Execution Speed'],
+          rows: [
+            ['Python Loop', 'for x in list: x + 1', 'Slow (Interpreted)'],
+            ['Vectorized NumPy', 'array + 1', 'Extremely Fast (Compiled C)'],
+            ['Broadcasting', 'matrix + row_vector', 'Optimized Memory Stretches'],
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'The Rules of Broadcasting' },
+        {
+          type: 'paragraph',
+          text: 'Broadcasting allows you to perform arithmetic on arrays of different shapes. NumPy matches shapes from right to left. Two dimensions are compatible if they are equal, or if one of them is 1.',
+        },
+        {
+          type: 'formula',
+          expression: '(M, N) + (N,) \\longrightarrow (M, N)',
+          note: 'Stretches the 1D vector across all M rows.',
+        },
+        {
+          type: 'playground',
+          code: 'import numpy as np\n\nmatrix = np.ones((3, 3))\nrow = np.array([10, 20, 30])\n\n# Stretches the row vector across all 3 rows of the matrix\nresult = matrix * row\nprint(result)',
+          expectedOutput: '[[10. 20. 30.]\n [10. 20. 30.]\n [10. 20. 30.]]',
+        },
+        {
+          type: 'callout',
+          variant: 'tip',
+          title: 'Keeping Dimensions',
+          body: 'When aggregating arrays (like calculating means), use `keepdims=True` to retain dimensions. This ensures the output remains compatible for subsequent broadcasting operations.',
+        },
       ],
     },
     {
@@ -65,42 +141,36 @@ export const numpyCourse: CourseModule = {
       duration: '26 min',
       objective: 'Connect arrays to model weights, dot products, and distances.',
       blocks: [
-        { type: 'paragraph', text: 'Neural networks are built from matrix multiplication, activation functions, and optimization. NumPy is the clearest place to learn those mechanics.' },
-        { type: 'formula', expression: 'prediction = XW + b' },
-        { type: 'code', code: 'import numpy as np\nX = np.array([[1, 2], [3, 4]])\nW = np.array([0.5, -1.0])\nb = 2\nprint(X @ W + b)' },
-        { type: 'playground', code: 'import numpy as np\nv = np.array([3, 4])\nnorm = np.linalg.norm(v)\nunit = v / norm\nprint(f"Norm: {norm}")\nprint(f"Unit vector: {unit}")', expectedOutput: 'Norm: 5.0\nUnit vector: [0.6 0.8]' },
-      ],
-    },
-    {
-      id: 'numpy-random',
-      title: 'Random Sampling and Seeds',
-      duration: '18 min',
-      objective: 'Generate reproducible random data for experiments and simulations.',
-      blocks: [
-        { type: 'paragraph', text: 'ML relies heavily on randomness: weight initialization, data shuffling, dropout. Reproducible experiments require setting a random seed.' },
-        { type: 'playground', code: 'import numpy as np\nnp.random.seed(42)\ndata = np.random.randn(5)\nprint(f"Random data: {np.round(data, 2)}")\nprint(f"Mean: {data.mean():.2f}")\nprint(f"Std: {data.std():.2f}")', expectedOutput: 'Random data: [ 0.50 -0.14  0.65  1.52 -0.23]\nMean: 0.46\nStd: 0.62' },
-        { type: 'bullets', items: [
-          'np.random.seed(n) makes results reproducible.',
-          'np.random.randn() samples from standard normal (mean=0, std=1).',
-          'np.random.uniform(low, high, size) for uniform distributions.',
-          'np.random.choice(array, size) for random sampling from data.',
-        ] },
-      ],
-    },
-    {
-      id: 'numpy-saving',
-      title: 'Saving and Loading Arrays',
-      duration: '14 min',
-      objective: 'Persist NumPy arrays to disk for data pipelines.',
-      blocks: [
-        { type: 'paragraph', text: 'After preprocessing data, save arrays to .npy or .npz files to avoid repeating expensive computations.' },
-        { type: 'code', code: 'import numpy as np\ndata = np.array([1, 2, 3, 4, 5])\nnp.save("my_data.npy", data)\nloaded = np.load("my_data.npy")\nprint(loaded)' },
-        { type: 'bullets', items: [
-          '.npy saves a single array. .npz saves multiple arrays.',
-          'np.savez("file.npz", x=arr1, y=arr2) for multiple arrays.',
-          'Binary format is faster than CSV for large numerical data.',
-          'Use np.loadtxt/np.savetxt for human-readable text files.',
-        ] },
+        { type: 'heading', text: 'Matrix Math: The Math of Neural Networks' },
+        {
+          type: 'paragraph',
+          text: 'Every neural network layer is built upon linear algebra. The forward pass is primarily dot products (vector projections) and matrix multiplications. NumPy\'s `@` operator handles this natively.',
+        },
+        {
+          type: 'formula',
+          expression: '\\vec{a} \\cdot \\vec{b} = \\sum_{i=1}^n a_i b_i',
+          note: 'Dot product multiplies matching elements and sums them.',
+        },
+        {
+          type: 'playground',
+          code: 'import numpy as np\n\nX = np.array([[1, 2], [3, 4]])\nW = np.array([0.5, -1.0])\nbias = 2.0\n\n# Dot product plus bias (Forward pass of a layer)\nprediction = X @ W + bias\nprint(f"Predictions: {prediction}")',
+          expectedOutput: 'Predictions: [ 0.5 -0.5]',
+        },
+        {
+          type: 'callout',
+          variant: 'remember',
+          title: 'Dot Product Symbol',
+          body: 'Use the `@` operator or `np.dot()` for matrix multiplication. Do not use the `*` operator, which performs element-wise multiplication!',
+        },
+        {
+          type: 'stepByStep',
+          title: 'Calculating Vector Norms',
+          steps: [
+            { title: 'Compute Squares', description: 'Square every element in the vector.' },
+            { title: 'Aggregate Sum', description: 'Add all squared values together.' },
+            { title: 'Square Root', description: 'Take the square root of the sum to find the geometric length (L2 norm).' },
+          ],
+        },
       ],
     },
   ],

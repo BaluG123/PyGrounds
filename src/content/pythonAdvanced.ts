@@ -31,27 +31,36 @@ export const pythonAdvancedCourse: CourseModule = {
       duration: '22 min',
       objective: 'Model real-world entities with classes, attributes, and methods.',
       blocks: [
+        { type: 'heading', text: 'Object-Oriented Programming (OOP)' },
         {
           type: 'paragraph',
-          text: 'A class is a blueprint. An object is a concrete instance of that blueprint. ML models, datasets, and training loops are all commonly organized as classes.',
+          text: 'As your Python projects grow from small scripts to massive ML frameworks, you need a way to organize related variables and functions. A `class` serves as a blueprint for creating highly organized, reusable objects.',
         },
         {
-          type: 'code',
-          code: 'class Neuron:\n    def __init__(self, weight, bias):\n        self.weight = weight\n        self.bias = bias\n\n    def forward(self, x):\n        return self.weight * x + self.bias\n\nn = Neuron(0.5, 2)\nprint(n.forward(10))',
+          type: 'analogy',
+          text: 'Think of a class as the architectural blueprint of a house. The blueprint defines where the rooms and doors go. An object (instance) is the actual physical house built from that blueprint. You can build many identical houses (objects) from one single blueprint (class).',
         },
+        {
+          type: 'stepByStep',
+          title: 'Creating and Using a Class',
+          steps: [
+            { title: 'Define the Class', description: 'Use the `class` keyword followed by a capitalized name.' },
+            { title: 'Write the Constructor', description: 'The `__init__` method runs automatically to set up the object\'s initial state.' },
+            { title: 'Create Instances', description: 'Call the class name like a function to create a unique, independent object in memory.' },
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Building a Neural Class' },
         {
           type: 'playground',
-          code: 'class Dog:\n    def __init__(self, name):\n        self.name = name\n    def bark(self):\n        return f"{self.name} says Woof!"\n\ndog = Dog("Rex")\nprint(dog.bark())',
-          expectedOutput: 'Rex says Woof!',
+          code: 'class Neuron:\n    def __init__(self, weight, bias):\n        # self refers to the specific instance\n        self.weight = weight\n        self.bias = bias\n\n    def forward(self, x):\n        return self.weight * x + self.bias\n\n# Creating two distinct neurons\nn1 = Neuron(0.5, 2)\nn2 = Neuron(1.5, -1)\n\nprint(f"Neuron 1 output: {n1.forward(10)}")\nprint(f"Neuron 2 output: {n2.forward(10)}")',
+          expectedOutput: 'Neuron 1 output: 7.0\nNeuron 2 output: 14.0',
         },
         {
-          type: 'bullets',
-          items: [
-            '__init__ runs when you create an object — it sets up initial state.',
-            'self refers to the current instance.',
-            'Methods are functions that belong to a class.',
-            'Inheritance: class Child(Parent) inherits all parent methods.',
-          ],
+          type: 'callout',
+          variant: 'remember',
+          title: 'The Magic of `self`',
+          body: 'When defining methods inside a class, the first parameter must always be `self`. Python automatically passes the specific object instance into `self` so the method knows whose data it is modifying.',
         },
       ],
     },
@@ -61,31 +70,44 @@ export const pythonAdvancedCourse: CourseModule = {
       duration: '24 min',
       objective: 'Wrap functions with decorators and produce values lazily with generators.',
       blocks: [
+        { type: 'heading', text: 'Decorators: Function Wrappers' },
         {
           type: 'paragraph',
-          text: 'Decorators modify function behavior without changing the function itself. Generators produce values one at a time, saving memory when working with large datasets.',
+          text: 'A decorator allows you to modify or enhance the behavior of a function without permanently changing its source code. It is essentially a function that takes another function as an argument and returns an updated function.',
         },
         {
-          type: 'code',
-          code: 'def timer(func):\n    def wrapper(*args):\n        print(f"Calling {func.__name__}")\n        result = func(*args)\n        print("Done")\n        return result\n    return wrapper\n\n@timer\ndef add(a, b):\n    return a + b\n\nprint(add(3, 4))',
-        },
-        {
-          type: 'code',
-          code: 'def fibonacci(n):\n    a, b = 0, 1\n    for _ in range(n):\n        yield a\n        a, b = b, a + b\n\nprint(list(fibonacci(8)))',
+          type: 'analogy',
+          text: 'Imagine a decorator as a gift wrapping service. You hand them your plain box (the original function), and they hand it back covered in beautiful paper with a bow (the wrapped function), but the contents inside remain exactly the same.',
         },
         {
           type: 'playground',
-          code: 'def squares_gen(n):\n    for i in range(n):\n        yield i ** 2\n\nprint(list(squares_gen(6)))',
-          expectedOutput: '[0, 1, 4, 9, 16, 25]',
+          code: 'def timer(func):\n    def wrapper(*args):\n        print(f"Starting {func.__name__}...")\n        result = func(*args)\n        print("Finished!")\n        return result\n    return wrapper\n\n@timer\ndef add(a, b):\n    return a + b\n\nprint(f"Result: {add(3, 4)}")',
+          expectedOutput: 'Starting add...\nFinished!\nResult: 7',
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Generators: Lazy Sequences' },
+        {
+          type: 'paragraph',
+          text: 'When training AI models on billions of images, you cannot load the entire dataset into memory at once. Generators solve this by using the `yield` keyword to produce one item at a time, pausing execution until the next item is requested.',
         },
         {
-          type: 'bullets',
-          items: [
-            '@decorator is syntactic sugar for func = decorator(func).',
-            'yield pauses a function and remembers its state.',
-            'Generators are memory-efficient for large sequences.',
-            'Common in ML: data loaders that yield batches.',
+          type: 'table',
+          headers: ['Concept', 'Keyword', 'Memory Usage', 'Best For'],
+          rows: [
+            ['Standard Function', 'return', 'High (Returns all data)', 'Small lists'],
+            ['Generator', 'yield', 'Extremely Low', 'Massive datasets (streaming)'],
           ],
+        },
+        {
+          type: 'playground',
+          code: 'def fibonacci(limit):\n    a, b = 0, 1\n    for _ in range(limit):\n        yield a\n        a, b = b, a + b\n\n# The generator yields one value per iteration\nfor num in fibonacci(5):\n    print(num)',
+          expectedOutput: '0\n1\n1\n2\n3',
+        },
+        {
+          type: 'callout',
+          variant: 'tip',
+          title: 'Yield Pauses State',
+          body: 'Unlike `return` which instantly terminates a function, `yield` merely pauses it. When the generator is called again, it resumes executing immediately after the `yield` statement with all variables completely intact.',
         },
       ],
     },
@@ -95,58 +117,35 @@ export const pythonAdvancedCourse: CourseModule = {
       duration: '18 min',
       objective: 'Write robust code that handles failures gracefully.',
       blocks: [
+        { type: 'heading', text: 'Guarding Against Crashes' },
         {
           type: 'paragraph',
-          text: 'Production AI systems must handle errors — bad data, missing files, network failures. Python\'s try/except lets you catch and recover from errors.',
+          text: 'Production software interacts with unpredictable environments (missing network connections, corrupt files, unexpected user inputs). Instead of allowing the program to crash, Python allows you to "catch" these errors gracefully using `try / except` blocks.',
         },
         {
-          type: 'code',
-          code: 'def safe_divide(a, b):\n    try:\n        return a / b\n    except ZeroDivisionError:\n        return "Cannot divide by zero"\n    finally:\n        print("Division attempted")\n\nprint(safe_divide(10, 0))',
+          type: 'diagram',
+          title: 'Try/Except Flow',
+          boxes: [
+            { id: 'try', x: 70, y: 10, width: 90, height: 40, label: 'Try Block', color: '#2B6CB0' },
+            { id: 'pass', x: 20, y: 80, width: 70, height: 40, label: 'Success', color: '#1D7A57' },
+            { id: 'fail', x: 140, y: 80, width: 70, height: 40, label: 'Exception', color: '#E44D6E' },
+          ],
+          arrows: [
+            { from: 'try', to: 'pass', label: 'Works' },
+            { from: 'try', to: 'fail', label: 'Crashes' },
+          ],
+          height: 140,
         },
         {
           type: 'playground',
-          code: 'values = [10, "bad", 30]\ntotal = 0\nfor v in values:\n    try:\n        total += int(v)\n    except ValueError:\n        print(f"Skipping: {v}")\nprint(f"Total: {total}")',
-          expectedOutput: 'Skipping: bad\nTotal: 40',
+          code: 'def safe_divide(a, b):\n    try:\n        return a / b\n    except ZeroDivisionError:\n        return "Cannot divide by zero!"\n    finally:\n        print("Cleanup: Operation attempted.")\n\nprint(safe_divide(10, 2))\nprint(safe_divide(10, 0))',
+          expectedOutput: 'Cleanup: Operation attempted.\n5.0\nCleanup: Operation attempted.\nCannot divide by zero!',
         },
         {
-          type: 'bullets',
-          items: [
-            'Catch specific exceptions, not bare except.',
-            'finally always runs — good for cleanup.',
-            'raise lets you create your own errors.',
-            'Custom exceptions: class MyError(Exception): pass.',
-          ],
-        },
-      ],
-    },
-    {
-      id: 'pya-modules',
-      title: 'Modules and Packages',
-      duration: '16 min',
-      objective: 'Organize code into reusable modules and understand imports.',
-      blocks: [
-        {
-          type: 'paragraph',
-          text: 'As projects grow, you split code into modules (files) and packages (folders). Every AI library you import — numpy, pandas, sklearn — is a package.',
-        },
-        {
-          type: 'code',
-          code: 'import math\nprint(math.sqrt(144))\nprint(math.pi)\n\nfrom random import randint\nprint(randint(1, 100))',
-        },
-        {
-          type: 'formula',
-          expression: 'import module | from module import func | from module import *',
-          note: 'Avoid import * in real projects — it pollutes the namespace.',
-        },
-        {
-          type: 'bullets',
-          items: [
-            'A module is a .py file. A package is a folder with __init__.py.',
-            'Use if __name__ == "__main__": to guard script execution.',
-            'pip install package_name adds third-party packages.',
-            'Virtual environments isolate project dependencies.',
-            'Type hints: def greet(name: str) -> str: improve documentation.',
-          ],
+          type: 'callout',
+          variant: 'warning',
+          title: 'Avoid Bare Exceptions',
+          body: 'Never use a bare `except:` without specifying the error type. Doing so will catch system exit commands and keyboard interrupts, making your program impossible to stop. Always specify the error (e.g. `except ValueError:`).',
         },
       ],
     },
