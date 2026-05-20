@@ -1,0 +1,59 @@
+import type { ComponentType } from 'react';
+import type { LucideProps } from 'lucide-react-native';
+
+export type LibraryId = 'numpy' | 'pandas' | 'matplotlib';
+
+export type LessonBlock =
+  | { type: 'paragraph'; text: string }
+  | { type: 'formula'; expression: string; note?: string }
+  | { type: 'code'; code: string }
+  | { type: 'bullets'; items: string[] };
+
+export type QuizQuestion = {
+  id: string;
+  prompt: string;
+  options: string[];
+  answerIndex: number;
+  explanation: string;
+};
+
+export type PracticeQuestion = {
+  id: string;
+  title: string;
+  prompt: string;
+  starterCode: string;
+  expectedOutput: string;
+  hint: string;
+};
+
+export type Lesson = {
+  id: string;
+  title: string;
+  duration: string;
+  objective: string;
+  blocks: LessonBlock[];
+};
+
+export type CourseModule = {
+  id: LibraryId;
+  title: string;
+  subtitle: string;
+  color: string;
+  accent: string;
+  Icon: ComponentType<LucideProps>;
+  history: {
+    founder: string;
+    released: string;
+    summary: string;
+  };
+  concepts: string[];
+  lessons: Lesson[];
+  quiz: QuizQuestion[];
+  practice: PracticeQuestion[];
+};
+
+export type ProgressState = {
+  completedLessons: Record<string, boolean>;
+  quizScores: Record<string, number>;
+  practiceRuns: Record<string, number>;
+};
