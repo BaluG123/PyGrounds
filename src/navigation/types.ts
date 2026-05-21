@@ -13,6 +13,7 @@ export type RootDrawerParamList = {
   'Deep Learning': undefined;
   'AI Projects': undefined;
   Roadmap: undefined;
+  'Problem Solving': undefined;
   Playground: { starterCode?: string; practiceId?: string } | undefined;
   Account: undefined;
   'Refresh Mind': undefined;
@@ -30,4 +31,5 @@ export type CourseStackParamList = {
   Lesson: { courseId: LibraryId; lessonId: string };
   Quiz: { courseId: LibraryId };
   Practice: { courseId: LibraryId };
+  Notes: { courseId: LibraryId };
 };

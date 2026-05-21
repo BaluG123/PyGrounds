@@ -26,6 +26,15 @@ npx tsc --noEmit
 npm test -- --runInBand
 ```
 
+## Release Docs
+
+- `RELEASE_CHECKLIST.md` - version 1 readiness checklist.
+- `PLAYSTORE_DEPLOYMENT.md` - Android Play Store deployment steps.
+- `STORE_LISTING.md` - Play Store listing copy and screenshot plan.
+- `PRIVACY_AND_DATA_SAFETY.md` - privacy policy and Play Console data safety notes.
+- `PDF_CONTENT_GUIDE.md` - checklist for adding PDF note URLs.
+- `PRODUCT_ROADMAP.md` - post-launch product roadmap.
+
 ## Firebase Setup
 
 The app includes Firebase Authentication, Firestore progress syncing, Firebase Messaging, and Google sign-in code. To connect a real Firebase project:

@@ -13,7 +13,8 @@ type Props = DrawerScreenProps<RootDrawerParamList, 'Playground'>;
 const defaultCode = 'import numpy as np\nx = np.array([10, 20, 30])\nprint(x / x.max())';
 
 export function PlaygroundScreen({ route }: Props) {
-  const [code, setCode] = useState(route.params?.starterCode ?? defaultCode);
+  const currentStarter = route.params?.starterCode ?? defaultCode;
+  const [code, setCode] = useState(currentStarter);
   const [result, setResult] = useState<RunnerResult | null>(null);
   const { recordPracticeRun } = useProgress();
 
@@ -22,7 +23,7 @@ export function PlaygroundScreen({ route }: Props) {
       setCode(route.params.starterCode);
       setResult(null);
     }
-  }, [route.params?.starterCode]);
+  }, [route.params?.starterCode, route.params?.practiceId]);
 
   function run() {
     const next = runPythonLikeCode(code);
@@ -41,7 +42,10 @@ export function PlaygroundScreen({ route }: Props) {
 
       <TextInput
         value={code}
-        onChangeText={setCode}
+        onChangeText={nextCode => {
+          setCode(nextCode);
+          setResult(null);
+        }}
         multiline
         autoCapitalize="none"
         autoCorrect={false}
@@ -54,9 +58,15 @@ export function PlaygroundScreen({ route }: Props) {
           <Play color={colors.surface} size={19} />
           <Text style={styles.buttonText}>Run</Text>
         </Pressable>
-        <Pressable style={[styles.button, styles.reset]} onPress={() => setCode(defaultCode)}>
+        <Pressable
+          style={[styles.button, styles.reset]}
+          onPress={() => {
+            setCode(currentStarter);
+            setResult(null);
+          }}
+        >
           <RotateCcw color={colors.ink} size={19} />
-          <Text style={styles.resetText}>Reset</Text>
+          <Text style={styles.resetText}>Reset Lab</Text>
         </Pressable>
       </View>
 

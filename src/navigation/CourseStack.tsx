@@ -6,6 +6,7 @@ import { CourseHomeScreen } from '../screens/CourseHomeScreen';
 import { LessonScreen } from '../screens/LessonScreen';
 import { PracticeScreen } from '../screens/PracticeScreen';
 import { QuizScreen } from '../screens/QuizScreen';
+import { PDFViewerScreen } from '../screens/PDFViewerScreen';
 import { colors } from '../theme/theme';
 
 const Stack = createNativeStackNavigator<CourseStackParamList>();
@@ -28,6 +29,7 @@ export function CourseStack({ courseId }: { courseId: LibraryId }) {
       <Stack.Screen name="Lesson" component={LessonScreen} options={{ title: 'Lesson' }} />
       <Stack.Screen name="Practice" component={PracticeScreen} options={{ title: 'Practice' }} />
       <Stack.Screen name="Quiz" component={QuizScreen} options={{ title: 'Quiz' }} />
+      <Stack.Screen name="Notes" component={PDFViewerScreen} options={{ title: 'PDF Notes' }} />
     </Stack.Navigator>
   );
 }

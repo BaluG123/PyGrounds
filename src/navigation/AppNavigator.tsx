@@ -8,6 +8,7 @@ import {
   BarChart3,
   BookOpen,
   Brain,
+  Puzzle,
   Braces,
   Code2,
   Cpu,
@@ -26,6 +27,7 @@ import type { RootDrawerParamList } from './types';
 import { AccountScreen } from '../screens/AccountScreen';
 import { DashboardScreen } from '../screens/DashboardScreen';
 import { PlaygroundScreen } from '../screens/PlaygroundScreen';
+import { ProblemSolvingScreen } from '../screens/ProblemSolvingScreen';
 import { RoadmapScreen } from '../screens/RoadmapScreen';
 import { CourseStack } from './CourseStack';
 import { RefreshMindStack } from './RefreshMindStack';
@@ -72,6 +74,9 @@ function RoadmapIcon({ color, size }: { color: string; size: number }) {
 }
 function PlaygroundIcon({ color, size }: { color: string; size: number }) {
   return <TerminalSquare color={color} size={size} {...iconProps} />;
+}
+function ProblemSolvingIcon({ color, size }: { color: string; size: number }) {
+  return <Puzzle color={color} size={size} {...iconProps} />;
 }
 function AccountIcon({ color, size }: { color: string; size: number }) {
   return <User color={color} size={size} {...iconProps} />;
@@ -160,6 +165,7 @@ export function AppNavigator() {
         <Drawer.Screen name="Deep Learning" component={DeepLearningStack} options={{ drawerIcon: DeepLearningIcon }} />
         <Drawer.Screen name="AI Projects" component={AIProjectsStack} options={{ drawerIcon: AIProjectsIcon }} />
         <Drawer.Screen name="Roadmap" component={RoadmapScreen} options={{ drawerIcon: RoadmapIcon }} />
+        <Drawer.Screen name="Problem Solving" component={ProblemSolvingScreen} options={{ drawerIcon: ProblemSolvingIcon }} />
         <Drawer.Screen name="Playground" component={PlaygroundScreen} options={{ drawerIcon: PlaygroundIcon }} />
         <Drawer.Screen name="Refresh Mind" component={RefreshMindStack} options={{ drawerIcon: RefreshMindIcon }} />
         <Drawer.Screen name="Account" component={AccountScreen} options={{ drawerIcon: AccountIcon }} />
