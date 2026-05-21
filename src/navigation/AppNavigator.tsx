@@ -32,6 +32,7 @@ import { RoadmapScreen } from '../screens/RoadmapScreen';
 import { CourseStack } from './CourseStack';
 import { RefreshMindStack } from './RefreshMindStack';
 import { colors } from '../theme/theme';
+import { ensureFirebaseApp } from '../services/firebase';
 
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 const iconProps = { strokeWidth: 2.3 };
@@ -108,9 +109,21 @@ function DrawerHeader(props: any) {
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(getSafeUser());
 
   useEffect(() => {
-    if (firebase.apps.length) {
-      return auth().onAuthStateChanged(setUser);
-    }
+    let unsubscribe: (() => void) | undefined;
+    let active = true;
+
+    ensureFirebaseApp()
+      .then(() => {
+        if (active) {
+          unsubscribe = auth().onAuthStateChanged(setUser);
+        }
+      })
+      .catch(() => undefined);
+
+    return () => {
+      active = false;
+      unsubscribe?.();
+    };
   }, []);
 
   return (

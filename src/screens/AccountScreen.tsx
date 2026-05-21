@@ -3,7 +3,7 @@ import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import auth, { type FirebaseAuthTypes } from '@react-native-firebase/auth';
 import firebase from '@react-native-firebase/app';
 import { Bell, LogIn, LogOut, User } from 'lucide-react-native';
-import { requestLearningNotifications, signInWithGoogle } from '../services/firebase';
+import { ensureFirebaseApp, requestLearningNotifications, signInWithGoogle } from '../services/firebase';
 import { courses } from '../content/courses';
 import { useProgress } from '../services/ProgressContext';
 import { colors } from '../theme/theme';
@@ -21,9 +21,21 @@ export function AccountScreen() {
   const { progress } = useProgress();
 
   useEffect(() => {
-    if (firebase.apps.length) {
-      return auth().onAuthStateChanged(setUser);
-    }
+    let unsubscribe: (() => void) | undefined;
+    let active = true;
+
+    ensureFirebaseApp()
+      .then(() => {
+        if (active) {
+          unsubscribe = auth().onAuthStateChanged(setUser);
+        }
+      })
+      .catch(() => undefined);
+
+    return () => {
+      active = false;
+      unsubscribe?.();
+    };
   }, []);
 
   const totalLessons = courses.reduce((sum, c) => sum + c.lessons.length, 0);

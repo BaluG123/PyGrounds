@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Pressable, StyleSheet, Text, View, Animated, ScrollView } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Check, X, Flame, Timer, ArrowRight, Brain, RotateCcw } from 'lucide-react-native';
+import { Check, X, Flame, Timer, Brain, RotateCcw } from 'lucide-react-native';
 import { getQuestionsByCategory } from '../content/mindQuestions';
 import { CATEGORY_META } from '../types/mindQuiz';
-import type { CourseStackParamList } from '../navigation/types'; // We will add to this stack param list or drawer stack
 import { colors, shadow } from '../theme/theme';
 
 import type { RefreshMindStackParamList } from '../navigation/types';
@@ -18,11 +17,13 @@ export function MindQuizScreen({ route, navigation }: Props) {
   const [questions, setQuestions] = useState(() => getQuestionsByCategory(category, difficulty));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [answered, setAnswered] = useState(false);
+  const [correctOption, setCorrectOption] = useState<number | null>(null);
+  const [feedback, setFeedback] = useState<string | null>(null);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
+  const [isAdvancing, setIsAdvancing] = useState(false);
 
   // Timer
   const [timeLeft, setTimeLeft] = useState(category === 'speed' ? 15 : 30);
@@ -59,9 +60,10 @@ export function MindQuizScreen({ route, navigation }: Props) {
 
   const handleTimeOut = () => {
     setSelectedOption(-1); // Indication that no option was chosen in time
-    setAnswered(true);
+    setFeedback('Time up. Try the next one.');
     setStreak(0);
     triggerShake();
+    setTimeout(handleNext, 900);
   };
 
   const triggerShake = () => {
@@ -81,14 +83,16 @@ export function MindQuizScreen({ route, navigation }: Props) {
   };
 
   const handleAnswerSelect = (optionIndex: number) => {
-    if (answered) return;
+    if (isAdvancing) return;
 
-    if (timerRef.current) clearInterval(timerRef.current);
     setSelectedOption(optionIndex);
-    setAnswered(true);
 
     const isCorrect = optionIndex === currentQuestion.answerIndex;
     if (isCorrect) {
+      if (timerRef.current) clearInterval(timerRef.current);
+      setIsAdvancing(true);
+      setCorrectOption(optionIndex);
+      setFeedback('Correct');
       setScore((s) => s + 1);
       setStreak((st) => {
         const next = st + 1;
@@ -96,9 +100,15 @@ export function MindQuizScreen({ route, navigation }: Props) {
         return next;
       });
       triggerStreakPop();
+      setTimeout(handleNext, 450);
     } else {
+      setFeedback('Try again');
       setStreak(0);
       triggerShake();
+      setTimeout(() => {
+        setSelectedOption(null);
+        setFeedback(null);
+      }, 650);
     }
   };
 
@@ -111,7 +121,9 @@ export function MindQuizScreen({ route, navigation }: Props) {
       }).start(() => {
         setCurrentIndex((i) => i + 1);
         setSelectedOption(null);
-        setAnswered(false);
+        setCorrectOption(null);
+        setFeedback(null);
+        setIsAdvancing(false);
         fadeAnim.setValue(1);
       });
     } else {
@@ -123,11 +135,13 @@ export function MindQuizScreen({ route, navigation }: Props) {
     setQuestions(getQuestionsByCategory(category, difficulty));
     setCurrentIndex(0);
     setSelectedOption(null);
-    setAnswered(false);
+    setCorrectOption(null);
+    setFeedback(null);
     setScore(0);
     setStreak(0);
     setBestStreak(0);
     setQuizFinished(false);
+    setIsAdvancing(false);
   };
 
   if (quizFinished) {
@@ -204,6 +218,10 @@ export function MindQuizScreen({ route, navigation }: Props) {
         Question {currentIndex + 1} of {questions.length}
       </Text>
 
+      <View style={[styles.categoryPill, { backgroundColor: meta.accent }]}>
+        <Text style={[styles.categoryPillText, { color: meta.color }]}>{meta.title} · {difficulty.toUpperCase()}</Text>
+      </View>
+
       {/* Question Card */}
       <Animated.View
         style={[
@@ -221,33 +239,27 @@ export function MindQuizScreen({ route, navigation }: Props) {
       <View style={styles.optionsContainer}>
         {currentQuestion.options.map((option, index) => {
           const isSelected = selectedOption === index;
-          const isCorrect = currentQuestion.answerIndex === index;
-          const isWrongSelected = isSelected && !isCorrect;
+          const isCorrect = correctOption === index;
+          const isWrongSelected = isSelected && correctOption === null;
 
           let optionStyle: any = styles.optionBtn;
           let textStyle: any = styles.optionText;
           let icon = null;
 
-          if (answered) {
-            if (isCorrect) {
-              optionStyle = [styles.optionBtn, styles.correctOption];
-              textStyle = [styles.optionText, styles.correctText];
-              icon = <Check size={18} color={colors.green} />;
-            } else if (isWrongSelected) {
-              optionStyle = [styles.optionBtn, styles.wrongOption];
-              textStyle = [styles.optionText, styles.wrongText];
-              icon = <X size={18} color={colors.coral} />;
-            } else {
-              optionStyle = [styles.optionBtn, styles.dimmedOption];
-            }
-          } else if (isSelected) {
-            optionStyle = [styles.optionBtn, { borderColor: meta.color, borderWidth: 2 }];
+          if (isCorrect) {
+            optionStyle = [styles.optionBtn, styles.correctOption];
+            textStyle = [styles.optionText, styles.correctText];
+            icon = <Check size={20} color={colors.green} />;
+          } else if (isWrongSelected) {
+            optionStyle = [styles.optionBtn, styles.wrongOption];
+            textStyle = [styles.optionText, styles.wrongText];
+            icon = <X size={20} color={colors.coral} />;
           }
 
           return (
             <Pressable
               key={index}
-              disabled={answered}
+              disabled={isAdvancing}
               style={optionStyle}
               onPress={() => handleAnswerSelect(index)}
             >
@@ -258,22 +270,14 @@ export function MindQuizScreen({ route, navigation }: Props) {
         })}
       </View>
 
-      {/* Feedback Explanation Card */}
-      {answered && (
-        <View style={styles.explanationCard}>
-          <Text style={styles.explanationTitle}>
-            {selectedOption === currentQuestion.answerIndex ? '🎉 Correct!' : '💡 Keep Learning'}
+      {feedback ? (
+        <View style={[styles.feedbackCard, correctOption !== null ? styles.feedbackCorrect : styles.feedbackWrong]}>
+          <Text style={[styles.feedbackText, correctOption !== null ? styles.feedbackTextCorrect : styles.feedbackTextWrong]}>
+            {feedback}
           </Text>
-          <Text style={styles.explanationText}>{currentQuestion.explanation}</Text>
-
-          <Pressable style={[styles.nextBtn, { backgroundColor: meta.color }]} onPress={handleNext}>
-            <Text style={styles.nextBtnText}>
-              {currentIndex < questions.length - 1 ? 'Next Question' : 'View Results'}
-            </Text>
-            <ArrowRight size={18} color="#FFF" />
-          </Pressable>
+          {correctOption !== null ? <Text style={styles.feedbackHint}>{currentQuestion.explanation}</Text> : null}
         </View>
-      )}
+      ) : null}
     </ScrollView>
   );
 }
@@ -338,11 +342,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
     textAlign: 'right',
-    marginBottom: 16,
+    marginBottom: 10,
+  },
+  categoryPill: {
+    alignSelf: 'flex-start',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    marginBottom: 12,
+  },
+  categoryPillText: {
+    fontSize: 12,
+    fontWeight: '900',
   },
   questionCard: {
     backgroundColor: colors.surface,
-    borderRadius: 16,
+    borderRadius: 14,
     padding: 24,
     minHeight: 120,
     justifyContent: 'center',
@@ -359,23 +374,30 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   optionsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 10,
     marginBottom: 20,
   },
   optionBtn: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    width: '48.5%',
+    minHeight: 92,
+    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.surface,
     borderRadius: 12,
-    padding: 16,
+    padding: 14,
     borderWidth: 1,
     borderColor: colors.line,
+    ...shadow,
+    shadowOpacity: 0.04,
   },
   optionText: {
     color: colors.ink,
-    fontSize: 16,
-    fontWeight: '700',
+    fontSize: 19,
+    fontWeight: '900',
+    textAlign: 'center',
+    marginBottom: 6,
   },
   correctOption: {
     backgroundColor: colors.mint,
@@ -393,6 +415,34 @@ const styles = StyleSheet.create({
   },
   dimmedOption: {
     opacity: 0.5,
+  },
+  feedbackCard: {
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1,
+    marginTop: 4,
+  },
+  feedbackCorrect: {
+    backgroundColor: colors.mint,
+    borderColor: colors.green,
+  },
+  feedbackWrong: {
+    backgroundColor: '#FDEDEA',
+    borderColor: colors.coral,
+  },
+  feedbackText: {
+    fontSize: 16,
+    fontWeight: '900',
+    textAlign: 'center',
+  },
+  feedbackTextCorrect: { color: colors.green },
+  feedbackTextWrong: { color: colors.coral },
+  feedbackHint: {
+    color: colors.muted,
+    fontSize: 13,
+    lineHeight: 18,
+    textAlign: 'center',
+    marginTop: 6,
   },
   explanationCard: {
     backgroundColor: colors.surface,

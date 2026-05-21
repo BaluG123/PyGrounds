@@ -1,137 +1,181 @@
-import type { MindQuestion } from '../types/mindQuiz';
+import type { Difficulty, MindCategory, MindQuestion } from '../types/mindQuiz';
 
-function q(id: string, cat: MindQuestion['category'], diff: MindQuestion['difficulty'], question: string, options: [string, string, string, string], answerIndex: number, explanation: string): MindQuestion {
-  return { id, category: cat, difficulty: diff, question, options, answerIndex, explanation };
+function q(
+  id: string,
+  category: MindCategory,
+  difficulty: Difficulty,
+  question: string,
+  rawOptions: number[],
+  answer: number,
+  explanation: string,
+): MindQuestion {
+  const uniqueOptions = Array.from(new Set([answer, ...rawOptions])).slice(0, 4);
+  while (uniqueOptions.length < 4) {
+    uniqueOptions.push(answer + uniqueOptions.length + 1);
+  }
+
+  const shift = Math.abs(id.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0)) % 4;
+  const options = [...uniqueOptions.slice(shift), ...uniqueOptions.slice(0, shift)].map(String) as [string, string, string, string];
+  return {
+    id,
+    category,
+    difficulty,
+    question,
+    options,
+    answerIndex: options.indexOf(String(answer)),
+    explanation,
+  };
 }
 
-export const mindQuestions: MindQuestion[] = [
-  // ── ARITHMETIC: Easy ──
-  q('a-e1', 'arithmetic', 'easy', '7 + 8 = ?', ['15', '14', '16', '13'], 0, '7 + 8 = 15'),
-  q('a-e2', 'arithmetic', 'easy', '15 − 6 = ?', ['9', '8', '10', '7'], 0, '15 − 6 = 9'),
-  q('a-e3', 'arithmetic', 'easy', '4 × 5 = ?', ['20', '25', '15', '10'], 0, '4 × 5 = 20'),
-  q('a-e4', 'arithmetic', 'easy', '36 ÷ 6 = ?', ['6', '7', '5', '8'], 0, '36 ÷ 6 = 6'),
-  q('a-e5', 'arithmetic', 'easy', '9 + 12 = ?', ['21', '22', '20', '19'], 0, '9 + 12 = 21'),
-  q('a-e6', 'arithmetic', 'easy', '25 − 13 = ?', ['12', '11', '13', '14'], 0, '25 − 13 = 12'),
-  q('a-e7', 'arithmetic', 'easy', '6 × 7 = ?', ['42', '48', '36', '40'], 0, '6 × 7 = 42'),
-  q('a-e8', 'arithmetic', 'easy', '56 ÷ 8 = ?', ['7', '6', '8', '9'], 0, '56 ÷ 8 = 7'),
-  q('a-e9', 'arithmetic', 'easy', '11 + 14 = ?', ['25', '24', '26', '23'], 0, '11 + 14 = 25'),
-  q('a-e10', 'arithmetic', 'easy', '30 − 17 = ?', ['13', '14', '12', '11'], 0, '30 − 17 = 13'),
+const generatedQuestions: MindQuestion[] = [];
 
-  // ── ARITHMETIC: Medium ──
-  q('a-m1', 'arithmetic', 'medium', '23 × 4 = ?', ['92', '96', '88', '84'], 0, '23 × 4 = 92'),
-  q('a-m2', 'arithmetic', 'medium', '144 ÷ 12 = ?', ['12', '11', '13', '14'], 0, '144 ÷ 12 = 12'),
-  q('a-m3', 'arithmetic', 'medium', '67 + 89 = ?', ['156', '155', '157', '146'], 0, '67 + 89 = 156'),
-  q('a-m4', 'arithmetic', 'medium', '203 − 78 = ?', ['125', '135', '115', '145'], 0, '203 − 78 = 125'),
-  q('a-m5', 'arithmetic', 'medium', '15 × 15 = ?', ['225', '215', '235', '250'], 0, '15 × 15 = 225'),
-  q('a-m6', 'arithmetic', 'medium', '256 ÷ 16 = ?', ['16', '14', '18', '12'], 0, '256 ÷ 16 = 16'),
-  q('a-m7', 'arithmetic', 'medium', '48 + 76 = ?', ['124', '126', '122', '134'], 0, '48 + 76 = 124'),
-  q('a-m8', 'arithmetic', 'medium', '500 − 237 = ?', ['263', '273', '253', '243'], 0, '500 − 237 = 263'),
-  q('a-m9', 'arithmetic', 'medium', '13 × 9 = ?', ['117', '108', '126', '119'], 0, '13 × 9 = 117'),
-  q('a-m10', 'arithmetic', 'medium', '345 ÷ 15 = ?', ['23', '22', '24', '25'], 0, '345 ÷ 15 = 23'),
+function add(question: MindQuestion) {
+  generatedQuestions.push(question);
+}
 
-  // ── ARITHMETIC: Hard ──
-  q('a-h1', 'arithmetic', 'hard', '47 × 23 = ?', ['1081', '1071', '1091', '1061'], 0, '47 × 23 = 1081'),
-  q('a-h2', 'arithmetic', 'hard', '1296 ÷ 36 = ?', ['36', '34', '38', '32'], 0, '1296 ÷ 36 = 36'),
-  q('a-h3', 'arithmetic', 'hard', '789 + 456 = ?', ['1245', '1235', '1255', '1225'], 0, '789 + 456 = 1245'),
-  q('a-h4', 'arithmetic', 'hard', '1000 − 387 = ?', ['613', '623', '603', '633'], 0, '1000 − 387 = 613'),
-  q('a-h5', 'arithmetic', 'hard', '25 × 32 = ?', ['800', '750', '850', '775'], 0, '25 × 32 = 800'),
-  q('a-h6', 'arithmetic', 'hard', '√144 = ?', ['12', '14', '11', '13'], 0, '√144 = 12'),
-  q('a-h7', 'arithmetic', 'hard', '17² = ?', ['289', '279', '299', '269'], 0, '17 × 17 = 289'),
-  q('a-h8', 'arithmetic', 'hard', '999 + 888 = ?', ['1887', '1877', '1897', '1867'], 0, '999 + 888 = 1887'),
-  q('a-h9', 'arithmetic', 'hard', '2048 ÷ 64 = ?', ['32', '36', '28', '34'], 0, '2048 ÷ 64 = 32'),
-  q('a-h10', 'arithmetic', 'hard', '63 × 17 = ?', ['1071', '1061', '1081', '1051'], 0, '63 × 17 = 1071'),
+const difficultyOffsets: Record<Difficulty, number> = { easy: 0, medium: 1000, hard: 2000 };
 
-  // ── SERIES: Easy ──
-  q('s-e1', 'series', 'easy', '2, 4, 6, 8, ?', ['10', '9', '11', '12'], 0, 'Pattern: +2 each time. 8 + 2 = 10'),
-  q('s-e2', 'series', 'easy', '5, 10, 15, 20, ?', ['25', '22', '30', '24'], 0, 'Pattern: +5 each time. 20 + 5 = 25'),
-  q('s-e3', 'series', 'easy', '1, 3, 5, 7, ?', ['9', '8', '10', '11'], 0, 'Odd numbers: +2 each time.'),
-  q('s-e4', 'series', 'easy', '10, 20, 30, 40, ?', ['50', '45', '55', '60'], 0, 'Pattern: +10 each time.'),
-  q('s-e5', 'series', 'easy', '3, 6, 9, 12, ?', ['15', '14', '16', '18'], 0, 'Multiples of 3.'),
-  q('s-e6', 'series', 'easy', '100, 90, 80, 70, ?', ['60', '65', '50', '55'], 0, 'Pattern: −10 each time.'),
-  q('s-e7', 'series', 'easy', '1, 4, 7, 10, ?', ['13', '12', '14', '11'], 0, 'Pattern: +3 each time.'),
-  q('s-e8', 'series', 'easy', '2, 4, 8, 16, ?', ['32', '24', '20', '28'], 0, 'Pattern: ×2 each time.'),
-  q('s-e9', 'series', 'easy', '50, 45, 40, 35, ?', ['30', '25', '32', '28'], 0, 'Pattern: −5 each time.'),
-  q('s-e10', 'series', 'easy', '1, 1, 2, 3, 5, ?', ['8', '7', '6', '9'], 0, 'Fibonacci: each = sum of previous two. 3+5=8'),
+(['easy', 'medium', 'hard'] as Difficulty[]).forEach(difficulty => {
+  const offset = difficultyOffsets[difficulty];
+  const limit = difficulty === 'easy' ? 45 : difficulty === 'medium' ? 55 : 65;
+  const multiplier = difficulty === 'easy' ? 1 : difficulty === 'medium' ? 2 : 3;
 
-  // ── SERIES: Medium ──
-  q('s-m1', 'series', 'medium', '1, 4, 9, 16, 25, ?', ['36', '30', '35', '49'], 0, 'Perfect squares: 6² = 36'),
-  q('s-m2', 'series', 'medium', '2, 6, 18, 54, ?', ['162', '108', '148', '172'], 0, 'Pattern: ×3 each time. 54 × 3 = 162'),
-  q('s-m3', 'series', 'medium', '1, 8, 27, 64, ?', ['125', '100', '128', '81'], 0, 'Perfect cubes: 5³ = 125'),
-  q('s-m4', 'series', 'medium', '3, 5, 9, 15, 23, ?', ['33', '31', '35', '29'], 0, 'Differences: +2, +4, +6, +8, +10. 23+10=33'),
-  q('s-m5', 'series', 'medium', '1, 2, 4, 7, 11, ?', ['16', '14', '15', '17'], 0, 'Differences: +1, +2, +3, +4, +5. 11+5=16'),
-  q('s-m6', 'series', 'medium', '0, 1, 1, 2, 3, 5, 8, ?', ['13', '11', '12', '14'], 0, 'Fibonacci: 5 + 8 = 13'),
-  q('s-m7', 'series', 'medium', '81, 27, 9, 3, ?', ['1', '0', '2', '6'], 0, 'Pattern: ÷3 each time. 3 ÷ 3 = 1'),
-  q('s-m8', 'series', 'medium', '2, 3, 5, 7, 11, ?', ['13', '12', '14', '15'], 0, 'Prime numbers sequence.'),
-  q('s-m9', 'series', 'medium', '1, 3, 7, 15, 31, ?', ['63', '47', '55', '61'], 0, 'Pattern: ×2 + 1. 31×2+1=63'),
-  q('s-m10', 'series', 'medium', '4, 9, 16, 25, 36, ?', ['49', '45', '48', '50'], 0, 'Squares starting from 2²: 7² = 49'),
+  for (let i = 1; i <= 45; i += 1) {
+    const a = i + 6 + multiplier;
+    const b = (i % 12) + 4 + multiplier;
+    const answer = a + b;
+    add(q(
+      `arith-add-${difficulty}-${i}`,
+      'arithmetic',
+      difficulty,
+      `${a} + ${b} = ?`,
+      [answer - 1, answer + 2, answer + 5],
+      answer,
+      `Add ${a} and ${b}: ${a} + ${b} = ${answer}.`,
+    ));
+  }
 
-  // ── SERIES: Hard ──
-  q('s-h1', 'series', 'hard', '1, 1, 2, 3, 5, 8, 13, 21, ?', ['34', '29', '32', '36'], 0, 'Fibonacci: 13 + 21 = 34'),
-  q('s-h2', 'series', 'hard', '2, 6, 12, 20, 30, ?', ['42', '40', '36', '44'], 0, 'n(n+1): 6×7 = 42'),
-  q('s-h3', 'series', 'hard', '1, 4, 10, 20, 35, ?', ['56', '50', '55', '60'], 0, 'Triangular numbers of triangular numbers.'),
-  q('s-h4', 'series', 'hard', '3, 6, 11, 18, 27, ?', ['38', '36', '40', '35'], 0, 'Differences: +3, +5, +7, +9, +11. 27+11=38'),
-  q('s-h5', 'series', 'hard', '1, 2, 6, 24, 120, ?', ['720', '600', '240', '480'], 0, 'Factorials: 6! = 720'),
+  for (let i = 1; i <= 35; i += 1) {
+    const a = offset / 10 + i * (difficulty === 'hard' ? 9 : difficulty === 'medium' ? 6 : 3) + 40;
+    const b = (i % limit) + 7;
+    const answer = a - b;
+    add(q(
+      `arith-sub-${difficulty}-${i}`,
+      'arithmetic',
+      difficulty,
+      `${a} - ${b} = ?`,
+      [answer - 3, answer + 4, answer + 8],
+      answer,
+      `Subtract carefully: ${a} - ${b} = ${answer}.`,
+    ));
+  }
 
-  // ── MIXED OPS: Easy ──
-  q('m-e1', 'mixed-ops', 'easy', '3 + 4 × 2 = ?', ['11', '14', '10', '12'], 0, 'BODMAS: multiply first. 4×2=8, then 3+8=11'),
-  q('m-e2', 'mixed-ops', 'easy', '10 − 2 × 3 = ?', ['4', '24', '6', '8'], 0, 'BODMAS: 2×3=6, then 10−6=4'),
-  q('m-e3', 'mixed-ops', 'easy', '(5 + 3) × 2 = ?', ['16', '11', '13', '15'], 0, 'Brackets first: 5+3=8, then 8×2=16'),
-  q('m-e4', 'mixed-ops', 'easy', '12 ÷ 4 + 5 = ?', ['8', '3', '7', '9'], 0, 'Division first: 12÷4=3, then 3+5=8'),
-  q('m-e5', 'mixed-ops', 'easy', '20 − 3 × 4 = ?', ['8', '68', '12', '6'], 0, 'Multiply first: 3×4=12, then 20−12=8'),
-  q('m-e6', 'mixed-ops', 'easy', '2 + 3² = ?', ['11', '25', '10', '7'], 0, 'Exponent first: 3²=9, then 2+9=11'),
-  q('m-e7', 'mixed-ops', 'easy', '15 ÷ 3 + 2 × 4 = ?', ['13', '20', '11', '28'], 0, '15÷3=5 and 2×4=8, then 5+8=13'),
-  q('m-e8', 'mixed-ops', 'easy', '(10 − 4) × 3 = ?', ['18', '22', '26', '14'], 0, 'Brackets: 10−4=6, then 6×3=18'),
-  q('m-e9', 'mixed-ops', 'easy', '8 + 16 ÷ 4 = ?', ['12', '6', '10', '14'], 0, 'Division first: 16÷4=4, then 8+4=12'),
-  q('m-e10', 'mixed-ops', 'easy', '5 × 2 + 3 × 3 = ?', ['19', '21', '39', '17'], 0, '5×2=10 and 3×3=9, then 10+9=19'),
+  for (let i = 1; i <= 35; i += 1) {
+    const a = (i % 18) + 3 + multiplier;
+    const b = (i % 11) + 2 + multiplier;
+    const answer = a * b;
+    add(q(
+      `arith-mul-${difficulty}-${i}`,
+      'arithmetic',
+      difficulty,
+      `${a} x ${b} = ?`,
+      [answer - a, answer + b, answer + a + b],
+      answer,
+      `Multiply ${a} by ${b}: ${a} x ${b} = ${answer}.`,
+    ));
+  }
 
-  // ── MIXED OPS: Medium ──
-  q('m-m1', 'mixed-ops', 'medium', '(8 + 2) × (7 − 3) = ?', ['40', '36', '44', '48'], 0, '10 × 4 = 40'),
-  q('m-m2', 'mixed-ops', 'medium', '100 − 5² × 3 = ?', ['25', '75', '50', '15'], 0, '5²=25, 25×3=75, 100−75=25'),
-  q('m-m3', 'mixed-ops', 'medium', '2³ + 4² = ?', ['24', '20', '32', '18'], 0, '8 + 16 = 24'),
-  q('m-m4', 'mixed-ops', 'medium', '(15 − 3) ÷ (2 + 2) = ?', ['3', '4', '6', '2'], 0, '12 ÷ 4 = 3'),
-  q('m-m5', 'mixed-ops', 'medium', '7 × 8 − 6 × 5 = ?', ['26', '30', '20', '24'], 0, '56 − 30 = 26'),
-  q('m-m6', 'mixed-ops', 'medium', '3 × (4 + 5) − 2² = ?', ['23', '25', '21', '27'], 0, '3×9=27, 27−4=23'),
-  q('m-m7', 'mixed-ops', 'medium', '√81 + √49 = ?', ['16', '15', '14', '18'], 0, '9 + 7 = 16'),
-  q('m-m8', 'mixed-ops', 'medium', '50 ÷ 5 + 8 × 3 = ?', ['34', '30', '36', '32'], 0, '10 + 24 = 34'),
-  q('m-m9', 'mixed-ops', 'medium', '(6²−12) ÷ 8 = ?', ['3', '4', '2', '6'], 0, '36−12=24, 24÷8=3'),
-  q('m-m10', 'mixed-ops', 'medium', '4! ÷ 3! = ?', ['4', '2', '8', '6'], 0, '24 ÷ 6 = 4'),
+  for (let i = 1; i <= 45; i += 1) {
+    const start = i + multiplier;
+    const step = (i % 7) + 2 + multiplier;
+    const answer = start + step * 4;
+    add(q(
+      `series-linear-${difficulty}-${i}`,
+      'series',
+      difficulty,
+      `${start}, ${start + step}, ${start + step * 2}, ${start + step * 3}, ?`,
+      [answer - step, answer + step, answer + 2],
+      answer,
+      `The pattern adds ${step} each time, so the next number is ${answer}.`,
+    ));
+  }
 
-  // ── MIXED OPS: Hard ──
-  q('m-h1', 'mixed-ops', 'hard', '(2³ × 3) + (5² − 10) = ?', ['39', '35', '42', '37'], 0, '(8×3)+(25−10)=24+15=39'),
-  q('m-h2', 'mixed-ops', 'hard', '√(144 + 25) = ?', ['13', '12', '14', '11'], 0, '√169 = 13'),
-  q('m-h3', 'mixed-ops', 'hard', '(10! ÷ 9!) + 5 = ?', ['15', '10', '20', '50'], 0, '10!/9! = 10, 10+5=15'),
-  q('m-h4', 'mixed-ops', 'hard', '2⁴ + 3³ − 5² = ?', ['18', '22', '16', '20'], 0, '16+27−25=18'),
-  q('m-h5', 'mixed-ops', 'hard', '(7×11 − 3×15) ÷ 8 = ?', ['4', '3', '5', '6'], 0, '(77−45)÷8=32÷8=4'),
+  for (let i = 1; i <= 35; i += 1) {
+    const start = (i % 4) + 2;
+    const factor = difficulty === 'easy' ? 2 : difficulty === 'medium' ? 3 : 4;
+    const answer = start * factor ** 4;
+    add(q(
+      `series-multiply-${difficulty}-${i}`,
+      'series',
+      difficulty,
+      `${start}, ${start * factor}, ${start * factor ** 2}, ${start * factor ** 3}, ?`,
+      [answer / factor, answer + factor, answer - factor],
+      answer,
+      `Each term is multiplied by ${factor}.`,
+    ));
+  }
 
-  // ── SPEED: Easy ──
-  q('sp-e1', 'speed', 'easy', '5 + 5 = ?', ['10', '11', '9', '8'], 0, '5 + 5 = 10'),
-  q('sp-e2', 'speed', 'easy', '8 × 3 = ?', ['24', '21', '27', '18'], 0, '8 × 3 = 24'),
-  q('sp-e3', 'speed', 'easy', '20 − 7 = ?', ['13', '12', '14', '11'], 0, '20 − 7 = 13'),
-  q('sp-e4', 'speed', 'easy', '45 ÷ 9 = ?', ['5', '6', '4', '7'], 0, '45 ÷ 9 = 5'),
-  q('sp-e5', 'speed', 'easy', '7 + 9 = ?', ['16', '15', '17', '14'], 0, '7 + 9 = 16'),
-  q('sp-e6', 'speed', 'easy', '6 × 6 = ?', ['36', '30', '42', '24'], 0, '6 × 6 = 36'),
-  q('sp-e7', 'speed', 'easy', '14 − 8 = ?', ['6', '5', '7', '8'], 0, '14 − 8 = 6'),
-  q('sp-e8', 'speed', 'easy', '72 ÷ 8 = ?', ['9', '8', '10', '7'], 0, '72 ÷ 8 = 9'),
-  q('sp-e9', 'speed', 'easy', '11 + 7 = ?', ['18', '17', '19', '16'], 0, '11 + 7 = 18'),
-  q('sp-e10', 'speed', 'easy', '9 × 4 = ?', ['36', '32', '40', '28'], 0, '9 × 4 = 36'),
+  for (let i = 1; i <= 45; i += 1) {
+    const a = (i % 9) + 2 + multiplier;
+    const b = (i % 6) + 3;
+    const c = (i % 5) + 2;
+    const answer = a + b * c;
+    add(q(
+      `mixed-bodmas-${difficulty}-${i}`,
+      'mixed-ops',
+      difficulty,
+      `${a} + ${b} x ${c} = ?`,
+      [(a + b) * c, answer - c, answer + b],
+      answer,
+      `Use order of operations: multiply first (${b} x ${c}), then add ${a}.`,
+    ));
+  }
 
-  // ── SPEED: Medium ──
-  q('sp-m1', 'speed', 'medium', '12 × 11 = ?', ['132', '122', '142', '121'], 0, '12 × 11 = 132'),
-  q('sp-m2', 'speed', 'medium', '225 ÷ 15 = ?', ['15', '14', '16', '17'], 0, '225 ÷ 15 = 15'),
-  q('sp-m3', 'speed', 'medium', '88 + 77 = ?', ['165', '155', '175', '166'], 0, '88 + 77 = 165'),
-  q('sp-m4', 'speed', 'medium', '300 − 156 = ?', ['144', '154', '134', '164'], 0, '300 − 156 = 144'),
-  q('sp-m5', 'speed', 'medium', '14 × 7 = ?', ['98', '96', '102', '91'], 0, '14 × 7 = 98'),
+  for (let i = 1; i <= 35; i += 1) {
+    const a = (i % 10) + 5 + multiplier;
+    const b = (i % 8) + 2;
+    const c = (i % 4) + 2;
+    const answer = (a - b) * c;
+    add(q(
+      `mixed-brackets-${difficulty}-${i}`,
+      'mixed-ops',
+      difficulty,
+      `(${a} - ${b}) x ${c} = ?`,
+      [a - b * c, answer + c, answer - b],
+      answer,
+      `Solve brackets first: ${a} - ${b} = ${a - b}, then multiply by ${c}.`,
+    ));
+  }
 
-  // ── SPEED: Hard ──
-  q('sp-h1', 'speed', 'hard', '37 × 13 = ?', ['481', '471', '491', '461'], 0, '37 × 13 = 481'),
-  q('sp-h2', 'speed', 'hard', '625 ÷ 25 = ?', ['25', '20', '30', '35'], 0, '625 ÷ 25 = 25'),
-  q('sp-h3', 'speed', 'hard', '19² = ?', ['361', '351', '371', '341'], 0, '19 × 19 = 361'),
-  q('sp-h4', 'speed', 'hard', '456 + 789 = ?', ['1245', '1235', '1255', '1345'], 0, '456 + 789 = 1245'),
-  q('sp-h5', 'speed', 'hard', '1024 ÷ 32 = ?', ['32', '28', '36', '34'], 0, '1024 ÷ 32 = 32'),
-];
+  for (let i = 1; i <= 45; i += 1) {
+    const a = (i % 20) + 5 + multiplier;
+    const b = (i % 13) + 3;
+    const answer = difficulty === 'hard' ? a * b : a + b;
+    add(q(
+      `speed-${difficulty}-${i}`,
+      'speed',
+      difficulty,
+      difficulty === 'hard' ? `${a} x ${b} = ?` : `${a} + ${b} = ?`,
+      [answer - 2, answer + 3, answer + 6],
+      answer,
+      difficulty === 'hard' ? `${a} x ${b} = ${answer}.` : `${a} + ${b} = ${answer}.`,
+    ));
+  }
+});
 
-export function getQuestionsByCategory(category: MindQuestion['category'], difficulty: MindQuestion['difficulty'], count = 10): MindQuestion[] {
-  const filtered = mindQuestions.filter(q => q.category === category && q.difficulty === difficulty);
-  const shuffled = [...filtered].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, count);
+export const mindQuestions: MindQuestion[] = generatedQuestions;
+
+export function getQuestionsByCategory(
+  category: MindQuestion['category'],
+  difficulty: MindQuestion['difficulty'],
+  count = 20,
+): MindQuestion[] {
+  const filtered = mindQuestions.filter(item => item.category === category && item.difficulty === difficulty);
+  return [...filtered]
+    .sort(() => Math.random() - 0.5)
+    .slice(0, Math.min(count, filtered.length));
+}
+
+export function getQuestionCount(category: MindCategory, difficulty: Difficulty): number {
+  return mindQuestions.filter(item => item.category === category && item.difficulty === difficulty).length;
 }

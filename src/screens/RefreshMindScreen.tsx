@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import type { DrawerScreenProps } from '@react-navigation/drawer';
-import { Brain, ChevronRight, Trophy, Zap } from 'lucide-react-native';
-import type { CompositeScreenProps } from '@react-navigation/native';
+import { Brain, ChevronRight, Zap } from 'lucide-react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { RootDrawerParamList, RefreshMindStackParamList } from '../navigation/types';
+import type { RefreshMindStackParamList } from '../navigation/types';
+import { getQuestionCount, mindQuestions } from '../content/mindQuestions';
 import { CATEGORY_META } from '../types/mindQuiz';
 import type { MindCategory, Difficulty } from '../types/mindQuiz';
 import { colors, shadow } from '../theme/theme';
@@ -71,6 +70,7 @@ export function RefreshMindScreen({ navigation }: Props) {
           <View style={styles.cardBody}>
             <Text style={styles.cardTitle}>{meta.title}</Text>
             <Text style={styles.cardDesc}>{meta.description}</Text>
+            <Text style={styles.cardCount}>{getQuestionCount(key, selectedDifficulty)} questions ready</Text>
           </View>
           <ChevronRight color={colors.muted} size={20} />
         </Pressable>
@@ -80,7 +80,7 @@ export function RefreshMindScreen({ navigation }: Props) {
       <View style={styles.tipCard}>
         <Zap color={colors.yellow} size={20} />
         <Text style={styles.tipText}>
-          Regular mental math practice improves focus, speed, and problem-solving — skills that directly help in programming!
+          {mindQuestions.length}+ mental workouts for focus, speed, and problem-solving skills that directly help in programming.
         </Text>
       </View>
     </ScrollView>
@@ -187,6 +187,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 18,
     marginTop: 3,
+  },
+  cardCount: {
+    color: colors.green,
+    fontSize: 12,
+    fontWeight: '900',
+    marginTop: 6,
   },
   tipCard: {
     flexDirection: 'row',
