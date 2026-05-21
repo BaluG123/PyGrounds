@@ -23,10 +23,14 @@ export const notesRegistry: Record<string, NoteEntry> = {
     title: 'NumPy Complete Notes',
     pdfUri: 'https://drive.google.com/file/d/1ADh60XJhsRvCnW72xcwHhcVS0Yt4aEDu/view?usp=sharing',
   },
-  // Add other courses here as their PDFs become available:
-  // 'python-basics': {
-  //   courseId: 'python-basics',
-  //   title: 'Python Basics Notes',
-  //   pdfUri: 'https://your-server.com/notes/python-basics.pdf',
-  // },
+  'python-basics': {
+    courseId: 'python-basics',
+    title: 'Python Basics Notes',
+    pdfUri: 'https://drive.google.com/file/d/1zaarOURpRMiVRgy0SW6wydLxqOPexYeW/view?usp=sharing',
+  },
+  'python-advanced': {
+    courseId: 'python-advanced',
+    title: 'Python Advanced Notes',
+    pdfUri: 'https://drive.google.com/file/d/1H1FgdJrUNEe5CYNRE11Px12PlCRQUO6L/view?usp=sharing',
+  },
 };
