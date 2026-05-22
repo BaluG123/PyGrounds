@@ -4,6 +4,7 @@ import type { DrawerScreenProps } from '@react-navigation/drawer';
 import { Brain, Flame, Target } from 'lucide-react-native';
 import { CourseCard } from '../components/CourseCard';
 import { ProgressRing } from '../components/ProgressRing';
+import { StudyReminderCard } from '../components/StudyReminderCard';
 import { courses } from '../content/courses';
 import type { RootDrawerParamList } from '../navigation/types';
 import type { LibraryId } from '../types/course';
@@ -71,6 +72,8 @@ export function DashboardScreen({ navigation }: Props) {
           <Text style={styles.statLabel}>labs tried</Text>
         </View>
       </View>
+
+      <StudyReminderCard />
 
       {sections.map(section => (
         <View key={section.title}>

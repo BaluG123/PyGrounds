@@ -1,6 +1,6 @@
 # Firebase & Firestore Setup Guide
 
-This document outlines the steps required to properly configure Firebase and Firestore to enable cloud-based progress syncing across devices for PyGrounds users.
+This document outlines the steps required to properly configure Firebase, Firestore, and Firebase Cloud Messaging for PyGrounds users.
 
 ## 1. Firebase Console Setup
 
@@ -59,16 +59,27 @@ service cloud.firestore {
 5. Open your project workspace in Xcode (`ios/PyGrounds.xcworkspace`).
 6. Drag and drop the `GoogleService-Info.plist` file into the root of your Xcode project, ensuring it's added to all targets.
 
-## 6. React Native Firebase Packages
+## 6. Study Reminder Push Notifications
+
+The app saves reminder preferences from the dashboard to:
+
+- `notificationSubscriptions/{fcmTokenDocId}` for device-level push scheduling.
+- `learners/{uid}.studyReminder` when the learner is signed in.
+
+Each reminder stores `hour`, `minute`, `timezone`, `fcmToken`, `enabled`, and `updatedAt`. Use a Firebase scheduled Cloud Function or another trusted backend to query enabled subscriptions by local time and send FCM messages. The client requests notification permission and keeps the token updated when Firebase rotates it.
+
+For Android 13+, `POST_NOTIFICATIONS` is already declared in `android/app/src/main/AndroidManifest.xml`. For iOS, enable Push Notifications and Background Modes > Remote notifications in Xcode, then upload the APNs key in Firebase Console.
+
+## 7. React Native Firebase Packages
 
 Ensure the required packages are installed in your project:
 
 ```bash
-npm install @react-native-firebase/app @react-native-firebase/auth @react-native-firebase/firestore @react-native-google-signin/google-signin
+npm install @react-native-firebase/app @react-native-firebase/auth @react-native-firebase/firestore @react-native-firebase/messaging @react-native-google-signin/google-signin
 ```
 
 Follow any specific auto-linking instructions for iOS (`cd ios && pod install`) and Android as specified in the [React Native Firebase Documentation](https://rnfirebase.io/).
 
-## 7. Next Steps
+## 8. Next Steps
 
-With Firebase configured, the `src/services/firebase.ts` file is now fully operational. The `ProgressContext` will automatically sync the local `AsyncStorage` progress to Firestore whenever the user signs in with Google via the Account screen.
+With Firebase configured, the `src/services/firebase.ts` file is now fully operational. The `ProgressContext` will automatically sync the local `AsyncStorage` progress to Firestore whenever the user signs in with Google via the Account screen, and study reminders will register device tokens for scheduled FCM pushes.

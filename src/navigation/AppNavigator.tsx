@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Text, View, StyleSheet } from 'react-native';
+import { Image, Pressable, Text, View, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
+import { CommonActions, DrawerActions } from '@react-navigation/native';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import auth, { type FirebaseAuthTypes } from '@react-native-firebase/auth';
 import firebase from '@react-native-firebase/app';
 import {
@@ -22,6 +23,7 @@ import {
   User,
   Workflow,
   Sparkles,
+  X,
 } from 'lucide-react-native';
 import type { RootDrawerParamList } from './types';
 import { AccountScreen } from '../screens/AccountScreen';
@@ -107,6 +109,7 @@ function getSafeUser(): FirebaseAuthTypes.User | null {
 
 function DrawerHeader(props: any) {
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(getSafeUser());
+  const activeRouteName = props.state.routeNames[props.state.index];
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
@@ -130,11 +133,6 @@ function DrawerHeader(props: any) {
     <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerContent}>
       <View style={styles.brand}>
         <View style={styles.brandRow}>
-          <View style={styles.brandLeft}>
-            <BookOpen color={colors.yellow} size={28} />
-            <Text style={styles.brandTitle}>PyGrounds</Text>
-            <Text style={styles.brandSub}>AI & Python Learning Lab</Text>
-          </View>
           {user?.photoURL ? (
             <Image source={{ uri: user.photoURL }} style={styles.avatar} />
           ) : (
@@ -142,12 +140,55 @@ function DrawerHeader(props: any) {
               <User color={colors.muted} size={22} />
             </View>
           )}
+          <View style={styles.brandLeft}>
+            <View style={styles.brandTitleRow}>
+              <BookOpen color={colors.yellow} size={22} />
+              <Text style={styles.brandTitle}>PyGrounds</Text>
+            </View>
+            <Text style={styles.brandSub}>AI & Python Learning Lab</Text>
+          </View>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Close navigation menu"
+            style={styles.closeButton}
+            onPress={() => props.navigation.dispatch(DrawerActions.closeDrawer())}
+          >
+            <X color={colors.ink} size={20} />
+          </Pressable>
         </View>
         {user ? (
           <Text style={styles.userName} numberOfLines={1}>{user.displayName ?? user.email}</Text>
         ) : null}
       </View>
-      <DrawerItemList {...props} />
+      <View style={styles.drawerItems}>
+        {props.state.routes.map((route: any) => {
+          const descriptor = props.descriptors[route.key];
+          const options = descriptor.options;
+          const label = options.drawerLabel ?? options.title ?? route.name;
+          const focused = activeRouteName === route.name;
+
+          return (
+            <DrawerItem
+              key={route.key}
+              label={label}
+              focused={focused}
+              activeTintColor={colors.green}
+              inactiveTintColor={colors.ink}
+              labelStyle={styles.drawerLabel}
+              icon={options.drawerIcon}
+              onPress={() => {
+                props.navigation.dispatch({
+                  ...CommonActions.navigate(route.name, route.params),
+                  target: props.state.key,
+                });
+                requestAnimationFrame(() => {
+                  props.navigation.dispatch(DrawerActions.closeDrawer());
+                });
+              }}
+            />
+          );
+        })}
+      </View>
     </DrawerContentScrollView>
   );
 }
@@ -164,6 +205,9 @@ export function AppNavigator() {
           drawerActiveTintColor: colors.green,
           drawerInactiveTintColor: colors.ink,
           drawerLabelStyle: { fontWeight: '800' },
+          drawerType: 'front',
+          overlayColor: 'rgba(16, 32, 24, 0.28)',
+          swipeEdgeWidth: 42,
         }}
       >
         <Drawer.Screen name="Dashboard" component={DashboardScreen} options={{ drawerIcon: HomeIcon }} />
@@ -200,17 +244,31 @@ const styles = StyleSheet.create({
   },
   brandRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    gap: 12,
   },
   brandLeft: {
     flex: 1,
+  },
+  brandTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  closeButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 8,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.line,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   brandTitle: {
     color: colors.ink,
     fontSize: 24,
     fontWeight: '900',
-    marginTop: 10,
   },
   brandSub: {
     color: colors.muted,
@@ -238,5 +296,12 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 13,
     marginTop: 8,
+  },
+  drawerItems: {
+    paddingTop: 4,
+    paddingBottom: 16,
+  },
+  drawerLabel: {
+    fontWeight: '800',
   },
 });

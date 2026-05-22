@@ -3,7 +3,8 @@ import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import auth, { type FirebaseAuthTypes } from '@react-native-firebase/auth';
 import firebase from '@react-native-firebase/app';
 import { Bell, LogIn, LogOut, User } from 'lucide-react-native';
-import { ensureFirebaseApp, requestLearningNotifications, signInWithGoogle } from '../services/firebase';
+import { defaultStudyReminderTime, ensureFirebaseApp, signInWithGoogle } from '../services/firebase';
+import { enableStudyReminder } from '../services/studyReminder';
 import { courses } from '../content/courses';
 import { useProgress } from '../services/ProgressContext';
 import { colors } from '../theme/theme';
@@ -11,7 +12,7 @@ import { colors } from '../theme/theme';
 function getSafeUser(): FirebaseAuthTypes.User | null {
   try {
     return firebase.apps.length ? auth().currentUser : null;
-  } catch (e) {
+  } catch {
     return null;
   }
 }
@@ -53,8 +54,13 @@ export function AccountScreen() {
 
   async function handleNotifications() {
     try {
-      const token = await requestLearningNotifications();
-      Alert.alert('Notifications', token ? 'Learning reminders are enabled.' : 'Permission was not granted.');
+      const reminder = await enableStudyReminder(defaultStudyReminderTime);
+      Alert.alert(
+        'Notifications',
+        reminder
+          ? `Learning reminders are enabled for ${defaultStudyReminderTime.timeLabel}.`
+          : 'Permission was not granted.',
+      );
     } catch (error) {
       Alert.alert('Notifications setup needed', error instanceof Error ? error.message : 'Unable to enable notifications.');
     }

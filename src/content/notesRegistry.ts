@@ -21,7 +21,7 @@ export const notesRegistry: Record<string, NoteEntry> = {
   numpy: {
     courseId: 'numpy',
     title: 'NumPy Complete Notes',
-    pdfUri: 'https://drive.google.com/file/d/1ADh60XJhsRvCnW72xcwHhcVS0Yt4aEDu/view?usp=sharing',
+    pdfUri: 'https://drive.google.com/file/d/17Pce0SOFCuF_MvjNGFgPK4Cu79svLQAo/view?usp=sharing',
   },
   'python-basics': {
     courseId: 'python-basics',
@@ -32,5 +32,15 @@ export const notesRegistry: Record<string, NoteEntry> = {
     courseId: 'python-advanced',
     title: 'Python Advanced Notes',
     pdfUri: 'https://drive.google.com/file/d/1H1FgdJrUNEe5CYNRE11Px12PlCRQUO6L/view?usp=sharing',
+  },
+  pandas: {
+    courseId: 'pandas',
+    title: 'Pandas Complete Notes',
+    pdfUri: 'https://drive.google.com/file/d/1QUfoZQbyUOq9-vywqpMJVspSn0GomGqd/view?usp=sharing',
+  },
+  matplotlib: {
+    courseId: 'matplotlib',
+    title: 'Matplotlib Complete Notes',
+    pdfUri: 'https://drive.google.com/file/d/1YpofzQygtCEKFLtVjVOBlIq53j-f5cDM/view?usp=sharing',
   },
 };

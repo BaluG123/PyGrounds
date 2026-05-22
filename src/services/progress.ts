@@ -32,14 +32,18 @@ export async function saveProgress(progress: ProgressState) {
     return;
   }
 
-  await firestore()
-    .collection('learners')
-    .doc(user.uid)
-    .set(
-      {
-        progress,
-        updatedAt: firestore.FieldValue.serverTimestamp(),
-      },
-      { merge: true },
-    );
+  try {
+    await firestore()
+      .collection('learners')
+      .doc(user.uid)
+      .set(
+        {
+          progress,
+          updatedAt: firestore.FieldValue.serverTimestamp(),
+        },
+        { merge: true },
+      );
+  } catch (error) {
+    console.warn('Failed to sync progress to cloud Firestore (possibly permission denied):', error);
+  }
 }
