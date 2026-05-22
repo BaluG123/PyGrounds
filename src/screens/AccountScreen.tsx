@@ -102,6 +102,38 @@ export function AccountScreen() {
         <Text style={styles.buttonText}>{user ? 'Sign Out' : 'Sign In with Google'}</Text>
       </Pressable>
 
+      {user && (
+        <Pressable 
+          style={[styles.button, styles.danger]} 
+          onPress={() => {
+            Alert.alert(
+              'Delete Account',
+              'Are you sure you want to permanently delete your account and all synced progress? This action cannot be undone.',
+              [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                  text: 'Delete Permanently',
+                  style: 'destructive',
+                  onPress: async () => {
+                    try {
+                      await auth().currentUser?.delete();
+                      Alert.alert('Account Deleted', 'Your account has been deleted successfully.');
+                    } catch (error) {
+                      Alert.alert(
+                        'Authentication Required',
+                        'For security, you must sign out and sign back in to re-authenticate before deleting your account.'
+                      );
+                    }
+                  }
+                }
+              ]
+            );
+          }}
+        >
+          <Text style={styles.buttonText}>Delete Account</Text>
+        </Pressable>
+      )}
+
       <Pressable style={[styles.button, styles.secondary]} onPress={handleNotifications}>
         <Bell color={colors.ink} size={20} />
         <Text style={styles.secondaryText}>Enable Learning Reminders</Text>
@@ -167,6 +199,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   secondary: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.line },
+  danger: { backgroundColor: '#dc2626' },
   buttonText: { color: colors.surface, fontWeight: '900', fontSize: 16 },
   secondaryText: { color: colors.ink, fontWeight: '900', fontSize: 16 },
   info: {
