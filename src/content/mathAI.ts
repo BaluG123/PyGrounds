@@ -234,8 +234,8 @@ export const mathAICourse: CourseModule = {
     {
       id: 'math-q1',
       prompt: 'What does standard deviation measure?',
-      options: ['Spread of data from the mean', 'The most common value', 'The middle value', 'The range of data'],
-      answerIndex: 0,
+      options: ["The most common value", "The middle value", "The range of data", "Spread of data from the mean"],
+      answerIndex: 3,
       explanation: 'Standard deviation quantifies how much values deviate from the mean.',
     },
     {
@@ -248,22 +248,22 @@ export const mathAICourse: CourseModule = {
     {
       id: 'math-q3',
       prompt: 'In Bayes\' theorem, what is the "prior"?',
-      options: ['Your belief before seeing evidence', 'The probability of the evidence', 'The test accuracy', 'The sample size'],
-      answerIndex: 0,
+      options: ["The probability of the evidence", "Your belief before seeing evidence", "The test accuracy", "The sample size"],
+      answerIndex: 1,
       explanation: 'The prior P(A) represents your initial belief before new data.',
     },
     {
       id: 'math-q4',
       prompt: 'A correlation of -0.9 means:',
-      options: ['Strong negative linear relationship', 'No relationship', 'Strong positive relationship', 'Causation is proven'],
-      answerIndex: 0,
+      options: ["No relationship", "Strong positive relationship", "Strong negative linear relationship", "Causation is proven"],
+      answerIndex: 2,
       explanation: 'Values near -1 indicate a strong inverse linear relationship.',
     },
     {
       id: 'math-q5',
       prompt: 'What percentage of data falls within 2 standard deviations of the mean in a normal distribution?',
-      options: ['95%', '68%', '99.7%', '50%'],
-      answerIndex: 0,
+      options: ["68%", "99.7%", "50%", "95%"],
+      answerIndex: 3,
       explanation: 'The 68-95-99.7 rule: ~95% falls within 2σ of the mean.',
     },
     {
@@ -276,22 +276,22 @@ export const mathAICourse: CourseModule = {
     {
       id: 'math-q7',
       prompt: 'What does "correlation does not imply causation" mean?',
-      options: ['Two variables can move together without one causing the other', 'Correlation is always zero', 'Causation cannot be measured', 'You need more data'],
-      answerIndex: 0,
+      options: ["Correlation is always zero", "Two variables can move together without one causing the other", "Causation cannot be measured", "You need more data"],
+      answerIndex: 1,
       explanation: 'A hidden third variable (confound) can make unrelated variables appear correlated.',
     },
     {
       id: 'math-q8',
       prompt: 'What distribution models the number of heads in 10 coin flips?',
-      options: ['Binomial', 'Normal', 'Uniform', 'Exponential'],
-      answerIndex: 0,
+      options: ["Normal", "Uniform", "Binomial", "Exponential"],
+      answerIndex: 2,
       explanation: 'Binomial distribution models the count of successes in fixed independent trials.',
     },
     {
       id: 'math-q9',
       prompt: 'What does the Central Limit Theorem state?',
-      options: ['Sample means approach a normal distribution', 'All data is normal', 'Larger samples are always better', 'Mean equals median'],
-      answerIndex: 0,
+      options: ["All data is normal", "Larger samples are always better", "Mean equals median", "Sample means approach a normal distribution"],
+      answerIndex: 3,
       explanation: 'Regardless of the population shape, sample means tend toward normal as sample size grows.',
     },
     {

@@ -1,5 +1,17 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {
+  Image,
+  ImageSourcePropType,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { X, ZoomIn } from 'lucide-react-native';
 import Svg, { Rect, Text as SvgText, Circle, Line } from 'react-native-svg';
 import { colors } from '../../theme/theme';
 
@@ -121,14 +133,125 @@ const IMAGE_MAP: Record<string, React.FC> = {
   'if-else-branch': IfElseBranch,
 };
 
+const ASSET_IMAGE_MAP: Record<string, ImageSourcePropType> = {
+  locVSiloc: require('../../assets/locVSiloc.png'),
+};
+
+function ZoomableAssetImage({ source, width, height }: { source: ImageSourcePropType; width: number; height: number }) {
+  const maxScale = 8;
+  const scale = useSharedValue(1);
+  const savedScale = useSharedValue(1);
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+  const savedX = useSharedValue(0);
+  const savedY = useSharedValue(0);
+
+  const pinchGesture = Gesture.Pinch()
+    .onUpdate(event => {
+      scale.value = Math.min(Math.max(savedScale.value * event.scale, 1), maxScale);
+    })
+    .onEnd(() => {
+      savedScale.value = scale.value;
+      if (scale.value <= 1.01) {
+        scale.value = withTiming(1);
+        savedScale.value = 1;
+        translateX.value = withTiming(0);
+        translateY.value = withTiming(0);
+        savedX.value = 0;
+        savedY.value = 0;
+      }
+    });
+
+  const panGesture = Gesture.Pan()
+    .onUpdate(event => {
+      if (scale.value <= 1) {
+        return;
+      }
+      translateX.value = savedX.value + event.translationX;
+      translateY.value = savedY.value + event.translationY;
+    })
+    .onEnd(() => {
+      savedX.value = translateX.value;
+      savedY.value = translateY.value;
+    });
+
+  const doubleTapGesture = Gesture.Tap()
+    .numberOfTaps(2)
+    .onEnd(() => {
+      const shouldReset = scale.value > 1;
+      scale.value = withTiming(shouldReset ? 1 : 4);
+      savedScale.value = shouldReset ? 1 : 4;
+      if (shouldReset) {
+        translateX.value = withTiming(0);
+        translateY.value = withTiming(0);
+        savedX.value = 0;
+        savedY.value = 0;
+      }
+    });
+
+  const composedGesture = Gesture.Simultaneous(pinchGesture, panGesture, doubleTapGesture);
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: translateX.value },
+      { translateY: translateY.value },
+      { scale: scale.value },
+    ],
+  }));
+
+  return (
+    <GestureDetector gesture={composedGesture}>
+      <Animated.Image source={source} resizeMode="contain" style={[{ width, height }, animatedStyle]} />
+    </GestureDetector>
+  );
+}
+
 export function ImageBlock({ title, imageType }: Props) {
+  const [isZoomed, setIsZoomed] = React.useState(false);
+  const { width, height } = useWindowDimensions();
   const ImageComponent = IMAGE_MAP[imageType];
+  const assetImage = ASSET_IMAGE_MAP[imageType];
+  const assetMeta = assetImage ? Image.resolveAssetSource(assetImage) : undefined;
+  const aspectRatio = assetMeta ? assetMeta.width / assetMeta.height : 1.5;
+  const inlineWidth = Math.max(220, Math.min(width - 64, 640));
+  const inlineHeight = inlineWidth / aspectRatio;
+  const fitWidth = Math.min(width - 40, (height - 140) * aspectRatio);
+  const zoomWidth = Math.max(220, fitWidth);
+  const zoomHeight = zoomWidth / aspectRatio;
 
   return (
     <View style={styles.wrap}>
-      {ImageComponent ? <ImageComponent /> : (
+      {assetImage ? (
+        <>
+          <Pressable
+            accessibilityLabel={`Open ${title} image`}
+            accessibilityRole="imagebutton"
+            onPress={() => setIsZoomed(true)}
+            style={[styles.assetFrame, { width: inlineWidth, height: inlineHeight }]}
+          >
+            <Image source={assetImage} style={styles.assetImage} resizeMode="contain" />
+            <View style={styles.zoomBadge}>
+              <ZoomIn color={colors.surface} size={17} />
+            </View>
+          </Pressable>
+          <Modal visible={isZoomed} animationType="fade" onRequestClose={() => setIsZoomed(false)}>
+            <View style={styles.modal}>
+              <Pressable
+                accessibilityLabel="Close image"
+                accessibilityRole="button"
+                onPress={() => setIsZoomed(false)}
+                style={styles.closeButton}
+              >
+                <X color={colors.surface} size={24} />
+              </Pressable>
+              <View style={styles.zoomStage}>
+                <ZoomableAssetImage source={assetImage} width={zoomWidth} height={zoomHeight} />
+              </View>
+            </View>
+          </Modal>
+        </>
+      ) : ImageComponent ? <ImageComponent /> : (
         <View style={styles.placeholder}>
-          <Text style={styles.placeholderText}>📊 {imageType}</Text>
+          <Text style={styles.placeholderText}>{imageType}</Text>
         </View>
       )}
       <Text style={styles.caption}>{title}</Text>
@@ -145,6 +268,50 @@ const styles = StyleSheet.create({
     padding: 12,
     marginVertical: 12,
     alignItems: 'center',
+    overflow: 'hidden',
+  },
+  assetFrame: {
+    maxWidth: '100%',
+    borderRadius: 8,
+    overflow: 'hidden',
+    backgroundColor: colors.background,
+  },
+  assetImage: {
+    width: '100%',
+    height: '100%',
+  },
+  zoomBadge: {
+    position: 'absolute',
+    right: 8,
+    bottom: 8,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: 'rgba(23, 33, 29, 0.78)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modal: {
+    flex: 1,
+    backgroundColor: colors.code,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 44,
+    right: 18,
+    zIndex: 2,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255, 255, 255, 0.14)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  zoomStage: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
   },
   caption: {
     color: colors.muted,

@@ -61,6 +61,11 @@ export const pandasCourse: CourseModule = {
           text: 'Pandas provides two main methods to select rows and columns: `.loc` (label-based selection) and `.iloc` (integer index-based selection). Understanding their difference is crucial to avoiding lookup bugs.',
         },
         {
+          type: 'image',
+          title: 'Use loc when you are thinking in row or column labels. Use iloc when you are thinking in numeric positions.',
+          imageType: 'locVSiloc',
+        },
+        {
           type: 'table',
           headers: ['Method', 'Lookup Type', 'Example Row', 'Example Col'],
           rows: [
@@ -168,16 +173,16 @@ export const pandasCourse: CourseModule = {
     },
   ],
   quiz: [
-    { id: 'pd-q1', prompt: 'Who created Pandas?', options: ['Wes McKinney', 'Travis Oliphant', 'John Hunter', 'Geoffrey Hinton'], answerIndex: 0, explanation: 'Wes McKinney started Pandas in 2008.' },
-    { id: 'pd-q2', prompt: 'Which method replaces missing values?', options: ['fillna', 'reshape', 'broadcast', 'imshow'], answerIndex: 0, explanation: 'fillna replaces missing entries with a chosen value or statistic.' },
+    { id: 'pd-q1', prompt: 'Who created Pandas?', options: ["Travis Oliphant", "John Hunter", "Wes McKinney", "Geoffrey Hinton"], answerIndex: 2, explanation: 'Wes McKinney started Pandas in 2008.' },
+    { id: 'pd-q2', prompt: 'Which method replaces missing values?', options: ["reshape", "broadcast", "imshow", "fillna"], answerIndex: 3, explanation: 'fillna replaces missing entries with a chosen value or statistic.' },
     { id: 'pd-q3', prompt: 'What does GroupBy implement?', options: ['Split-apply-combine', 'Only plotting', 'Only sorting', 'Matrix multiplication'], answerIndex: 0, explanation: 'Rows are split into groups, a function is applied, and results are combined.' },
-    { id: 'pd-q4', prompt: 'When should you inspect data with info() and describe()?', options: ['Before modeling', 'Only after deployment', 'Only for images', 'Never'], answerIndex: 0, explanation: 'Inspection catches types, missing values, ranges, and suspicious columns early.' },
-    { id: 'pd-q5', prompt: 'What does pd.merge() do?', options: ['Combines two DataFrames on a shared key', 'Deletes duplicate rows', 'Sorts the DataFrame', 'Creates a new column'], answerIndex: 0, explanation: 'merge() is like a SQL JOIN — it combines tables based on matching key columns.' },
-    { id: 'pd-q6', prompt: 'What is the difference between loc and iloc?', options: ['loc uses labels, iloc uses integer positions', 'loc is faster', 'iloc uses labels', 'There is no difference'], answerIndex: 0, explanation: 'loc selects by row/column labels; iloc selects by integer index positions.' },
+    { id: 'pd-q4', prompt: 'When should you inspect data with info() and describe()?', options: ["Only after deployment", "Before modeling", "Only for images", "Never"], answerIndex: 1, explanation: 'Inspection catches types, missing values, ranges, and suspicious columns early.' },
+    { id: 'pd-q5', prompt: 'What does pd.merge() do?', options: ["Deletes duplicate rows", "Sorts the DataFrame", "Combines two DataFrames on a shared key", "Creates a new column"], answerIndex: 2, explanation: 'merge() is like a SQL JOIN — it combines tables based on matching key columns.' },
+    { id: 'pd-q6', prompt: 'What is the difference between loc and iloc?', options: ["loc is faster", "iloc uses labels", "There is no difference", "loc uses labels, iloc uses integer positions"], answerIndex: 3, explanation: 'loc selects by row/column labels; iloc selects by integer index positions.' },
     { id: 'pd-q7', prompt: 'What does df.isna().sum() return?', options: ['Count of missing values per column', 'Sum of all values', 'Total rows', 'A boolean mask'], answerIndex: 0, explanation: 'isna() creates a boolean mask, and sum() counts True values per column.' },
-    { id: 'pd-q8', prompt: 'What does pd.to_datetime() do?', options: ['Converts strings to datetime objects', 'Formats numbers as dates', 'Deletes date columns', 'Creates a timer'], answerIndex: 0, explanation: 'to_datetime() parses date strings into proper datetime objects for time operations.' },
-    { id: 'pd-q9', prompt: 'What happens in a left join when a key has no match?', options: ['The right columns get NaN values', 'The row is deleted', 'An error is raised', 'The row is duplicated'], answerIndex: 0, explanation: 'Left join keeps all left table rows and fills unmatched right columns with NaN.' },
-    { id: 'pd-q10', prompt: 'What does df.value_counts() show?', options: ['Frequency of each unique value', 'Mean of all values', 'Data types', 'Column names'], answerIndex: 0, explanation: 'value_counts() shows how many times each unique value appears.' },
+    { id: 'pd-q8', prompt: 'What does pd.to_datetime() do?', options: ["Formats numbers as dates", "Converts strings to datetime objects", "Deletes date columns", "Creates a timer"], answerIndex: 1, explanation: 'to_datetime() parses date strings into proper datetime objects for time operations.' },
+    { id: 'pd-q9', prompt: 'What happens in a left join when a key has no match?', options: ["The row is deleted", "An error is raised", "The right columns get NaN values", "The row is duplicated"], answerIndex: 2, explanation: 'Left join keeps all left table rows and fills unmatched right columns with NaN.' },
+    { id: 'pd-q10', prompt: 'What does df.value_counts() show?', options: ["Mean of all values", "Data types", "Column names", "Frequency of each unique value"], answerIndex: 3, explanation: 'value_counts() shows how many times each unique value appears.' },
   ],
   practice: [
     { id: 'pd-p1', title: 'Average Score', prompt: 'Build a DataFrame with scores and print the mean score.', starterCode: "import pandas as pd\ndf = pd.DataFrame({'score': [55, 65, 78]})\nprint(df['score'].mean())", expectedOutput: '66.0', hint: "Select the 'score' column before calling mean()." },

@@ -179,12 +179,12 @@ export const numpyCourse: CourseModule = {
       "id": "np-q1",
       "prompt": "What does axis=0 usually mean for a 2D array?",
       "options": [
-        "Operate down rows for each column",
         "Operate across columns for each row",
         "Flatten first",
-        "Transpose first"
+        "Transpose first",
+        "Operate down rows for each column"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "axis=0 collapses the row direction, producing one result per column. Think of it as 'crush downward': np.sum([[1,2],[3,4]], axis=0) → [4, 6]."
     },
     {
@@ -203,36 +203,36 @@ export const numpyCourse: CourseModule = {
       "id": "np-q3",
       "prompt": "Why is vectorization important in NumPy?",
       "options": [
-        "It pushes loops into optimized native code",
         "It removes the need for data",
+        "It pushes loops into optimized native code",
         "It changes Python syntax",
         "It only makes plots prettier"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "NumPy operations are implemented in compiled C/Fortran. A vectorized operation on 1 million elements can be 100x faster than an equivalent Python for-loop."
     },
     {
       "id": "np-q4",
       "prompt": "What does X @ W commonly represent in ML?",
       "options": [
-        "Matrix multiplication",
         "String formatting",
         "Random sampling",
+        "Matrix multiplication",
         "File saving"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "The @ operator (PEP 465) performs matrix multiplication. In ML, X (data) @ W (weights) computes the weighted input for each sample in one shot."
     },
     {
       "id": "np-q5",
       "prompt": "What does np.random.seed(42) do?",
       "options": [
-        "Makes random results reproducible",
         "Generates 42 random numbers",
         "Sets array values to 42",
-        "Creates a seed file"
+        "Creates a seed file",
+        "Makes random results reproducible"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "A seed initialises the pseudo-random number generator to a fixed state. Anyone running the same code with seed(42) gets identical random numbers — critical for reproducible ML experiments."
     },
     {
@@ -251,36 +251,36 @@ export const numpyCourse: CourseModule = {
       "id": "np-q7",
       "prompt": "What does x[x > 5] do?",
       "options": [
-        "Selects elements greater than 5 using a boolean mask",
         "Sets all elements to 5",
+        "Selects elements greater than 5 using a boolean mask",
         "Returns True or False",
         "Raises an error"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "x > 5 creates a boolean array ([False, True, ...]). Using it as an index selects only True positions. This is called boolean (fancy) indexing."
     },
     {
       "id": "np-q8",
       "prompt": "What file format does np.save() use?",
       "options": [
-        ".npy binary format",
         ".csv text format",
         ".json format",
+        ".npy binary format",
         ".xlsx format"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": ".npy stores the array's shape, dtype, and raw data in a compact binary format. It's much faster to load than CSV and preserves dtype exactly."
     },
     {
       "id": "np-q9",
       "prompt": "What does np.linalg.norm(v) compute?",
       "options": [
-        "The magnitude (L2 norm) of vector v",
         "The normal distribution",
         "The normalized form",
-        "The number of elements"
+        "The number of elements",
+        "The magnitude (L2 norm) of vector v"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "The L2 norm is √(Σxᵢ²) — the Euclidean length of the vector. Used constantly in ML: gradient magnitudes, distance metrics, regularisation penalties."
     },
     {
@@ -299,36 +299,36 @@ export const numpyCourse: CourseModule = {
       "id": "np-q11",
       "prompt": "What does np.zeros((3, 3)) produce?",
       "options": [
-        "A 3×3 matrix filled with 0.0",
         "A 3×3 identity matrix",
+        "A 3×3 matrix filled with 0.0",
         "A 1D array of three zeros",
         "An empty array"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "np.zeros(shape) creates an array filled with 0.0 of the given shape. Commonly used to initialise weight matrices before training."
     },
     {
       "id": "np-q12",
       "prompt": "What does arr.T do?",
       "options": [
-        "Returns the transpose of the array",
         "Converts to a tuple",
         "Fills with T values",
+        "Returns the transpose of the array",
         "Sorts the array"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "The .T attribute swaps rows and columns. A (3,4) array becomes (4,3). Essential for aligning dimensions in matrix multiplications."
     },
     {
       "id": "np-q13",
       "prompt": "What is the difference between np.copy(a) and a view?",
       "options": [
-        "copy() creates independent data; a view shares the same memory",
         "They are identical",
         "Views are slower",
-        "copy() changes the dtype"
+        "copy() changes the dtype",
+        "copy() creates independent data; a view shares the same memory"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "Slicing (a[1:3]) usually returns a view — modifying it changes the original. np.copy() or a.copy() allocates new memory, so changes are independent."
     },
     {
@@ -347,36 +347,36 @@ export const numpyCourse: CourseModule = {
       "id": "np-q15",
       "prompt": "What does np.where(condition, x, y) return?",
       "options": [
-        "x where condition is True, y where False",
         "Indices where condition is True only",
+        "x where condition is True, y where False",
         "A filtered list",
         "A boolean mask"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "np.where is a vectorised if-else: np.where(arr>0, arr, 0) implements ReLU — keeps positive values, zeros out the rest."
     },
     {
       "id": "np-q16",
       "prompt": "What does np.dot(a, b) compute for 1D arrays?",
       "options": [
-        "The scalar dot product",
         "The outer product",
         "Element-wise multiplication",
+        "The scalar dot product",
         "The cross product"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "For 1D arrays, np.dot gives Σaᵢbᵢ — the dot product, equivalent to a @ b. For 2D, it performs matrix multiplication."
     },
     {
       "id": "np-q17",
       "prompt": "What does np.linspace(0, 1, 5) produce?",
       "options": [
-        "[0.0, 0.25, 0.5, 0.75, 1.0]",
         "[0, 1, 2, 3, 4]",
         "[0.0, 0.2, 0.4, 0.6, 0.8]",
-        "[1, 1, 1, 1, 1]"
+        "[1, 1, 1, 1, 1]",
+        "[0.0, 0.25, 0.5, 0.75, 1.0]"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "linspace(start, stop, num) produces num evenly spaced values inclusive of both endpoints. Useful for plotting smooth curves."
     },
     {
@@ -395,36 +395,36 @@ export const numpyCourse: CourseModule = {
       "id": "np-q19",
       "prompt": "What does np.argmax(arr) return?",
       "options": [
-        "The index of the maximum value",
         "The maximum value itself",
+        "The index of the maximum value",
         "All indices where value equals max",
         "The sorted array"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "argmax returns the flat index of the largest element. In classification, np.argmax(logits) gives the predicted class label."
     },
     {
       "id": "np-q20",
       "prompt": "What is the result of np.eye(3)?",
       "options": [
-        "3×3 identity matrix",
         "3×3 zero matrix",
         "3-element array of 1s",
+        "3×3 identity matrix",
         "3×3 matrix of random values"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "np.eye(n) creates an n×n identity matrix (1s on the diagonal, 0s elsewhere). Used in linear algebra and to initialise certain weight matrices."
     },
     {
       "id": "np-q21",
       "prompt": "What does np.clip(arr, 0, 1) do?",
       "options": [
-        "Clamps all values to [0, 1]",
         "Removes values outside [0,1]",
         "Normalizes the array",
-        "Rounds to 0 or 1"
+        "Rounds to 0 or 1",
+        "Clamps all values to [0, 1]"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "clip(a_min, a_max) replaces values below a_min with a_min and above a_max with a_max. Useful for keeping probabilities in [0,1]."
     },
     {
@@ -443,36 +443,36 @@ export const numpyCourse: CourseModule = {
       "id": "np-q23",
       "prompt": "What is the output shape of np.sum(arr) for arr of shape (3,4)?",
       "options": [
-        "() — a scalar",
         "(3,)",
+        "() — a scalar",
         "(4,)",
         "(3,4)"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "With no axis argument, np.sum collapses everything into a single scalar (shape ()). Specify axis to keep dimensions."
     },
     {
       "id": "np-q24",
       "prompt": "What does np.vstack([a, b]) do?",
       "options": [
-        "Stacks arrays row-wise (vertically)",
         "Stacks arrays column-wise",
         "Creates a 3D array",
+        "Stacks arrays row-wise (vertically)",
         "Concatenates strings"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "vstack is shorthand for concatenate along axis=0. Two (2,3) arrays → (4,3). hstack stacks horizontally (axis=1)."
     },
     {
       "id": "np-q25",
       "prompt": "What does np.random.randn(3, 3) produce?",
       "options": [
-        "A 3×3 matrix from standard normal distribution (mean=0, std=1)",
         "A 3×3 matrix of integers 0-3",
         "A 3×3 uniform matrix [0,1)",
-        "A fixed random matrix"
+        "A fixed random matrix",
+        "A 3×3 matrix from standard normal distribution (mean=0, std=1)"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "randn samples from N(0,1). Commonly used to initialise neural network weights before scaling (e.g. Xavier init)."
     },
     {
@@ -491,36 +491,36 @@ export const numpyCourse: CourseModule = {
       "id": "np-q27",
       "prompt": "What does arr[::2] do?",
       "options": [
-        "Selects every other element starting from index 0",
         "Selects the last two elements",
+        "Selects every other element starting from index 0",
         "Divides by 2",
         "Reverses the array"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "Slice syntax [start:stop:step]. ::2 means start=0, stop=end, step=2 — every even index: [0,2,4,...]. Use [::-1] to reverse."
     },
     {
       "id": "np-q28",
       "prompt": "What is the difference between np.random.rand() and np.random.randn()?",
       "options": [
-        "rand() is uniform [0,1); randn() is standard normal",
         "They are identical",
         "randn() is uniform",
+        "rand() is uniform [0,1); randn() is standard normal",
         "rand() is normal"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "rand draws from Uniform(0,1) — all values equally likely between 0 and 1. randn draws from Normal(0,1) — values cluster around 0."
     },
     {
       "id": "np-q29",
       "prompt": "What does np.linalg.inv(A) compute?",
       "options": [
-        "The matrix inverse A⁻¹",
         "The eigenvalues",
         "The determinant",
-        "The transpose"
+        "The transpose",
+        "The matrix inverse A⁻¹"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "inv(A) returns A⁻¹ such that A @ A⁻¹ = I. Used in closed-form solutions like OLS: w = (XᵀX)⁻¹Xᵀy. Raises LinAlgError if A is singular."
     },
     {
@@ -539,36 +539,36 @@ export const numpyCourse: CourseModule = {
       "id": "np-q31",
       "prompt": "What is fancy indexing in NumPy?",
       "options": [
-        "Indexing with an array of integers",
         "Indexing with negative numbers",
+        "Indexing with an array of integers",
         "Indexing with slices",
         "Indexing with a lambda"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "Fancy indexing uses an array of indices: arr[[0, 2, 4]] selects rows 0, 2, 4. Unlike slices, it always returns a copy."
     },
     {
       "id": "np-q32",
       "prompt": "What does np.einsum('ij,jk->ik', A, B) compute?",
       "options": [
-        "Matrix multiplication A @ B",
         "Hadamard product",
         "Outer product",
+        "Matrix multiplication A @ B",
         "Trace"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "einsum expresses tensor operations with index notation. 'ij,jk->ik' sums over j — exactly matrix multiplication. Extremely versatile for batched operations."
     },
     {
       "id": "np-q33",
       "prompt": "What is the output of np.arange(1, 10, 2)?",
       "options": [
-        "[1, 3, 5, 7, 9]",
         "[1, 2, 3, 4, 5]",
         "[1, 3, 5, 7]",
-        "[2, 4, 6, 8]"
+        "[2, 4, 6, 8]",
+        "[1, 3, 5, 7, 9]"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "arange(start, stop, step) gives [1,3,5,7,9]. Like Python range but returns an ndarray. stop=10 is excluded."
     },
     {
@@ -587,36 +587,36 @@ export const numpyCourse: CourseModule = {
       "id": "np-q35",
       "prompt": "Which function computes element-wise maximum of two arrays?",
       "options": [
-        "np.maximum(a, b)",
         "np.max(a, b)",
+        "np.maximum(a, b)",
         "np.fmax(a,b) only",
         "max(a, b)"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "np.maximum(a, b) compares element by element and returns the larger. np.max(arr) finds the global max of one array. Very different!"
     },
     {
       "id": "np-q36",
       "prompt": "What does np.linalg.eig(A) return?",
       "options": [
-        "Eigenvalues and eigenvectors of A",
         "Singular values",
         "The rank",
+        "Eigenvalues and eigenvectors of A",
         "The determinant"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "eig returns (eigenvalues, eigenvectors). Eigenvectors form the columns of the second result. Used in PCA, spectral clustering, and stability analysis."
     },
     {
       "id": "np-q37",
       "prompt": "What does np.linalg.svd(A) decompose A into?",
       "options": [
-        "U, S, Vt where A = U @ diag(S) @ Vt",
         "Eigenvalues and eigenvectors",
         "LU factorisation",
-        "QR factorisation"
+        "QR factorisation",
+        "U, S, Vt where A = U @ diag(S) @ Vt"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "SVD splits any matrix into U (left singular vectors), S (singular values), Vt (right singular vectors transposed). Foundation of dimensionality reduction and recommendation systems."
     },
     {
@@ -635,36 +635,36 @@ export const numpyCourse: CourseModule = {
       "id": "np-q39",
       "prompt": "What does np.broadcast_to(arr, shape) do?",
       "options": [
-        "Returns a read-only view with the new shape without copying data",
         "Creates a writeable copy",
+        "Returns a read-only view with the new shape without copying data",
         "Raises an error if shapes differ",
         "Transposes the array"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "broadcast_to is memory-efficient: the data is not replicated; NumPy just pretends the array has the larger shape. The result is read-only."
     },
     {
       "id": "np-q40",
       "prompt": "What does np.isnan(arr).any() check?",
       "options": [
-        "Whether any element is NaN",
         "Whether all elements are NaN",
         "The number of NaN values",
+        "Whether any element is NaN",
         "Whether dtype is float"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "np.isnan produces a boolean array; .any() returns True if at least one element is True. Essential for data quality checks before training."
     },
     {
       "id": "np-q41",
       "prompt": "What does np.cumsum([1, 2, 3, 4]) return?",
       "options": [
-        "[1, 3, 6, 10]",
         "[1, 2, 3, 4]",
         "[10, 10, 10, 10]",
-        "[0, 1, 3, 6]"
+        "[0, 1, 3, 6]",
+        "[1, 3, 6, 10]"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "cumsum computes the running total: [1, 1+2, 1+2+3, 1+2+3+4] = [1,3,6,10]. Used in probability (CDF), finance (running returns), and more."
     },
     {
@@ -683,36 +683,36 @@ export const numpyCourse: CourseModule = {
       "id": "np-q43",
       "prompt": "What does np.random.choice(arr, size=3, replace=False) do?",
       "options": [
-        "Samples 3 unique elements without replacement",
         "Samples 3 elements with repetition allowed",
+        "Samples 3 unique elements without replacement",
         "Shuffles the array",
         "Creates 3 copies"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "replace=False ensures no element is picked twice — sampling without replacement. Used for train/val/test splitting and bootstrapping."
     },
     {
       "id": "np-q44",
       "prompt": "What does arr.astype(np.float32) do?",
       "options": [
-        "Returns a new array with dtype changed to float32",
         "Modifies arr in-place",
         "Rounds all values",
+        "Returns a new array with dtype changed to float32",
         "Converts to a Python list"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "astype always returns a copy with the new dtype. Changing from float64 to float32 halves memory — important when loading large datasets."
     },
     {
       "id": "np-q45",
       "prompt": "What does np.percentile(arr, 75) compute?",
       "options": [
-        "The value below which 75% of data falls (Q3)",
         "The 75th element",
         "The mean of the top 75%",
-        "The standard deviation"
+        "The standard deviation",
+        "The value below which 75% of data falls (Q3)"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "The 75th percentile (Q3) is the value such that 75% of observations are below it. Useful for outlier detection (IQR = Q3 - Q1)."
     },
     {
@@ -731,36 +731,36 @@ export const numpyCourse: CourseModule = {
       "id": "np-q47",
       "prompt": "What does np.nan_to_num(arr) do?",
       "options": [
-        "Replaces NaN with 0, +inf with a large number, -inf with a small number",
         "Removes NaN rows",
+        "Replaces NaN with 0, +inf with a large number, -inf with a small number",
         "Raises ValueError on NaN",
         "Fills NaN with the column mean"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "nan_to_num is a quick way to sanitise arrays before computation. Safe defaults: NaN→0, inf→max finite float, -inf→min finite float."
     },
     {
       "id": "np-q48",
       "prompt": "What is the output of np.array([1, 2, 3], dtype=np.bool_)?",
       "options": [
-        "[True, True, True]",
         "[1, 2, 3]",
         "[True, False, True]",
+        "[True, True, True]",
         "Error"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "Non-zero integers convert to True. Only 0 converts to False. So [1,2,3] all become True."
     },
     {
       "id": "np-q49",
       "prompt": "What does np.outer(a, b) compute for 1D vectors a and b?",
       "options": [
-        "The outer product — an (m×n) matrix where result[i,j]=a[i]*b[j]",
         "The dot product",
         "The cross product",
-        "The concatenated array"
+        "The concatenated array",
+        "The outer product — an (m×n) matrix where result[i,j]=a[i]*b[j]"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "The outer product creates every pair-wise product. For a=(m,) and b=(n,) the result is (m,n). Common in attention mechanisms and Gram matrices."
     },
     {
@@ -779,36 +779,36 @@ export const numpyCourse: CourseModule = {
       "id": "np-q51",
       "prompt": "What does np.diag(arr) do when arr is a 1D array?",
       "options": [
-        "Creates a 2D matrix with arr on the main diagonal",
         "Extracts the diagonal of a matrix",
+        "Creates a 2D matrix with arr on the main diagonal",
         "Flattens the array",
         "Returns the trace"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "np.diag is bidirectional: pass a 1D array → get a diagonal matrix; pass a 2D matrix → extract its diagonal as 1D. Context determines behaviour."
     },
     {
       "id": "np-q52",
       "prompt": "What is the output of np.dot(np.array([1,0,0]), np.array([0,1,0]))?",
       "options": [
-        "0",
         "1",
         "[0,0,0]",
+        "0",
         "Error"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "Orthogonal unit vectors have dot product 0. This is the core concept behind orthogonality, which underpins PCA and QR decomposition."
     },
     {
       "id": "np-q53",
       "prompt": "What does np.abs(arr) compute?",
       "options": [
-        "Element-wise absolute value",
         "The norm of the array",
         "The sum of positives",
-        "Clips negatives to 0"
+        "Clips negatives to 0",
+        "Element-wise absolute value"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "np.abs applies abs() element-by-element. For complex arrays it returns the magnitude. Used in L1 norm: np.sum(np.abs(w)) for regularisation."
     },
     {
@@ -827,36 +827,36 @@ export const numpyCourse: CourseModule = {
       "id": "np-q55",
       "prompt": "What does np.sort(arr, axis=0) do for a 2D array?",
       "options": [
-        "Sorts each column independently",
         "Sorts each row independently",
+        "Sorts each column independently",
         "Sorts the flattened array then reshapes",
         "Sorts by the first column"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "axis=0 sorts along rows (within each column independently). axis=1 sorts along columns (within each row). The array shape does not change."
     },
     {
       "id": "np-q56",
       "prompt": "What does arr.strides tell you?",
       "options": [
-        "The number of bytes to step in each dimension to move to the next element",
         "The array shape",
         "The memory address",
+        "The number of bytes to step in each dimension to move to the next element",
         "The dtype size"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "Strides describe the memory layout. For a C-contiguous (3,4) float32 array, strides=(16,4): moving one row costs 16 bytes (4 elements × 4 bytes), one column costs 4 bytes."
     },
     {
       "id": "np-q57",
       "prompt": "Which NumPy function applies a Python function element-wise?",
       "options": [
-        "np.vectorize(fn)",
         "np.apply(fn)",
         "np.map(fn)",
-        "np.broadcast(fn)"
+        "np.broadcast(fn)",
+        "np.vectorize(fn)"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "np.vectorize wraps a regular Python function so it accepts arrays. Note: it is NOT faster than a for-loop — it's a convenience, not an optimisation."
     },
     {
@@ -875,36 +875,36 @@ export const numpyCourse: CourseModule = {
       "id": "np-q59",
       "prompt": "What does np.linalg.matrix_rank(A) return?",
       "options": [
-        "The number of linearly independent rows/columns",
         "The number of rows",
+        "The number of linearly independent rows/columns",
         "The trace",
         "The determinant"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "Rank tells how much information a matrix actually carries. A rank-deficient matrix cannot be inverted. Checked before calling lstsq or inv."
     },
     {
       "id": "np-q60",
       "prompt": "What is the result of np.array([1,2,3]) * np.array([4,5,6])?",
       "options": [
-        "[4, 10, 18] — element-wise product",
         "[32] — dot product",
         "[[4,5,6],[8,10,12],[12,15,18]] — outer product",
+        "[4, 10, 18] — element-wise product",
         "Error"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "* between arrays of the same shape is the Hadamard (element-wise) product: [1×4, 2×5, 3×6]. Use np.dot or @ for inner/matrix product."
     },
     {
       "id": "np-q61",
       "prompt": "What does np.diff(arr) compute?",
       "options": [
-        "First-order differences: arr[i+1] - arr[i]",
         "Cumulative differences",
         "Absolute differences",
-        "Numerical gradient"
+        "Numerical gradient",
+        "First-order differences: arr[i+1] - arr[i]"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "diff([1,4,9,16]) → [3,5,7]. Result has one fewer element. Used to compute velocity from position data, or detect changes in a time series."
     },
     {
@@ -923,36 +923,36 @@ export const numpyCourse: CourseModule = {
       "id": "np-q63",
       "prompt": "What does np.apply_along_axis(fn, axis=0, arr) do?",
       "options": [
-        "Applies fn to 1D slices along the given axis",
         "Applies fn element-wise",
+        "Applies fn to 1D slices along the given axis",
         "Maps fn over the array in parallel",
         "Vectorizes fn"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "For axis=0 on a (3,4) array, fn is called 4 times — once per column (a length-3 slice each time). Slower than vectorized ops but useful for non-vectorizable functions."
     },
     {
       "id": "np-q64",
       "prompt": "What does np.meshgrid(x, y) produce?",
       "options": [
-        "Two 2D arrays representing coordinate grids for x and y",
         "A 3D array",
         "The dot product of x and y",
+        "Two 2D arrays representing coordinate grids for x and y",
         "A single (m×n) distance matrix"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "meshgrid broadcasts x and y to produce grids. Essential for plotting decision boundaries: you evaluate a model at every (x,y) point on the grid."
     },
     {
       "id": "np-q65",
       "prompt": "What does np.logspace(0, 2, 5) produce?",
       "options": [
-        "5 values evenly spaced on a log scale from 10⁰=1 to 10²=100",
         "[0,0.5,1,1.5,2]",
         "[1,2,3,4,5] in log space",
-        "Logarithm of [0,2,5]"
+        "Logarithm of [0,2,5]",
+        "5 values evenly spaced on a log scale from 10⁰=1 to 10²=100"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "logspace(start, stop, num) gives 10^linspace(start, stop, num). Result: [1, 3.16, 10, 31.6, 100]. Used to search learning rate hyperparameters."
     },
     {
@@ -971,36 +971,36 @@ export const numpyCourse: CourseModule = {
       "id": "np-q67",
       "prompt": "What does np.linalg.det(A) compute?",
       "options": [
-        "The determinant of matrix A",
         "The trace",
+        "The determinant of matrix A",
         "The rank",
         "The condition number"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "The determinant measures how much a transformation scales volume. det=0 means singular (non-invertible). det(I)=1. Used to check matrix invertibility."
     },
     {
       "id": "np-q68",
       "prompt": "What does np.argsort(arr) return?",
       "options": [
-        "Indices that would sort the array",
         "The sorted array",
         "The rank of each element",
+        "Indices that would sort the array",
         "The inverse permutation"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "argsort([30,10,20]) → [1,2,0]: index 1 (value 10) first, then 2 (20), then 0 (30). Use arr[np.argsort(arr)] to sort. Used in top-k retrieval."
     },
     {
       "id": "np-q69",
       "prompt": "What does the memory layout 'C-contiguous' mean?",
       "options": [
-        "Rows are stored in consecutive memory (row-major)",
         "Columns are stored consecutively",
         "Data is compressed",
-        "Data is stored in a linked list"
+        "Data is stored in a linked list",
+        "Rows are stored in consecutive memory (row-major)"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "C-contiguous (row-major) stores row 0 fully before row 1. Fortran-contiguous is column-major. Contiguity affects the speed of slicing operations."
     },
     {
@@ -1019,36 +1019,36 @@ export const numpyCourse: CourseModule = {
       "id": "np-q71",
       "prompt": "What does the ufunc np.exp(arr) do?",
       "options": [
-        "Computes e^x element-wise",
         "Computes log(x) element-wise",
+        "Computes e^x element-wise",
         "Computes x^2 element-wise",
         "Computes the exponential of the sum"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "Universal functions (ufuncs) operate element-wise on arrays with no Python loop overhead. np.exp is used in softmax, sigmoid, and many activation functions."
     },
     {
       "id": "np-q72",
       "prompt": "What does np.triu(A) return?",
       "options": [
-        "Upper triangular matrix (elements below the diagonal set to 0)",
         "Lower triangular matrix",
         "The diagonal only",
+        "Upper triangular matrix (elements below the diagonal set to 0)",
         "The symmetric part"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "triu (upper triangular) zeroes out elements below the diagonal. np.tril does the opposite. Used to implement causal masking in transformers."
     },
     {
       "id": "np-q73",
       "prompt": "What does np.random.shuffle(arr) do?",
       "options": [
-        "Shuffles arr in-place and returns None",
         "Returns a shuffled copy",
         "Shuffles along axis=1",
-        "Returns the permutation used"
+        "Returns the permutation used",
+        "Shuffles arr in-place and returns None"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "shuffle modifies the array in-place and returns None. Use np.random.permutation(arr) to get a shuffled copy without modifying the original."
     },
     {
@@ -1067,12 +1067,12 @@ export const numpyCourse: CourseModule = {
       "id": "np-q75",
       "prompt": "What does np.testing.assert_array_almost_equal(a, b) do?",
       "options": [
-        "Raises AssertionError if arrays differ beyond floating-point tolerance",
         "Checks for exact equality",
+        "Raises AssertionError if arrays differ beyond floating-point tolerance",
         "Checks only the shapes",
         "Prints differences"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "Due to float32 rounding, exact equality checks often fail. assert_array_almost_equal (default 6 decimal places) is the correct way to unit-test numerical functions."
     }
   ],
