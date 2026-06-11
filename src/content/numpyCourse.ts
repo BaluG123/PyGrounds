@@ -41,6 +41,11 @@ export const numpyCourse: CourseModule = {
           text: 'A normal Python list is like a shopping cart full of different-sized, individually wrapped boxes. A NumPy array is like a shipping crate containing exactly identical stacked soda cans. You can count, move, and process the soda cans exponentially faster because of their uniform layout.',
         },
         {
+          type: 'image',
+          title: 'ndarray basics: shape, dtype, axes, and memory layout.',
+          imageType: 'numpy-card-1',
+        },
+        {
           type: 'diagram',
           title: 'Understanding Array Dimensions (Axes)',
           boxes: [
@@ -103,6 +108,11 @@ export const numpyCourse: CourseModule = {
           text: 'Applying a loop in Python is like a librarian scanning books one-by-one by hand. Vectorization is like a scanner checking an entire rack of books simultaneously with a laser bar.',
         },
         {
+          type: 'image',
+          title: 'Vectorization moves repeated numeric work into fast compiled array operations.',
+          imageType: 'numpy-card-2',
+        },
+        {
           type: 'table',
           headers: ['Operation Type', 'Example', 'Execution Speed'],
           rows: [
@@ -116,6 +126,11 @@ export const numpyCourse: CourseModule = {
         {
           type: 'paragraph',
           text: 'Broadcasting allows you to perform arithmetic on arrays of different shapes. NumPy matches shapes from right to left. Two dimensions are compatible if they are equal, or if one of them is 1.',
+        },
+        {
+          type: 'image',
+          title: 'Broadcasting rules explain when shapes can stretch without copying data.',
+          imageType: 'numpy-card-3',
         },
         {
           type: 'formula',
@@ -136,6 +151,109 @@ export const numpyCourse: CourseModule = {
       ],
     },
     {
+      id: 'numpy-masks-indexing',
+      title: 'Masks and Fancy Indexing',
+      duration: '22 min',
+      objective: 'Select and update array elements with boolean conditions and index lists.',
+      blocks: [
+        { type: 'heading', text: 'Selecting Values by Meaning' },
+        {
+          type: 'paragraph',
+          text: 'Boolean masks let you ask questions of every element at once: which values are positive, which scores passed, or which pixels are too bright. Fancy indexing uses arrays of positions to gather rows, columns, or examples in a custom order.',
+        },
+        {
+          type: 'image',
+          title: 'Boolean masks and fancy indexing select exactly the values your analysis needs.',
+          imageType: 'numpy-card-4',
+        },
+        {
+          type: 'stepByStep',
+          title: 'Masking Workflow',
+          steps: [
+            { title: 'Create a Condition', description: 'Build a boolean array such as `scores >= 80`.' },
+            { title: 'Use It as an Index', description: 'Pass the mask inside brackets: `scores[mask]`.' },
+            { title: 'Update Carefully', description: 'Assign through the mask when you need to clip or clean selected values.' },
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Filter Passing Scores' },
+        {
+          type: 'playground',
+          code: 'import numpy as np\n\nscores = np.array([72, 91, 84, 63, 99])\nmask = scores >= 80\n\nprint(mask)\nprint(scores[mask])',
+          expectedOutput: '[False  True  True False  True]\n[91 84 99]',
+        },
+        {
+          type: 'callout',
+          variant: 'tip',
+          title: 'Masks Keep Shape Logic Visible',
+          body: 'Store important masks in named variables. `high_confidence = probs > 0.9` is easier to debug than a complex condition hidden inside brackets.',
+        },
+      ],
+    },
+    {
+      id: 'numpy-aggregations',
+      title: 'Aggregations Across Axes',
+      duration: '22 min',
+      objective: 'Summarize arrays by rows, columns, or the whole tensor.',
+      blocks: [
+        { type: 'heading', text: 'Compressing Many Numbers into Signal' },
+        {
+          type: 'paragraph',
+          text: 'Aggregations such as `sum`, `mean`, `min`, and `max` reduce many values into a smaller summary. The key skill is choosing the right axis: axis 0 summarizes down rows, while axis 1 summarizes across columns.',
+        },
+        {
+          type: 'image',
+          title: 'Aggregations across axes turn raw matrices into compact statistics.',
+          imageType: 'numpy-card-5',
+        },
+        {
+          type: 'table',
+          headers: ['Expression', 'Meaning', 'Typical Result'],
+          rows: [
+            ['arr.mean()', 'Average everything', 'One scalar'],
+            ['arr.mean(axis=0)', 'Average each column', 'One value per column'],
+            ['arr.mean(axis=1)', 'Average each row', 'One value per row'],
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Row and Column Means' },
+        {
+          type: 'playground',
+          code: 'import numpy as np\n\nscores = np.array([\n    [80, 90, 70],\n    [60, 75, 85]\n])\n\nprint(scores.mean(axis=0))\nprint(scores.mean(axis=1))',
+          expectedOutput: '[70.  82.5 77.5]\n[80.         73.33333333]',
+        },
+      ],
+    },
+    {
+      id: 'numpy-random',
+      title: 'Random Sampling and Seeds',
+      duration: '20 min',
+      objective: 'Generate reproducible random arrays for experiments and simulations.',
+      blocks: [
+        { type: 'heading', text: 'Controlled Randomness' },
+        {
+          type: 'paragraph',
+          text: 'Machine learning uses randomness for initialization, shuffling, sampling, augmentation, and simulation. A seed makes pseudo-random results repeatable, which is essential when you want to debug or compare experiments fairly.',
+        },
+        {
+          type: 'image',
+          title: 'Random seeds make sampling reproducible without removing randomness from the idea.',
+          imageType: 'numpy-card-6',
+        },
+        {
+          type: 'playground',
+          code: 'import numpy as np\n\nrng = np.random.default_rng(42)\nweights = rng.normal(loc=0, scale=0.1, size=5)\nindices = rng.choice(10, size=3, replace=False)\n\nprint(weights.round(3))\nprint(indices)',
+          expectedOutput: '[ 0.03  -0.104  0.075  0.094 -0.195]\n[7 0 3]',
+        },
+        {
+          type: 'callout',
+          variant: 'remember',
+          title: 'Prefer default_rng',
+          body: '`np.random.default_rng(seed)` creates a modern random generator object. It keeps randomness local instead of changing global random state for the whole program.',
+        },
+      ],
+    },
+    {
       id: 'numpy-linear-algebra',
       title: 'Linear Algebra for AI',
       duration: '26 min',
@@ -145,6 +263,11 @@ export const numpyCourse: CourseModule = {
         {
           type: 'paragraph',
           text: 'Every neural network layer is built upon linear algebra. The forward pass is primarily dot products (vector projections) and matrix multiplications. NumPy\'s `@` operator handles this natively.',
+        },
+        {
+          type: 'image',
+          title: 'Linear algebra operations power projections, distances, and model layers.',
+          imageType: 'numpy-card-7',
         },
         {
           type: 'formula',
@@ -170,6 +293,40 @@ export const numpyCourse: CourseModule = {
             { title: 'Aggregate Sum', description: 'Add all squared values together.' },
             { title: 'Square Root', description: 'Take the square root of the sum to find the geometric length (L2 norm).' },
           ],
+        },
+      ],
+    },
+    {
+      id: 'numpy-saving-tensors',
+      title: 'Saving Arrays for ML',
+      duration: '18 min',
+      objective: 'Persist arrays and prepare clean tensor shapes for model pipelines.',
+      blocks: [
+        { type: 'heading', text: 'From Array Work to Reusable Data' },
+        {
+          type: 'paragraph',
+          text: 'After transforming arrays, you often need to save them for training, evaluation, or deployment. NumPy can preserve exact shapes and dtypes with `.npy` and `.npz`, avoiding the ambiguity that can happen when numeric tensors are squeezed into plain text files.',
+        },
+        {
+          type: 'image',
+          title: 'Saving arrays preserves tensor shape, dtype, and reusable ML-ready data.',
+          imageType: 'numpy-card-8',
+        },
+        {
+          type: 'stepByStep',
+          title: 'ML Tensor Export Checklist',
+          steps: [
+            { title: 'Confirm Shape', description: 'Print `.shape` and make sure batch, feature, height, width, or channel axes are where you expect.' },
+            { title: 'Choose Dtype', description: 'Use `float32` for most model inputs and compact storage.' },
+            { title: 'Save Losslessly', description: 'Use `np.save()` for one array or `np.savez()` for several named arrays.' },
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Prepare a Float32 Feature Matrix' },
+        {
+          type: 'playground',
+          code: 'import numpy as np\n\nfeatures = np.array([[1, 2, 3], [4, 5, 6]], dtype=np.float32)\nlabels = np.array([0, 1], dtype=np.int64)\n\nprint(features.shape, features.dtype)\nprint(labels.shape, labels.dtype)',
+          expectedOutput: '(2, 3) float32\n(2,) int64',
         },
       ],
     },

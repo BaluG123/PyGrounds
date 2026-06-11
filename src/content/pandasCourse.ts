@@ -41,6 +41,11 @@ export const pandasCourse: CourseModule = {
           text: 'A Series is like a single column in a spreadsheet. A DataFrame is the entire spreadsheet itself, containing multiple named columns side-by-side that all share the same row index.',
         },
         {
+          type: 'image',
+          title: 'Series and DataFrames: one column versus a full labeled table.',
+          imageType: 'mobile-pandas-card-1',
+        },
+        {
           type: 'diagram',
           title: 'DataFrame Axis and Selection Structure',
           boxes: [
@@ -63,7 +68,7 @@ export const pandasCourse: CourseModule = {
         {
           type: 'image',
           title: 'Use loc when you are thinking in row or column labels. Use iloc when you are thinking in numeric positions.',
-          imageType: 'locVSiloc',
+          imageType: 'mobile-pandas-card-2',
         },
         {
           type: 'table',
@@ -104,6 +109,11 @@ export const pandasCourse: CourseModule = {
           text: 'Cleaning data is like preparing ingredients before cooking. If you throw unwashed, unpeeled vegetables (raw, messy data) directly into a pot (machine learning model), the soup will taste terrible, no matter how good the recipe is.',
         },
         {
+          type: 'image',
+          title: 'Missing values: detect blanks, choose a strategy, then clean with care.',
+          imageType: 'mobile-pandas-card-3',
+        },
+        {
           type: 'stepByStep',
           title: 'Standard Data Cleaning Pipeline',
           steps: [
@@ -128,6 +138,46 @@ export const pandasCourse: CourseModule = {
       ],
     },
     {
+      id: 'pandas-filtering',
+      title: 'Filtering, Sorting, and Assigning',
+      duration: '22 min',
+      objective: 'Transform tables into focused feature-ready views.',
+      blocks: [
+        { type: 'heading', text: 'Turning Raw Rows into Useful Views' },
+        {
+          type: 'paragraph',
+          text: 'Once data is loaded and cleaned, the next job is shaping it. Filtering keeps only rows that matter, sorting reveals the strongest or weakest records, and assigning creates new columns that models and dashboards can actually use.',
+        },
+        {
+          type: 'image',
+          title: 'Filtering, sorting, and assigning columns turn raw tables into useful feature tables.',
+          imageType: 'mobile-pandas-card-4',
+        },
+        {
+          type: 'stepByStep',
+          title: 'Feature Table Workflow',
+          steps: [
+            { title: 'Filter Rows', description: 'Use boolean conditions like `df[df["score"] >= 80]` to keep only meaningful records.' },
+            { title: 'Sort for Priority', description: 'Use `.sort_values()` to bring the most important rows to the top.' },
+            { title: 'Assign New Columns', description: 'Use `.assign()` or direct column assignment to create clean model inputs.' },
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Create a Passed Column' },
+        {
+          type: 'playground',
+          code: "import pandas as pd\n\ndf = pd.DataFrame({\n    'name': ['Ada', 'Bob', 'Cat', 'Dan'],\n    'score': [92, 74, 88, 65]\n})\n\nstrong = (\n    df[df['score'] >= 80]\n    .sort_values('score', ascending=False)\n    .assign(passed=True)\n)\nprint(strong)",
+          expectedOutput: '  name  score  passed\n0  Ada     92    True\n2  Cat     88    True',
+        },
+        {
+          type: 'callout',
+          variant: 'tip',
+          title: 'Readable Chains',
+          body: 'When a transformation has multiple steps, wrap it in parentheses and put each step on its own line. The result reads like a small data pipeline.',
+        },
+      ],
+    },
+    {
       id: 'pandas-groupby',
       title: 'GroupBy for Insight',
       duration: '24 min',
@@ -141,6 +191,11 @@ export const pandasCourse: CourseModule = {
         {
           type: 'analogy',
           text: 'Imagine sorting a drawer of scattered marbles. You first group them by color (Split), count the quantity in each group (Apply), and write down a neat list showing total counts per color (Combine).',
+        },
+        {
+          type: 'image',
+          title: 'GroupBy follows split, apply, combine: separate rows, calculate, then bring results back together.',
+          imageType: 'mobile-pandas-card-5',
         },
         {
           type: 'diagram',
@@ -168,6 +223,121 @@ export const pandasCourse: CourseModule = {
           variant: 'tip',
           title: 'Multi-indexing',
           body: 'Grouping by multiple columns: `df.groupby(["country", "year"])` creates a hierarchical index (multi-index). Use `.reset_index()` to flatten it back into a standard DataFrame.',
+        },
+      ],
+    },
+    {
+      id: 'pandas-merging',
+      title: 'Merging Related Tables',
+      duration: '24 min',
+      objective: 'Combine datasets using shared keys and join types.',
+      blocks: [
+        { type: 'heading', text: 'Connecting Tables with Keys' },
+        {
+          type: 'paragraph',
+          text: 'Real datasets rarely arrive as one perfect table. User details might live in one file, scores in another, and purchases in a database. Pandas `merge()` connects those tables through a shared key such as `id`, `email`, or `date`.',
+        },
+        {
+          type: 'image',
+          title: 'Merging and joining connect related tables through shared keys.',
+          imageType: 'mobile-pandas-card-6',
+        },
+        {
+          type: 'table',
+          headers: ['Join Type', 'Keeps Rows From', 'Use When'],
+          rows: [
+            ['inner', 'Matching keys only', 'You only want complete matched records'],
+            ['left', 'All left-table rows', 'Your main table must stay complete'],
+            ['outer', 'All keys from both sides', 'You need to audit mismatches'],
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Join Students with Scores' },
+        {
+          type: 'playground',
+          code: "import pandas as pd\n\nstudents = pd.DataFrame({\n    'id': [1, 2, 3],\n    'name': ['Ada', 'Bob', 'Cat']\n})\nscores = pd.DataFrame({\n    'id': [1, 3],\n    'score': [95, 88]\n})\n\nresult = pd.merge(students, scores, on='id', how='left')\nprint(result)",
+          expectedOutput: '   id name  score\n0   1  Ada   95.0\n1   2  Bob    NaN\n2   3  Cat   88.0',
+        },
+        {
+          type: 'callout',
+          variant: 'remember',
+          title: 'Check Row Counts',
+          body: 'After every merge, compare row counts and inspect missing values. A wrong key can silently duplicate rows or create unexpected NaN values.',
+        },
+      ],
+    },
+    {
+      id: 'pandas-datetime',
+      title: 'Datetime and Resampling',
+      duration: '24 min',
+      objective: 'Parse dates and summarize time-based data.',
+      blocks: [
+        { type: 'heading', text: 'Time Turns Rows into Trends' },
+        {
+          type: 'paragraph',
+          text: 'Dates stored as plain strings are hard to analyze. Once you convert them with `pd.to_datetime()`, Pandas can sort by time, extract features like month or weekday, and resample noisy rows into clean daily, weekly, or monthly summaries.',
+        },
+        {
+          type: 'image',
+          title: 'Datetime parsing and resampling help turn timestamped rows into time-based insight.',
+          imageType: 'mobile-pandas-card-7',
+        },
+        {
+          type: 'stepByStep',
+          title: 'Time Series Workflow',
+          steps: [
+            { title: 'Parse Dates', description: 'Convert strings using `pd.to_datetime()` so Pandas understands them as real dates.' },
+            { title: 'Set Time Index', description: 'Use `.set_index("date")` when you want time-aware slicing and resampling.' },
+            { title: 'Resample', description: 'Use `.resample("M")`, `.resample("W")`, or `.resample("D")` to summarize by month, week, or day.' },
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Monthly Sales Summary' },
+        {
+          type: 'playground',
+          code: "import pandas as pd\n\ndf = pd.DataFrame({\n    'date': ['2024-01-05', '2024-01-20', '2024-02-02'],\n    'sales': [100, 150, 200]\n})\n\ndf['date'] = pd.to_datetime(df['date'])\nmonthly = df.set_index('date').resample('M')['sales'].sum()\nprint(monthly)",
+          expectedOutput: 'date\n2024-01-31    250\n2024-02-29    200\nFreq: M, Name: sales, dtype: int64',
+        },
+        {
+          type: 'callout',
+          variant: 'tip',
+          title: 'Feature Engineering',
+          body: 'Datetime columns can become useful model features: day of week, month, quarter, weekend flag, or days since a previous event.',
+        },
+      ],
+    },
+    {
+      id: 'pandas-exporting',
+      title: 'Exporting Clean Features',
+      duration: '18 min',
+      objective: 'Save model-ready tables after cleaning and feature engineering.',
+      blocks: [
+        { type: 'heading', text: 'From Notebook Table to Model Input' },
+        {
+          type: 'paragraph',
+          text: 'After cleaning, filtering, merging, and engineering columns, the final step is exporting a stable feature table. This table should contain the columns your model expects, with consistent names, safe data types, and no surprise missing values.',
+        },
+        {
+          type: 'stepByStep',
+          title: 'Feature Export Checklist',
+          steps: [
+            { title: 'Select Columns', description: 'Keep only the identifiers, target, and feature columns needed by the next step.' },
+            { title: 'Validate Missing Values', description: 'Use `.isna().sum()` before exporting so missing data does not surprise the model later.' },
+            { title: 'Write a Clean File', description: 'Use `.to_csv(index=False)` for portable files or `.to_parquet()` for efficient analytics pipelines.' },
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Save Selected Feature Columns' },
+        {
+          type: 'playground',
+          code: "import pandas as pd\n\ndf = pd.DataFrame({\n    'name': ['Ada', 'Bob', 'Cat'],\n    'age': [30, 25, 35],\n    'score': [90, 85, 92],\n    'passed': [True, True, True]\n})\n\nfeatures = df[['age', 'score', 'passed']]\nprint(features.isna().sum())\nprint(features.to_csv(index=False))",
+          expectedOutput: 'age       0\nscore     0\npassed    0\ndtype: int64\nage,score,passed\n30,90,True\n25,85,True\n35,92,True\n',
+        },
+        {
+          type: 'callout',
+          variant: 'remember',
+          title: 'Stable Columns Matter',
+          body: 'Training and prediction code should receive the same feature columns in the same meaning. Rename columns clearly and keep export logic repeatable.',
         },
       ],
     },

@@ -37,6 +37,11 @@ export const matplotlibCourse: CourseModule = {
           text: 'In Matplotlib, a plot is built like a painting. The `Figure` is the blank canvas (the entire window), and the `Axes` are the individual paintings (the coordinate grids) attached to that canvas.',
         },
         {
+          type: 'image',
+          title: 'Figure and Axes objects are the foundation of every Matplotlib chart.',
+          imageType: 'matplotlib-card-1',
+        },
+        {
           type: 'diagram',
           title: 'Figure Hierarchy',
           boxes: [
@@ -75,6 +80,99 @@ export const matplotlibCourse: CourseModule = {
       ],
     },
     {
+      id: 'mpl-chart-types',
+      title: 'Core Chart Types',
+      duration: '22 min',
+      objective: 'Choose and create line, scatter, bar, histogram, and heatmap charts.',
+      blocks: [
+        { type: 'heading', text: 'Different Questions Need Different Shapes' },
+        {
+          type: 'paragraph',
+          text: 'Matplotlib gives you several core chart types. A line chart shows change over order or time, scatter shows relationships between two numeric variables, bars compare categories, histograms reveal distributions, and heatmaps show matrix intensity.',
+        },
+        {
+          type: 'image',
+          title: 'Line, scatter, bar, histogram, and heatmap charts answer different visual questions.',
+          imageType: 'matplotlib-card-2',
+        },
+        {
+          type: 'table',
+          headers: ['Chart', 'Best Question', 'Function'],
+          rows: [
+            ['Line', 'How does it change?', 'plt.plot()'],
+            ['Scatter', 'Are two variables related?', 'plt.scatter()'],
+            ['Bar', 'How do categories compare?', 'plt.bar()'],
+            ['Histogram', 'What is the distribution?', 'plt.hist()'],
+            ['Heatmap', 'Where are matrix values high?', 'plt.imshow()'],
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Compare Category Counts' },
+        {
+          type: 'playground',
+          code: "import matplotlib.pyplot as plt\n\nlabels = ['A', 'B', 'C']\ncounts = [18, 32, 24]\n\nplt.bar(labels, counts, color='coral')\nplt.xlabel('Category')\nplt.ylabel('Count')\nplt.title('Category Counts')\nplt.show()",
+          expectedOutput: 'Plot rendered: bar chart titled Category Counts',
+        },
+      ],
+    },
+    {
+      id: 'mpl-labels-annotations',
+      title: 'Labels, Legends, and Annotations',
+      duration: '20 min',
+      objective: 'Make charts readable with titles, labels, grids, legends, and callouts.',
+      blocks: [
+        { type: 'heading', text: 'Make the Chart Explain Itself' },
+        {
+          type: 'paragraph',
+          text: 'A useful chart does not rely on memory. Titles state the message, axis labels define units, legends identify series, grids support reading values, and annotations point attention to important events or outliers.',
+        },
+        {
+          type: 'image',
+          title: 'Labels, legends, titles, grids, and annotations turn plots into communication.',
+          imageType: 'matplotlib-card-3',
+        },
+        {
+          type: 'playground',
+          code: "import matplotlib.pyplot as plt\n\nmonths = ['Jan', 'Feb', 'Mar', 'Apr']\nsales = [20, 28, 24, 40]\n\nplt.plot(months, sales, marker='o', label='Sales')\nplt.title('Monthly Sales')\nplt.xlabel('Month')\nplt.ylabel('Units')\nplt.grid(True, alpha=0.3)\nplt.annotate('Launch', xy=('Apr', 40), xytext=('Mar', 42), arrowprops={'arrowstyle': '->'})\nplt.legend()\nplt.show()",
+          expectedOutput: 'Plot rendered: labeled line chart with annotation',
+        },
+        {
+          type: 'callout',
+          variant: 'remember',
+          title: 'Audience First',
+          body: 'Labels should match the viewer. A teammate may need units and context that are obvious to you while building the plot.',
+        },
+      ],
+    },
+    {
+      id: 'mpl-choosing-charts',
+      title: 'Choosing Charts by Question',
+      duration: '18 min',
+      objective: 'Pick chart types based on the analysis question, not habit.',
+      blocks: [
+        { type: 'heading', text: 'Start with the Question' },
+        {
+          type: 'paragraph',
+          text: 'Good visualization starts before code. Ask what comparison the viewer needs to make: trend, rank, distribution, relationship, composition, or matrix pattern. Then choose the chart that makes that comparison effortless.',
+        },
+        {
+          type: 'image',
+          title: 'Choose chart types by the question the viewer needs answered.',
+          imageType: 'matplotlib-card-4',
+        },
+        {
+          type: 'stepByStep',
+          title: 'Chart Choice Flow',
+          steps: [
+            { title: 'Trend Over Time', description: 'Use a line chart when order or time matters.' },
+            { title: 'Relationship', description: 'Use scatter when comparing two continuous variables.' },
+            { title: 'Distribution', description: 'Use a histogram or box plot to inspect spread and outliers.' },
+            { title: 'Matrix Pattern', description: 'Use a heatmap for correlations, confusion matrices, or grids of intensity.' },
+          ],
+        },
+      ],
+    },
+    {
       id: 'mpl-distributions',
       title: 'Seeing Distributions',
       duration: '20 min',
@@ -88,6 +186,11 @@ export const matplotlibCourse: CourseModule = {
         {
           type: 'analogy',
           text: 'Imagine tossing 100 ping pong balls off a building into a row of buckets below. A histogram is just a bar chart showing how many balls landed in each bucket.',
+        },
+        {
+          type: 'image',
+          title: 'Distributions and outliers reveal scale, skew, and suspicious values before modeling.',
+          imageType: 'matplotlib-card-5',
         },
         {
           type: 'playground',
@@ -112,6 +215,11 @@ export const matplotlibCourse: CourseModule = {
         {
           type: 'paragraph',
           text: 'The single most important plot in deep learning is the Training Curve. By plotting loss across epochs (passes through the data), you can visually diagnose underfitting and overfitting.',
+        },
+        {
+          type: 'image',
+          title: 'Training curves and residual plots expose learning behavior and model errors.',
+          imageType: 'matplotlib-card-6',
         },
         {
           type: 'table',
@@ -143,6 +251,11 @@ export const matplotlibCourse: CourseModule = {
           text: 'Often, you need to compare two different charts side-by-side. Matplotlib\'s `subplots` function allows you to slice your figure canvas into a grid of independent plotting axes.',
         },
         {
+          type: 'image',
+          title: 'Subplots and multi-panel layouts help compare several views in one figure.',
+          imageType: 'matplotlib-card-7',
+        },
+        {
           type: 'formula',
           expression: 'fig, (ax1, ax2) = plt.subplots(rows, cols)',
           note: 'This creates the Figure and all Axes instantly in a structured tuple.',
@@ -169,6 +282,40 @@ export const matplotlibCourse: CourseModule = {
           type: 'playground',
           code: "import matplotlib.pyplot as plt\nimport numpy as np\n\n# 3x3 Correlation Matrix\ndata = np.array([\n    [1.0, 0.8, 0.1], \n    [0.8, 1.0, 0.5], \n    [0.1, 0.5, 1.0]\n])\n\nlabels = ['Age', 'Salary', 'Height']\n\nplt.imshow(data, cmap='Blues') # Blue color scale\nplt.colorbar() # Shows color-value legend\n\n# Add tick labels\nplt.xticks([0,1,2], labels)\nplt.yticks([0,1,2], labels)\n\nplt.title('Correlation Heatmap')\nplt.show()",
           expectedOutput: 'Plot rendered: heatmap correlation matrix',
+        },
+      ],
+    },
+    {
+      id: 'mpl-saving-figures',
+      title: 'Saving Reproducible Figures',
+      duration: '18 min',
+      objective: 'Export clear, repeatable charts for reports, apps, and papers.',
+      blocks: [
+        { type: 'heading', text: 'Make Charts Portable' },
+        {
+          type: 'paragraph',
+          text: 'A figure is only useful if it can be shared clearly. Reproducible exports use explicit figure sizes, labels, layout cleanup, and saved file formats. PNG works well for apps and slides; SVG or PDF is better for scalable documents.',
+        },
+        {
+          type: 'image',
+          title: 'Saving reproducible figures means controlling size, layout, resolution, and format.',
+          imageType: 'matplotlib-card-8',
+        },
+        {
+          type: 'stepByStep',
+          title: 'Export Checklist',
+          steps: [
+            { title: 'Set Size', description: 'Use `figsize` so the chart has predictable dimensions.' },
+            { title: 'Clean Layout', description: 'Use `tight_layout()` before saving to reduce label overlap.' },
+            { title: 'Save Clearly', description: 'Use `savefig()` with `dpi`, `bbox_inches`, and the right file format.' },
+          ],
+        },
+        { type: 'divider' },
+        { type: 'heading', text: 'Save a Publication-Ready Plot' },
+        {
+          type: 'playground',
+          code: "import matplotlib.pyplot as plt\n\nfig, ax = plt.subplots(figsize=(6, 4))\nax.plot([1, 2, 3], [2, 4, 9], marker='o')\nax.set_title('Growth')\nax.set_xlabel('Step')\nax.set_ylabel('Value')\nax.grid(True, alpha=0.3)\n\nfig.tight_layout()\nfig.savefig('growth.png', dpi=160, bbox_inches='tight')\nprint('Saved growth.png')",
+          expectedOutput: 'Saved growth.png',
         },
       ],
     },

@@ -134,7 +134,29 @@ const IMAGE_MAP: Record<string, React.FC> = {
 };
 
 const ASSET_IMAGE_MAP: Record<string, ImageSourcePropType> = {
-  locVSiloc: require('../../assets/locVSiloc.png'),
+  'mobile-pandas-card-1': require('../../assets/mobile_pandas_card1_Series_DataFrame.png'),
+  'mobile-pandas-card-2': require('../../assets/mobile_pandas_card2_Selecting_loc_iloc.png'),
+  'mobile-pandas-card-3': require('../../assets/mobile_pandas_card3_Missing_Values.png'),
+  'mobile-pandas-card-4': require('../../assets/mobile_pandas_card4_Filtering_Sorting_Assigning.png'),
+  'mobile-pandas-card-5': require('../../assets/mobile_pandas_card5_GroupBy_Split_Apply_Combine.png'),
+  'mobile-pandas-card-6': require('../../assets/mobile_pandas_card6_Merging_Joining.png'),
+  'mobile-pandas-card-7': require('../../assets/mobile_pandas_card7_Datetime_Resampling.png'),
+  'numpy-card-1': require('../../assets/numpy_01_ndarray_shape_dtype_axes.png'),
+  'numpy-card-2': require('../../assets/numpy_02_Vectorization.png'),
+  'numpy-card-3': require('../../assets/numpy_03_Broadcasting_rules.png'),
+  'numpy-card-4': require('../../assets/numpy_04_Boolean_masks_fancy_indexing.png'),
+  'numpy-card-5': require('../../assets/numpy_05_Aggregations_across_axes.png'),
+  'numpy-card-6': require('../../assets/numpy_06_Random_sampling_seeds.png'),
+  'numpy-card-7': require('../../assets/numpy_07_Linear_algebra.png'),
+  'numpy-card-8': require('../../assets/numpy_08_Saving_arrays_tensors_ML.png'),
+  'matplotlib-card-1': require('../../assets/matplotlib_01_Figure_and_Axes_Objects.png'),
+  'matplotlib-card-2': require('../../assets/matplotlib_02_Line_Scatter_Bar_Hist_Heatmap.png'),
+  'matplotlib-card-3': require('../../assets/matplotlib_03_Labels_Legends_Titles_Grids_Annotations.png'),
+  'matplotlib-card-4': require('../../assets/matplotlib_04_Choosing_Chart_Types_by_Question.png'),
+  'matplotlib-card-5': require('../../assets/matplotlib_05_Visualizing_Distributions_Outliers.png'),
+  'matplotlib-card-6': require('../../assets/matplotlib_06_Plotting_Training_Curves_Residuals.png'),
+  'matplotlib-card-7': require('../../assets/matplotlib_07_Subplots_MultiPanel_Layouts.png'),
+  'matplotlib-card-8': require('../../assets/matplotlib_08_Saving_Reproducible_Figures.png'),
 };
 
 function ZoomableAssetImage({ source, width, height }: { source: ImageSourcePropType; width: number; height: number }) {
