@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 import auth, { type FirebaseAuthTypes } from '@react-native-firebase/auth';
 import firebase from '@react-native-firebase/app';
-import { Bell, LogIn, LogOut, User } from 'lucide-react-native';
+import { Bell, LogIn, LogOut, User, MessageCircle } from 'lucide-react-native';
 import { defaultStudyReminderTime, ensureFirebaseApp, signInWithGoogle } from '../services/firebase';
 import { enableStudyReminder } from '../services/studyReminder';
 import { courses } from '../content/courses';
@@ -64,6 +64,27 @@ export function AccountScreen() {
     } catch (error) {
       Alert.alert('Notifications setup needed', error instanceof Error ? error.message : 'Unable to enable notifications.');
     }
+  }
+
+  function handleWhatsAppSupport() {
+    const phoneNumber = '919380552833'; // +91 9380552833 in international format without + and spaces
+    const message = 'Hi, I need help with PyGrounds app';
+    const whatsappUrl = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
+    
+    Linking.canOpenURL(whatsappUrl)
+      .then((supported) => {
+        if (supported) {
+          return Linking.openURL(whatsappUrl);
+        } else {
+          Alert.alert(
+            'WhatsApp Not Installed',
+            'Please install WhatsApp to contact support, or reach out at +91 9380552833'
+          );
+        }
+      })
+      .catch(() => {
+        Alert.alert('Error', 'Unable to open WhatsApp. Please try again.');
+      });
   }
 
   return (
@@ -139,6 +160,11 @@ export function AccountScreen() {
         <Text style={styles.secondaryText}>Enable Learning Reminders</Text>
       </Pressable>
 
+      <Pressable style={[styles.button, styles.whatsapp]} onPress={handleWhatsAppSupport}>
+        <MessageCircle color={colors.surface} size={20} />
+        <Text style={styles.buttonText}>Need Help? Contact Support</Text>
+      </Pressable>
+
       <View style={styles.info}>
         <Text style={styles.infoTitle}>About PyGrounds</Text>
         <Text style={styles.infoText}>
@@ -200,6 +226,7 @@ const styles = StyleSheet.create({
   },
   secondary: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.line },
   danger: { backgroundColor: '#dc2626' },
+  whatsapp: { backgroundColor: '#25D366' },
   buttonText: { color: colors.surface, fontWeight: '900', fontSize: 16 },
   secondaryText: { color: colors.ink, fontWeight: '900', fontSize: 16 },
   info: {

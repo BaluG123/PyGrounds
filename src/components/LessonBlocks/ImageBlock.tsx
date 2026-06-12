@@ -157,6 +157,14 @@ const ASSET_IMAGE_MAP: Record<string, ImageSourcePropType> = {
   'matplotlib-card-6': require('../../assets/matplotlib_06_Plotting_Training_Curves_Residuals.png'),
   'matplotlib-card-7': require('../../assets/matplotlib_07_Subplots_MultiPanel_Layouts.png'),
   'matplotlib-card-8': require('../../assets/matplotlib_08_Saving_Reproducible_Figures.png'),
+  'math-ai-card-1': require('../../assets/math_for_ai_01_Mean_Median_Mode.png'),
+  'math-ai-card-2': require('../../assets/math_for_ai_02_Variance_Standard_Deviation.png'),
+  'math-ai-card-3': require('../../assets/math_for_ai_03_Probability_Rules.png'),
+  'math-ai-card-4': require('../../assets/math_for_ai_04_Conditional_Probability_Bayes.png'),
+  'math-ai-card-5': require('../../assets/math_for_ai_05_Correlation_vs_Causation.png'),
+  'math-ai-card-6': require('../../assets/math_for_ai_06_Normal_Uniform_Binomial_Distributions.png'),
+  'math-ai-card-7': require('../../assets/math_for_ai_07_Expected_Value_Law_of_Large_Numbers.png'),
+  'math-ai-card-8': require('../../assets/math_for_ai_08_Sampling_Central_Limit_Theorem.png'),
 };
 
 function ZoomableAssetImage({ source, width, height }: { source: ImageSourcePropType; width: number; height: number }) {

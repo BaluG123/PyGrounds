@@ -37,6 +37,11 @@ export const mathAICourse: CourseModule = {
           text: 'Before any model can learn, you must understand your data. We typically start by looking at where the data is centered (Mean and Median). The mean is highly sensitive to outliers, whereas the median is robust.',
         },
         {
+          type: 'image',
+          title: 'Mean, median, and mode measure the center of a dataset.',
+          imageType: 'math-ai-card-1',
+        },
+        {
           type: 'analogy',
           text: 'Imagine 9 people in a room earning $50,000, and Elon Musk walks in. The "Mean" wealth jumps to billions, misleadingly suggesting everyone is rich. The "Median" wealth stays at $50,000, accurately reflecting the typical person.',
         },
@@ -50,6 +55,11 @@ export const mathAICourse: CourseModule = {
         {
           type: 'paragraph',
           text: 'Center isn\'t enough. We need to know how wildly the data fluctuates around that center. Variance calculates the average squared distance from the mean, and Standard Deviation simply takes the square root to return to the original units.',
+        },
+        {
+          type: 'image',
+          title: 'Variance and standard deviation quantify the spread of data.',
+          imageType: 'math-ai-card-2',
         },
         {
           type: 'formula',
@@ -84,6 +94,11 @@ export const mathAICourse: CourseModule = {
         {
           type: 'paragraph',
           text: 'Artificial Intelligence does not deal in absolutes; it deals in probabilities. Classifiers output a percentage likelihood, e.g., "99.2% chance this image is a dog".',
+        },
+        {
+          type: 'image',
+          title: 'Probability rules for combining events: AND, OR, and independence.',
+          imageType: 'math-ai-card-3',
         },
         {
           type: 'formula',
@@ -124,6 +139,11 @@ export const mathAICourse: CourseModule = {
         {
           type: 'paragraph',
           text: 'Bayes\' theorem is the mathematical framework for changing your mind when you see new evidence. It is the engine behind spam filters and Bayesian neural networks.',
+        },
+        {
+          type: 'image',
+          title: 'Conditional probability and Bayes\' theorem for updating beliefs with evidence.',
+          imageType: 'math-ai-card-4',
         },
         {
           type: 'formula',
@@ -171,6 +191,11 @@ export const mathAICourse: CourseModule = {
           text: 'Correlation tells you if two variables move together. It ranges from -1 (perfectly opposite) to +1 (perfectly together). 0 means absolutely no linear relationship.',
         },
         {
+          type: 'image',
+          title: 'Correlation vs causation: why association does not imply causality.',
+          imageType: 'math-ai-card-5',
+        },
+        {
           type: 'formula',
           expression: 'r = \\frac{\\sum(x_i - \\bar{x})(y_i - \\bar{y})}{\\sqrt{\\sum(x_i - \\bar{x})^2 \\cdot \\sum(y_i - \\bar{y})^2}}',
           note: 'Pearson correlation coefficient formula.',
@@ -200,6 +225,11 @@ export const mathAICourse: CourseModule = {
           text: 'Distributions describe how data spreads out. The Normal Distribution (Bell Curve) is the most important concept in statistics because nature naturally clusters around it.',
         },
         {
+          type: 'image',
+          title: 'Normal, uniform, and binomial distributions and their properties.',
+          imageType: 'math-ai-card-6',
+        },
+        {
           type: 'table',
           headers: ['Distribution', 'Shape', 'Use Case in AI'],
           rows: [
@@ -226,6 +256,79 @@ export const mathAICourse: CourseModule = {
           type: 'playground',
           code: 'import numpy as np\nnp.random.seed(42)\nsamples = np.random.normal(loc=100, scale=15, size=1000)\n\n# Count how many fall within 1 standard deviation\nwithin_1_std = np.sum(np.abs(samples - samples.mean()) < samples.std()) / len(samples)\nprint(f"Percentage within 1 std: {within_1_std:.1%}")',
           expectedOutput: 'Percentage within 1 std: 68.4%',
+        },
+      ],
+    },
+    {
+      id: 'math-expected-value',
+      title: 'Expected Value and Law of Large Numbers',
+      duration: '18 min',
+      objective: 'Understand long-run averages and why they matter in AI.',
+      blocks: [
+        { type: 'heading', text: 'The Long-Run Average' },
+        {
+          type: 'paragraph',
+          text: 'Expected value is the weighted average of all possible outcomes. It tells you what to expect "on average" if you repeat an experiment infinitely. The Law of Large Numbers says that as you collect more data, your sample average converges to the expected value.',
+        },
+        {
+          type: 'image',
+          title: 'Expected value and the law of large numbers converge sample means to population mean.',
+          imageType: 'math-ai-card-7',
+        },
+        {
+          type: 'formula',
+          expression: 'E[X] = \\sum_{i} p_i \\cdot x_i',
+          note: 'Sum of each outcome multiplied by its probability.',
+        },
+        {
+          type: 'playground',
+          code: 'import numpy as np\n\n# Expected value of a die roll\noutcomes = np.array([1, 2, 3, 4, 5, 6])\nprobs = np.array([1/6, 1/6, 1/6, 1/6, 1/6, 1/6])\nexpected = np.sum(outcomes * probs)\nprint(f"Expected value: {expected:.2f}")',
+          expectedOutput: 'Expected value: 3.50',
+        },
+        {
+          type: 'callout',
+          variant: 'tip',
+          title: 'Why This Matters in AI',
+          body: 'Machine learning models are optimized to minimize expected loss across all training examples. Without the law of large numbers, training wouldn\'t converge.',
+        },
+      ],
+    },
+    {
+      id: 'math-sampling',
+      title: 'Sampling and Central Limit Theorem',
+      duration: '20 min',
+      objective: 'Use sampling theory to make confident statistical inferences.',
+      blocks: [
+        { type: 'heading', text: 'From Sample to Population' },
+        {
+          type: 'paragraph',
+          text: 'You rarely have access to an entire population (all possible data). Instead, you sample a subset and make inferences. The Central Limit Theorem (CLT) is magic: no matter how weird your population distribution is, if you take enough samples, the distribution of sample means will be normal.',
+        },
+        {
+          type: 'image',
+          title: 'Sampling and the Central Limit Theorem enable statistical inference.',
+          imageType: 'math-ai-card-8',
+        },
+        {
+          type: 'stepByStep',
+          title: 'How the CLT Works',
+          steps: [
+            { title: 'Take Random Samples', description: 'Draw N observations randomly from your population.' },
+            { title: 'Compute Sample Mean', description: 'Calculate the average of those N observations.' },
+            { title: 'Repeat Many Times', description: 'Repeat steps 1-2 hundreds of times.' },
+            { title: 'Distribution of Means', description: 'The histogram of those sample means will look normal!' },
+          ],
+        },
+        {
+          type: 'playground',
+          code: 'import numpy as np\nimport matplotlib.pyplot as plt\n\nnp.random.seed(42)\n# Extremely skewed population\npopulation = np.random.exponential(scale=2, size=10000)\n\n# Take 500 sample means\nsample_means = [np.random.choice(population, size=30).mean() for _ in range(500)]\n\nplt.hist(sample_means, bins=30, color="teal", edgecolor="white")\nplt.title("Sample Means Become Normal (CLT)")\nplt.xlabel("Sample Mean")\nplt.show()',
+          expectedOutput: 'Plot: histogram of sample means showing normal distribution',
+        },
+        {
+          type: 'callout',
+          variant: 'remember',
+          title: 'Sample Size Matters',
+          body: 'The CLT works best when N ≥ 30. Smaller samples may not produce normal distributions of sample means.',
         },
       ],
     },

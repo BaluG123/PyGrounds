@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { CheckCircle2, ClipboardList, PlayCircle, FileText, Sparkles } from 'lucide-react-native';
+import { CheckCircle2, ClipboardList, PlayCircle, FileText, Sparkles, ChevronDown, ChevronRight } from 'lucide-react-native';
 import { courses } from '../content/courses';
 import type { CourseStackParamList } from '../navigation/types';
 import { useProgress } from '../services/ProgressContext';
@@ -13,6 +13,16 @@ export function CourseHomeScreen({ route, navigation }: Props) {
   const course = courses.find(item => item.id === route.params.courseId)!;
   const { progress } = useProgress();
   const Icon = course.Icon;
+  const [expandedConcept, setExpandedConcept] = useState<number | null>(null);
+
+  // Calculate lessons per concept (distribute evenly)
+  const lessonsPerConcept = Math.ceil(course.lessons.length / course.concepts.length);
+  
+  const getConceptLessons = (conceptIndex: number) => {
+    const start = conceptIndex * lessonsPerConcept;
+    const end = Math.min(start + lessonsPerConcept, course.lessons.length);
+    return course.lessons.slice(start, end);
+  };
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
@@ -31,48 +41,89 @@ export function CourseHomeScreen({ route, navigation }: Props) {
 
       <View style={styles.sectionHeader}>
         <Sparkles color={course.color} size={20} />
-        <Text style={styles.sectionTitle}>Key Concepts</Text>
+        <Text style={styles.sectionTitle}>Learning Path</Text>
       </View>
-      <View style={styles.conceptsContainer}>
-        {course.concepts.map((concept, index) => (
-          <View key={concept} style={styles.conceptCard}>
-            <View style={styles.conceptTopRow}>
-              <View style={[styles.conceptBadge, { backgroundColor: course.accent }]}>
-                <Text style={[styles.conceptBadgeText, { color: course.color }]}>
-                  {String(index + 1).padStart(2, '0')}
-                </Text>
-              </View>
-              <Text style={[styles.conceptLabel, { color: course.color }]}>Concept</Text>
-            </View>
-            <Text style={styles.conceptText}>{concept}</Text>
-            <View style={[styles.conceptRule, { backgroundColor: course.color }]} />
-          </View>
-        ))}
-      </View>
+      <Text style={styles.pathDescription}>Tap any concept to explore its lessons</Text>
 
-      <Text style={[styles.sectionTitle, { marginTop: 8 }]}>Lessons</Text>
-      {course.lessons.map((lesson, index) => {
-        const done = progress.completedLessons[lesson.id];
-        return (
-          <Pressable
-            key={lesson.id}
-            style={styles.lesson}
-            onPress={() => navigation.navigate('Lesson', { courseId: course.id, lessonId: lesson.id })}
-          >
-            <View style={[styles.lessonIndex, done && { backgroundColor: course.color }]}>
-              {done ? (
-                <CheckCircle2 color={colors.surface} size={20} />
-              ) : (
-                <Text style={styles.lessonIndexText}>{index + 1}</Text>
+      <View style={styles.conceptsContainer}>
+        {course.concepts.map((concept, conceptIndex) => {
+          const conceptLessons = getConceptLessons(conceptIndex);
+          const isExpanded = expandedConcept === conceptIndex;
+          const allDone = conceptLessons.every(lesson => progress.completedLessons[lesson.id]);
+          const someDone = conceptLessons.some(lesson => progress.completedLessons[lesson.id]);
+
+          return (
+            <View key={concept} style={styles.conceptWrapper}>
+              <Pressable
+                style={[
+                  styles.conceptCard,
+                  isExpanded && styles.conceptCardExpanded,
+                  { borderColor: isExpanded ? course.color : colors.line }
+                ]}
+                onPress={() => setExpandedConcept(isExpanded ? null : conceptIndex)}
+              >
+                <View style={styles.conceptTopRow}>
+                  <View style={[styles.conceptBadge, { backgroundColor: course.accent }]}>
+                    <Text style={[styles.conceptBadgeText, { color: course.color }]}>
+                      {String(conceptIndex + 1).padStart(2, '0')}
+                    </Text>
+                  </View>
+                  <View style={styles.conceptProgress}>
+                    {allDone ? (
+                      <View style={[styles.progressDot, { backgroundColor: course.color }]}>
+                        <CheckCircle2 color={colors.surface} size={14} />
+                      </View>
+                    ) : someDone ? (
+                      <View style={[styles.progressDot, { backgroundColor: course.accent, borderWidth: 2, borderColor: course.color }]} />
+                    ) : null}
+                  </View>
+                  <View style={styles.chevronContainer}>
+                    {isExpanded ? (
+                      <ChevronDown color={course.color} size={20} />
+                    ) : (
+                      <ChevronRight color={colors.muted} size={20} />
+                    )}
+                  </View>
+                </View>
+                <Text style={styles.conceptText}>{concept}</Text>
+                <View style={styles.conceptMeta}>
+                  <Text style={[styles.lessonCount, { color: course.color }]}>
+                    {conceptLessons.length} {conceptLessons.length === 1 ? 'lesson' : 'lessons'}
+                  </Text>
+                </View>
+              </Pressable>
+
+              {isExpanded && (
+                <View style={[styles.lessonsPanel, { borderColor: course.color }]}>
+                  {conceptLessons.map((lesson, lessonIndex) => {
+                    const done = progress.completedLessons[lesson.id];
+                    const globalIndex = conceptIndex * lessonsPerConcept + lessonIndex;
+                    return (
+                      <Pressable
+                        key={lesson.id}
+                        style={styles.miniLesson}
+                        onPress={() => navigation.navigate('Lesson', { courseId: course.id, lessonId: lesson.id })}
+                      >
+                        <View style={[styles.miniLessonIndex, done && { backgroundColor: course.color }]}>
+                          {done ? (
+                            <CheckCircle2 color={colors.surface} size={16} />
+                          ) : (
+                            <Text style={styles.miniLessonIndexText}>{globalIndex + 1}</Text>
+                          )}
+                        </View>
+                        <View style={styles.miniLessonText}>
+                          <Text style={styles.miniLessonTitle}>{lesson.title}</Text>
+                          <Text style={styles.miniLessonMeta}>{lesson.duration}</Text>
+                        </View>
+                      </Pressable>
+                    );
+                  })}
+                </View>
               )}
             </View>
-            <View style={styles.lessonText}>
-              <Text style={styles.lessonTitle}>{lesson.title}</Text>
-              <Text style={styles.lessonMeta}>{lesson.duration} - {lesson.objective}</Text>
-            </View>
-          </Pressable>
-        );
-      })}
+          );
+        })}
+      </View>
 
       <View style={styles.actions}>
         <Pressable style={styles.action} onPress={() => navigation.navigate('Practice', { courseId: course.id })}>
@@ -115,65 +166,110 @@ const styles = StyleSheet.create({
   cardTitle: { color: colors.ink, fontSize: 18, fontWeight: '900', marginBottom: 8 },
   meta: { color: colors.ink, fontWeight: '700', marginTop: 4 },
   body: { color: colors.muted, lineHeight: 20, marginTop: 10 },
-  sectionHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
-  sectionTitle: { color: colors.ink, fontSize: 20, fontWeight: '900', marginBottom: 12 },
+  sectionHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 },
+  sectionTitle: { color: colors.ink, fontSize: 20, fontWeight: '900' },
+  pathDescription: { color: colors.muted, fontSize: 14, marginBottom: 12 },
   conceptsContainer: { marginBottom: 24, gap: 12 },
+  conceptWrapper: { marginBottom: 4 },
   conceptCard: {
     backgroundColor: colors.surface,
     borderRadius: 12,
-    padding: 12,
-    borderWidth: 1,
+    padding: 14,
+    borderWidth: 2,
     borderColor: colors.line,
     ...shadow,
-    shadowOpacity: 0.04,
+    shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 2 },
   },
-  conceptTopRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 },
+  conceptCardExpanded: {
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    ...shadow,
+    shadowOpacity: 0.12,
+  },
+  conceptTopRow: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'space-between', 
+    marginBottom: 10 
+  },
   conceptBadge: {
-    minWidth: 34,
-    height: 28,
+    minWidth: 36,
+    height: 30,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 8,
   },
   conceptBadgeText: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '900',
   },
-  conceptLabel: { fontSize: 11, fontWeight: '900', textTransform: 'uppercase' },
+  conceptProgress: {
+    flex: 1,
+    alignItems: 'flex-end',
+    marginRight: 8,
+  },
+  progressDot: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  chevronContainer: {
+    width: 24,
+    alignItems: 'center',
+  },
   conceptText: {
     color: colors.ink,
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '800',
-    lineHeight: 21,
+    lineHeight: 22,
+    marginBottom: 8,
   },
-  conceptRule: { height: 3, borderRadius: 2, marginTop: 12, width: 54, opacity: 0.8 },
-  lesson: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 10,
+  conceptMeta: {
     flexDirection: 'row',
-    gap: 12,
     alignItems: 'center',
+  },
+  lessonCount: {
+    fontSize: 12,
+    fontWeight: '800',
+    textTransform: 'uppercase',
+  },
+  lessonsPanel: {
+    backgroundColor: colors.surface,
+    borderWidth: 2,
+    borderTopWidth: 0,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+    paddingHorizontal: 12,
+    paddingTop: 8,
+    paddingBottom: 12,
+    gap: 8,
+  },
+  miniLesson: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    padding: 10,
+    backgroundColor: colors.background,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: colors.line,
-    ...shadow,
-    shadowOpacity: 0.04,
   },
-  lessonIndex: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+  miniLessonIndex: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     backgroundColor: colors.mint,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  lessonIndexText: { color: colors.green, fontWeight: '900' },
-  lessonText: { flex: 1 },
-  lessonTitle: { color: colors.ink, fontSize: 16, fontWeight: '900' },
-  lessonMeta: { color: colors.muted, lineHeight: 18, marginTop: 3 },
+  miniLessonIndexText: { color: colors.green, fontWeight: '900', fontSize: 12 },
+  miniLessonText: { flex: 1 },
+  miniLessonTitle: { color: colors.ink, fontSize: 14, fontWeight: '800' },
+  miniLessonMeta: { color: colors.muted, fontSize: 12, marginTop: 2 },
   actions: { flexDirection: 'row', gap: 10, marginTop: 16 },
   action: {
     flex: 1,

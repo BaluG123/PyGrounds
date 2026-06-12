@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
-import { Bell, Check, Clock3 } from 'lucide-react-native';
+import { Alert, Pressable, StyleSheet, Text, View, Animated } from 'react-native';
+import { Bell, Check } from 'lucide-react-native';
 import { colors } from '../theme/theme';
 import { studyReminderTimes, type StudyReminderTime } from '../services/firebase';
 import {
@@ -13,7 +13,9 @@ import {
 export function StudyReminderCard() {
   const [state, setState] = useState<StudyReminderState | null>(null);
   const [selected, setSelected] = useState<StudyReminderTime>(studyReminderTimes[2]);
+  const [expanded, setExpanded] = useState(false);
   const [saving, setSaving] = useState(false);
+  const animatedHeight = useState(new Animated.Value(0))[0];
 
   useEffect(() => {
     let active = true;
@@ -31,6 +33,14 @@ export function StudyReminderCard() {
     };
   }, []);
 
+  useEffect(() => {
+    Animated.timing(animatedHeight, {
+      toValue: expanded ? 1 : 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, [expanded, animatedHeight]);
+
   async function handleEnable(reminder: StudyReminderTime) {
     setSelected(reminder);
     setSaving(true);
@@ -38,16 +48,17 @@ export function StudyReminderCard() {
     try {
       const next = await enableStudyReminder(reminder);
       if (!next) {
-        Alert.alert('Notifications', 'Permission was not granted, so study reminders stayed off.');
+        Alert.alert('Notifications', 'Permission was not granted.');
         return;
       }
 
       setState(next);
-      Alert.alert('Study reminder set', `PyGrounds will remind you around ${reminder.timeLabel}.`);
+      setExpanded(false);
+      Alert.alert('✓ Reminder set', `Daily nudge at ${reminder.timeLabel}`);
     } catch (error) {
       Alert.alert(
-        'Reminder setup needed',
-        error instanceof Error ? error.message : 'Unable to enable study reminders.',
+        'Setup needed',
+        error instanceof Error ? error.message : 'Unable to enable reminders.',
       );
     } finally {
       setSaving(false);
@@ -56,136 +67,156 @@ export function StudyReminderCard() {
 
   const enabledReminder = state?.enabled ? getStudyReminderTime(state.reminderId) : null;
 
+  const maxHeight = animatedHeight.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 400],
+  });
+
   return (
     <View style={styles.card}>
-      <View style={styles.headerRow}>
+      <Pressable 
+        style={styles.compactRow}
+        onPress={() => setExpanded(!expanded)}
+        accessibilityRole="button"
+        accessibilityLabel={expanded ? "Collapse study reminder" : "Expand study reminder"}
+      >
         <View style={styles.iconBubble}>
-          <Bell color={colors.green} size={21} />
+          <Bell color={colors.surface} size={18} />
         </View>
-        <View style={styles.headerText}>
-          <Text style={styles.title}>Study reminder</Text>
-          <Text style={styles.subtitle}>
-            {enabledReminder
-              ? `${enabledReminder.label} at ${enabledReminder.timeLabel}`
-              : 'Pick a daily clock time for a learning nudge.'}
+        <View style={styles.compactText}>
+          <Text style={styles.compactTitle}>Daily Learning Reminder</Text>
+          <Text style={styles.compactSubtitle}>
+            {enabledReminder ? `Active: ${enabledReminder.timeLabel}` : 'Tap to set your daily nudge'}
           </Text>
         </View>
-      </View>
+        {enabledReminder && (
+          <View style={styles.activeBadge}>
+            <Check color={colors.green} size={14} />
+          </View>
+        )}
+      </Pressable>
 
-      <View style={styles.timeGrid}>
-        {studyReminderTimes.map(reminder => {
-          const active = selected.id === reminder.id;
-          const saved = enabledReminder?.id === reminder.id;
+      <Animated.View style={[styles.expandedContent, { maxHeight, overflow: 'hidden' }]}>
+        {expanded && (
+          <>
+            <View style={styles.divider} />
+            <Text style={styles.pickerLabel}>Choose your preferred time:</Text>
+            <View style={styles.timeGrid}>
+              {studyReminderTimes.map(reminder => {
+                const active = selected.id === reminder.id;
+                const saved = enabledReminder?.id === reminder.id;
 
-          return (
-            <Pressable
-              key={reminder.id}
-              accessibilityRole="button"
-              accessibilityLabel={`Set study reminder for ${reminder.timeLabel}`}
-              disabled={saving}
-              onPress={() => handleEnable(reminder)}
-              style={[styles.timeButton, active && styles.timeButtonActive]}
-            >
-              <View style={styles.timeTopRow}>
-                <Clock3 color={active ? colors.surface : colors.green} size={17} />
-                {saved ? <Check color={active ? colors.surface : colors.green} size={17} /> : null}
-              </View>
-              <Text style={[styles.timeText, active && styles.timeTextActive]}>{reminder.timeLabel}</Text>
-              <Text style={[styles.timeLabel, active && styles.timeLabelActive]} numberOfLines={1}>
-                {reminder.label}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
-
-      <Text style={styles.footer}>Daily reminders stay synced with your learning profile.</Text>
+                return (
+                  <Pressable
+                    key={reminder.id}
+                    disabled={saving}
+                    onPress={() => handleEnable(reminder)}
+                    style={[styles.timeChip, active && styles.timeChipActive, saved && styles.timeChipSaved]}
+                  >
+                    <Text style={[styles.timeChipText, active && styles.timeChipTextActive]}>
+                      {reminder.timeLabel}
+                    </Text>
+                    {saved && <Check color={colors.surface} size={14} />}
+                  </Pressable>
+                );
+              })}
+            </View>
+          </>
+        )}
+      </Animated.View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.surface,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: colors.line,
-    padding: 16,
-    marginBottom: 22,
+    backgroundColor: colors.green,
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginBottom: 20,
   },
-  headerRow: {
+  compactRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    marginBottom: 14,
+    padding: 14,
   },
   iconBubble: {
-    width: 42,
-    height: 42,
-    borderRadius: 8,
-    backgroundColor: colors.mint,
+    width: 38,
+    height: 38,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  headerText: {
+  compactText: {
     flex: 1,
   },
-  title: {
-    color: colors.ink,
-    fontSize: 18,
+  compactTitle: {
+    color: colors.surface,
+    fontSize: 16,
     fontWeight: '900',
   },
-  subtitle: {
-    color: colors.muted,
-    lineHeight: 20,
-    marginTop: 3,
+  compactSubtitle: {
+    color: 'rgba(255, 255, 255, 0.85)',
+    fontSize: 13,
+    marginTop: 2,
+  },
+  activeBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  expandedContent: {
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  pickerLabel: {
+    color: colors.surface,
+    fontSize: 13,
+    fontWeight: '700',
+    paddingHorizontal: 14,
+    paddingTop: 12,
+    paddingBottom: 8,
   },
   timeGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: 8,
+    paddingHorizontal: 14,
+    paddingBottom: 14,
   },
-  timeButton: {
-    width: '48%',
-    minHeight: 90,
+  timeChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 10,
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: colors.line,
-    backgroundColor: colors.background,
-    padding: 12,
-    justifyContent: 'space-between',
-  },
-  timeButtonActive: {
-    backgroundColor: colors.green,
-    borderColor: colors.green,
-  },
-  timeTopRow: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderWidth: 1.5,
+    borderColor: 'transparent',
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 6,
   },
-  timeText: {
-    color: colors.ink,
-    fontSize: 19,
-    fontWeight: '900',
-    marginTop: 8,
+  timeChipActive: {
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    borderColor: 'rgba(255, 255, 255, 0.4)',
   },
-  timeTextActive: {
+  timeChipSaved: {
+    backgroundColor: colors.navy,
+    borderColor: colors.surface,
+  },
+  timeChipText: {
     color: colors.surface,
-  },
-  timeLabel: {
-    color: colors.muted,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '800',
-    marginTop: 3,
   },
-  timeLabelActive: {
-    color: '#E8F5EF',
-  },
-  footer: {
-    color: colors.muted,
-    fontSize: 12,
-    lineHeight: 18,
-    marginTop: 12,
+  timeChipTextActive: {
+    color: colors.surface,
   },
 });

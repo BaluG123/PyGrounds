@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Pressable, Text, View, StyleSheet } from 'react-native';
+import { Image, Linking, Pressable, Text, View, StyleSheet, Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { CommonActions, DrawerActions } from '@react-navigation/native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
@@ -24,6 +24,7 @@ import {
   Workflow,
   Sparkles,
   X,
+  MessageCircle,
 } from 'lucide-react-native';
 import type { RootDrawerParamList } from './types';
 import { AccountScreen } from '../screens/AccountScreen';
@@ -129,6 +130,28 @@ function DrawerHeader(props: any) {
     };
   }, []);
 
+  function handleWhatsAppSupport() {
+    const phoneNumber = '919380552833';
+    const message = 'Hi, I need help with PyGrounds app';
+    const whatsappUrl = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
+    
+    Linking.canOpenURL(whatsappUrl)
+      .then((supported) => {
+        if (supported) {
+          Linking.openURL(whatsappUrl);
+          props.navigation.dispatch(DrawerActions.closeDrawer());
+        } else {
+          Alert.alert(
+            'WhatsApp Not Installed',
+            'Please install WhatsApp to contact support, or reach out at +91 9380552833'
+          );
+        }
+      })
+      .catch(() => {
+        Alert.alert('Error', 'Unable to open WhatsApp. Please try again.');
+      });
+  }
+
   return (
     <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerContent}>
       <View style={styles.brand}>
@@ -188,6 +211,13 @@ function DrawerHeader(props: any) {
             />
           );
         })}
+      </View>
+
+      <View style={styles.drawerFooter}>
+        <Pressable style={styles.whatsappButton} onPress={handleWhatsAppSupport}>
+          <MessageCircle color="#FFFFFF" size={20} />
+          <Text style={styles.whatsappText}>Need Help? Contact Support</Text>
+        </Pressable>
       </View>
     </DrawerContentScrollView>
   );
@@ -303,5 +333,26 @@ const styles = StyleSheet.create({
   },
   drawerLabel: {
     fontWeight: '800',
+  },
+  drawerFooter: {
+    marginTop: 'auto',
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: colors.line,
+  },
+  whatsappButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#25D366',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    gap: 8,
+  },
+  whatsappText: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+    fontSize: 15,
   },
 });
