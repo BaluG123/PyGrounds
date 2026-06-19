@@ -1,4 +1,11 @@
-export type MindCategory = 'arithmetic' | 'series' | 'mixed-ops' | 'speed';
+export type MindCategory =
+  | 'arithmetic'
+  | 'series'
+  | 'mixed-ops'
+  | 'speed'
+  | 'ai-foundations'
+  | 'ml-recall'
+  | 'genai-recall';
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
@@ -56,5 +63,26 @@ export const CATEGORY_META: Record<MindCategory, {
     color: '#1D7A57',
     accent: '#DDF4E8',
     description: 'Rapid-fire — how fast can you go?',
+  },
+  'ai-foundations': {
+    title: 'AI Foundations',
+    emoji: '🎓',
+    color: '#183B56',
+    accent: '#E5EEF5',
+    description: 'Python, data, math, and AI vocabulary recall',
+  },
+  'ml-recall': {
+    title: 'ML Recall',
+    emoji: '🤖',
+    color: '#0F8B8D',
+    accent: '#DDF7F6',
+    description: 'Regression, classification, clustering, metrics',
+  },
+  'genai-recall': {
+    title: 'GenAI Recall',
+    emoji: '✨',
+    color: '#7454C4',
+    accent: '#F0ECFF',
+    description: 'LLMs, prompts, RAG, agents, and safety',
   },
 };

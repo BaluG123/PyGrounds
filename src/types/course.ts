@@ -9,8 +9,14 @@ export type LibraryId =
   | 'matplotlib'
   | 'math-ai'
   | 'linear-algebra'
+  | 'machine-learning'
   | 'scikit-learn'
   | 'deep-learning'
+  | 'nlp'
+  | 'genai'
+  | 'computer-vision'
+  | 'reinforcement-learning'
+  | 'ai-engineering'
   | 'ai-projects';
 
 export type CalloutVariant = 'tip' | 'warning' | 'info' | 'remember';

@@ -9,8 +9,14 @@ export type RootDrawerParamList = {
   Matplotlib: undefined;
   'Math for AI': undefined;
   'Linear Algebra': undefined;
+  'Machine Learning': undefined;
   'Scikit-Learn': undefined;
   'Deep Learning': undefined;
+  NLP: undefined;
+  GenAI: undefined;
+  'Computer Vision': undefined;
+  'Reinforcement Learning': undefined;
+  'AI Engineering': undefined;
   'AI Projects': undefined;
   Roadmap: undefined;
   'Problem Solving': undefined;

@@ -28,12 +28,27 @@ export function CourseHomeScreen({ route, navigation }: Props) {
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <View style={[styles.header, { backgroundColor: course.color }]}>
         <Icon color={colors.surface} size={36} />
+        <Text style={styles.moduleLabel}>Academic Module</Text>
         <Text style={styles.title}>{course.title}</Text>
         <Text style={styles.subtitle}>{course.subtitle}</Text>
+        <View style={styles.headerStats}>
+          <View style={styles.headerStat}>
+            <Text style={styles.headerStatValue}>{course.lessons.length}</Text>
+            <Text style={styles.headerStatLabel}>lessons</Text>
+          </View>
+          <View style={styles.headerStat}>
+            <Text style={styles.headerStatValue}>{course.concepts.length}</Text>
+            <Text style={styles.headerStatLabel}>concepts</Text>
+          </View>
+          <View style={styles.headerStat}>
+            <Text style={styles.headerStatValue}>{course.practice.length}</Text>
+            <Text style={styles.headerStatLabel}>labs</Text>
+          </View>
+        </View>
       </View>
 
       <View style={styles.history}>
-        <Text style={styles.cardTitle}>Small History</Text>
+        <Text style={styles.cardTitle}>Context and Learning Outcome</Text>
         <Text style={styles.meta}>Founder: {course.history.founder}</Text>
         <Text style={styles.meta}>First released: {course.history.released}</Text>
         <Text style={styles.body}>{course.history.summary}</Text>
@@ -154,6 +169,36 @@ const styles = StyleSheet.create({
   },
   title: { color: colors.surface, fontSize: 32, fontWeight: '900', marginTop: 12 },
   subtitle: { color: '#EEF7F3', marginTop: 6, lineHeight: 20 },
+  moduleLabel: {
+    color: colors.yellow,
+    fontWeight: '900',
+    marginTop: 12,
+    textTransform: 'uppercase',
+    fontSize: 12,
+  },
+  headerStats: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 18,
+  },
+  headerStat: {
+    flex: 1,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.28)',
+    padding: 10,
+  },
+  headerStatValue: {
+    color: colors.surface,
+    fontSize: 20,
+    fontWeight: '900',
+  },
+  headerStatLabel: {
+    color: '#EEF7F3',
+    fontSize: 12,
+    marginTop: 2,
+    fontWeight: '700',
+  },
   history: {
     backgroundColor: colors.surface,
     borderRadius: 12,

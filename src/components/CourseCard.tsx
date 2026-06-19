@@ -24,6 +24,7 @@ export function CourseCard({ course, progress, onPress }: Props) {
         <View style={styles.barTrack}>
           <View style={[styles.barFill, { width: `${progress * 100}%`, backgroundColor: course.color }]} />
         </View>
+        <Text style={styles.progressText}>{Math.round(progress * 100)}% complete</Text>
       </View>
       <ChevronRight color={colors.muted} size={22} />
     </Pressable>
@@ -32,7 +33,7 @@ export function CourseCard({ course, progress, onPress }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    minHeight: 116,
+    minHeight: 122,
     borderRadius: 8,
     backgroundColor: colors.surface,
     padding: 16,
@@ -40,14 +41,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 14,
     marginBottom: 14,
+    borderWidth: 1,
+    borderColor: colors.line,
     ...shadow,
   },
   pressed: {
     transform: [{ scale: 0.99 }],
   },
   iconWrap: {
-    width: 54,
-    height: 54,
+    width: 58,
+    height: 58,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
@@ -75,5 +78,11 @@ const styles = StyleSheet.create({
   barFill: {
     height: '100%',
     borderRadius: 4,
+  },
+  progressText: {
+    color: colors.muted,
+    fontSize: 12,
+    fontWeight: '800',
+    marginTop: 7,
   },
 });

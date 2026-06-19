@@ -28,6 +28,8 @@ export function MindQuizScreen({ route, navigation }: Props) {
   // Timer
   const [timeLeft, setTimeLeft] = useState(category === 'speed' ? 15 : 30);
   const timerRef = useRef<any>(null);
+  const timeoutHandlerRef = useRef<() => void>(() => undefined);
+  const scrollRef = useRef<ScrollView | null>(null);
 
   // Animations
   const streakScale = useRef(new Animated.Value(1)).current;
@@ -35,6 +37,16 @@ export function MindQuizScreen({ route, navigation }: Props) {
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   const currentQuestion = questions[currentIndex];
+
+  const handleTimeOut = () => {
+    setSelectedOption(-1); // Indication that no option was chosen in time
+    setFeedback('Time up. Try the next one.');
+    setStreak(0);
+    triggerShake();
+    setTimeout(handleNext, 900);
+  };
+
+  timeoutHandlerRef.current = handleTimeOut;
 
   useEffect(() => {
     if (quizFinished) return;
@@ -46,7 +58,7 @@ export function MindQuizScreen({ route, navigation }: Props) {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timerRef.current!);
-          handleTimeOut();
+          timeoutHandlerRef.current();
           return 0;
         }
         return prev - 1;
@@ -56,15 +68,7 @@ export function MindQuizScreen({ route, navigation }: Props) {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [currentIndex, quizFinished]);
-
-  const handleTimeOut = () => {
-    setSelectedOption(-1); // Indication that no option was chosen in time
-    setFeedback('Time up. Try the next one.');
-    setStreak(0);
-    triggerShake();
-    setTimeout(handleNext, 900);
-  };
+  }, [category, currentIndex, quizFinished]);
 
   const triggerShake = () => {
     Animated.sequence([
@@ -119,12 +123,13 @@ export function MindQuizScreen({ route, navigation }: Props) {
         duration: 150,
         useNativeDriver: true,
       }).start(() => {
+        fadeAnim.setValue(1);
+        scrollRef.current?.scrollTo({ y: 0, animated: false });
         setCurrentIndex((i) => i + 1);
         setSelectedOption(null);
         setCorrectOption(null);
         setFeedback(null);
         setIsAdvancing(false);
-        fadeAnim.setValue(1);
       });
     } else {
       setQuizFinished(true);
@@ -142,6 +147,8 @@ export function MindQuizScreen({ route, navigation }: Props) {
     setBestStreak(0);
     setQuizFinished(false);
     setIsAdvancing(false);
+    fadeAnim.setValue(1);
+    scrollRef.current?.scrollTo({ y: 0, animated: false });
   };
 
   if (quizFinished) {
@@ -194,7 +201,7 @@ export function MindQuizScreen({ route, navigation }: Props) {
   const progress = (currentIndex + 1) / questions.length;
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.contentContainer}>
+    <ScrollView ref={scrollRef} style={styles.screen} contentContainerStyle={styles.contentContainer}>
       {/* Top Header Row with Timer & Streak */}
       <View style={styles.headerRow}>
         <View style={styles.timerWrap}>
@@ -369,7 +376,8 @@ const styles = StyleSheet.create({
   },
   questionPrompt: {
     color: colors.ink,
-    fontSize: 26,
+    fontSize: 22,
+    lineHeight: 29,
     fontWeight: '900',
     textAlign: 'center',
   },
@@ -394,7 +402,8 @@ const styles = StyleSheet.create({
   },
   optionText: {
     color: colors.ink,
-    fontSize: 19,
+    fontSize: 15,
+    lineHeight: 20,
     fontWeight: '900',
     textAlign: 'center',
     marginBottom: 6,

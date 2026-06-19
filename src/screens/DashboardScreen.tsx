@@ -21,17 +21,25 @@ const drawerScreens: Record<LibraryId, keyof RootDrawerParamList> = {
   matplotlib: 'Matplotlib',
   'math-ai': 'Math for AI',
   'linear-algebra': 'Linear Algebra',
+  'machine-learning': 'Machine Learning',
   'scikit-learn': 'Scikit-Learn',
   'deep-learning': 'Deep Learning',
+  nlp: 'NLP',
+  genai: 'GenAI',
+  'computer-vision': 'Computer Vision',
+  'reinforcement-learning': 'Reinforcement Learning',
+  'ai-engineering': 'AI Engineering',
   'ai-projects': 'AI Projects',
 };
 
-type SectionDef = { title: string; ids: LibraryId[] };
+type SectionDef = { title: string; subtitle: string; ids: LibraryId[] };
 const sections: SectionDef[] = [
-  { title: '🐍 Python Fundamentals', ids: ['python-basics', 'python-advanced'] },
-  { title: '📊 Data Science Toolkit', ids: ['numpy', 'pandas', 'matplotlib'] },
-  { title: '🧮 Mathematics', ids: ['math-ai', 'linear-algebra'] },
-  { title: '🤖 Machine Learning & AI', ids: ['scikit-learn', 'deep-learning', 'ai-projects'] },
+  { title: 'Python Foundation', subtitle: 'Write clean code before touching models.', ids: ['python-basics', 'python-advanced'] },
+  { title: 'Data Science Prerequisites', subtitle: 'NumPy, Pandas, and Matplotlib for real datasets.', ids: ['numpy', 'pandas', 'matplotlib'] },
+  { title: 'Math for AI', subtitle: 'Statistics, probability, optimization, and linear algebra.', ids: ['math-ai', 'linear-algebra'] },
+  { title: 'Machine Learning', subtitle: 'Regression, classification, clustering, and scikit-learn.', ids: ['machine-learning', 'scikit-learn'] },
+  { title: 'Deep AI Specializations', subtitle: 'Neural networks, NLP, vision, RL, LLMs, RAG, and agents.', ids: ['deep-learning', 'nlp', 'genai', 'computer-vision', 'reinforcement-learning'] },
+  { title: 'Production and Capstone', subtitle: 'MLOps, LLMOps, monitoring, safety, deployment, and portfolio projects.', ids: ['ai-engineering', 'ai-projects'] },
 ];
 
 export function DashboardScreen({ navigation }: Props) {
@@ -46,11 +54,19 @@ export function DashboardScreen({ navigation }: Props) {
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <View style={styles.hero}>
         <View style={styles.heroText}>
-          <Text style={styles.kicker}>PyGrounds AI Lab</Text>
-          <Text style={styles.title}>Master Python & AI from zero to hero.</Text>
+          <View style={styles.kickerPill}>
+            <Text style={styles.kicker}>PyGrounds AI Learning Platform</Text>
+          </View>
+          <Text style={styles.title}>Master AI from foundations to production systems.</Text>
           <Text style={styles.copy}>
             {courses.length} courses · {totalLessons} lessons · {totalQuiz} quiz questions · {totalPractice} practice labs
           </Text>
+          <View style={styles.heroPills}>
+            <Text style={styles.heroPill}>LLMs</Text>
+            <Text style={styles.heroPill}>RAG</Text>
+            <Text style={styles.heroPill}>Agents</Text>
+            <Text style={styles.heroPill}>MLOps</Text>
+          </View>
         </View>
         <ProgressRing value={overall} label="course" />
       </View>
@@ -76,8 +92,9 @@ export function DashboardScreen({ navigation }: Props) {
       <StudyReminderCard />
 
       {sections.map(section => (
-        <View key={section.title}>
+        <View key={section.title} style={styles.sectionBlock}>
           <Text style={styles.sectionTitle}>{section.title}</Text>
+          <Text style={styles.sectionSubtitle}>{section.subtitle}</Text>
           {section.ids.map(id => {
             const course = courses.find(c => c.id === id);
             if (!course) { return null; }
@@ -109,30 +126,56 @@ const styles = StyleSheet.create({
   hero: {
     backgroundColor: colors.navy,
     borderRadius: 8,
-    padding: 22,
+    padding: 20,
     flexDirection: 'row',
     gap: 16,
     alignItems: 'center',
     marginBottom: 18,
+    borderWidth: 1,
+    borderColor: '#254F70',
   },
   heroText: {
     flex: 1,
   },
   kicker: {
-    color: colors.yellow,
+    color: colors.navy,
     fontWeight: '800',
-    marginBottom: 8,
+    fontSize: 12,
+  },
+  kickerPill: {
+    alignSelf: 'flex-start',
+    backgroundColor: colors.yellow,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    marginBottom: 10,
   },
   title: {
     color: colors.surface,
-    fontSize: 26,
-    lineHeight: 32,
+    fontSize: 25,
+    lineHeight: 31,
     fontWeight: '900',
   },
   copy: {
     color: '#DCE8E2',
     marginTop: 10,
     lineHeight: 20,
+  },
+  heroPills: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 14,
+  },
+  heroPill: {
+    color: colors.surface,
+    fontSize: 12,
+    fontWeight: '900',
+    borderWidth: 1,
+    borderColor: '#6E8CA1',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
   },
   statsRow: {
     flexDirection: 'row',
@@ -162,7 +205,14 @@ const styles = StyleSheet.create({
     color: colors.ink,
     fontSize: 20,
     fontWeight: '900',
+    marginBottom: 4,
+  },
+  sectionSubtitle: {
+    color: colors.muted,
+    lineHeight: 19,
     marginBottom: 12,
-    marginTop: 8,
+  },
+  sectionBlock: {
+    marginTop: 10,
   },
 });
