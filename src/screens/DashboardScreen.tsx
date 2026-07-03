@@ -1,11 +1,12 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { DrawerScreenProps } from '@react-navigation/drawer';
-import { Brain, Flame, Target } from 'lucide-react-native';
+import { Brain, Flame, Target, GraduationCap } from 'lucide-react-native';
 import { CourseCard } from '../components/CourseCard';
 import { ProgressRing } from '../components/ProgressRing';
 import { StudyReminderCard } from '../components/StudyReminderCard';
 import { courses } from '../content/courses';
+import { CURRICULUM_SECTIONS } from '../content/academic';
 import type { RootDrawerParamList } from '../navigation/types';
 import type { LibraryId } from '../types/course';
 import { useProgress } from '../services/ProgressContext';
@@ -20,7 +21,7 @@ const drawerScreens: Record<LibraryId, keyof RootDrawerParamList> = {
   pandas: 'Pandas',
   matplotlib: 'Matplotlib',
   'math-ai': 'Math for AI',
-  'linear-algebra': 'Linear Algebra',
+  'linear-algebra': 'Math for AI',
   'machine-learning': 'Machine Learning',
   'scikit-learn': 'Scikit-Learn',
   'deep-learning': 'Deep Learning',
@@ -33,14 +34,11 @@ const drawerScreens: Record<LibraryId, keyof RootDrawerParamList> = {
 };
 
 type SectionDef = { title: string; subtitle: string; ids: LibraryId[] };
-const sections: SectionDef[] = [
-  { title: 'Python Foundation', subtitle: 'Write clean code before touching models.', ids: ['python-basics', 'python-advanced'] },
-  { title: 'Data Science Prerequisites', subtitle: 'NumPy, Pandas, and Matplotlib for real datasets.', ids: ['numpy', 'pandas', 'matplotlib'] },
-  { title: 'Math for AI', subtitle: 'Statistics, probability, optimization, and linear algebra.', ids: ['math-ai', 'linear-algebra'] },
-  { title: 'Machine Learning', subtitle: 'Regression, classification, clustering, and scikit-learn.', ids: ['machine-learning', 'scikit-learn'] },
-  { title: 'Deep AI Specializations', subtitle: 'Neural networks, NLP, vision, RL, LLMs, RAG, and agents.', ids: ['deep-learning', 'nlp', 'genai', 'computer-vision', 'reinforcement-learning'] },
-  { title: 'Production and Capstone', subtitle: 'MLOps, LLMOps, monitoring, safety, deployment, and portfolio projects.', ids: ['ai-engineering', 'ai-projects'] },
-];
+const sections: SectionDef[] = CURRICULUM_SECTIONS.map(section => ({
+  title: section.title,
+  subtitle: section.subtitle,
+  ids: section.courseIds,
+}));
 
 export function DashboardScreen({ navigation }: Props) {
   const { progress } = useProgress();
@@ -88,6 +86,19 @@ export function DashboardScreen({ navigation }: Props) {
           <Text style={styles.statLabel}>labs tried</Text>
         </View>
       </View>
+
+      <Pressable
+        style={styles.academicHub}
+        onPress={() => navigation.navigate('Master AI Hub')}
+      >
+        <GraduationCap color={colors.yellow} size={28} />
+        <View style={styles.academicHubText}>
+          <Text style={styles.academicHubTitle}>Master AI Hub</Text>
+          <Text style={styles.academicHubSub}>
+            Same unified content in every course — theory, lessons, labs, quiz
+          </Text>
+        </View>
+      </Pressable>
 
       <StudyReminderCard />
 
@@ -201,6 +212,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 2,
   },
+  academicHub: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    backgroundColor: colors.navy,
+    borderRadius: 12,
+    padding: 18,
+    marginBottom: 18,
+    borderWidth: 1,
+    borderColor: '#254F70',
+  },
+  academicHubText: { flex: 1 },
+  academicHubTitle: { color: colors.surface, fontWeight: '900', fontSize: 18 },
+  academicHubSub: { color: '#C8D8E8', fontSize: 13, lineHeight: 19, marginTop: 4 },
   sectionTitle: {
     color: colors.ink,
     fontSize: 20,

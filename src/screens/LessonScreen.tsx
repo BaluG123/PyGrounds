@@ -13,7 +13,7 @@ import { StepByStepBlock } from '../components/LessonBlocks/StepByStepBlock';
 import { AnalogyBlock } from '../components/LessonBlocks/AnalogyBlock';
 import { ImageBlock } from '../components/LessonBlocks/ImageBlock';
 import { DividerBlock } from '../components/LessonBlocks/DividerBlock';
-import { courses } from '../content/courses';
+import { getCourseById } from '../content/courses';
 import type { CourseStackParamList } from '../navigation/types';
 import { useProgress } from '../services/ProgressContext';
 import { colors } from '../theme/theme';
@@ -21,7 +21,7 @@ import { colors } from '../theme/theme';
 type Props = NativeStackScreenProps<CourseStackParamList, 'Lesson'>;
 
 export function LessonScreen({ route, navigation }: Props) {
-  const course = courses.find(item => item.id === route.params.courseId)!;
+  const course = getCourseById(route.params.courseId)!;
   const lesson = course.lessons.find(item => item.id === route.params.lessonId)!;
   const { completeLesson, progress } = useProgress();
   const done = progress.completedLessons[lesson.id];

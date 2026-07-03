@@ -13,15 +13,15 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { FileText, ExternalLink } from 'lucide-react-native';
 import type { CourseStackParamList } from '../navigation/types';
 import { notesRegistry } from '../content/notesRegistry';
-import { courses } from '../content/courses';
+import { getCourseById } from '../content/courses';
 import { colors, shadow } from '../theme/theme';
 
 type Props = NativeStackScreenProps<CourseStackParamList, 'Notes'>;
 
 export function PDFViewerScreen({ route }: Props) {
   const { courseId } = route.params;
-  const course = courses.find((c) => c.id === courseId);
-  const note = notesRegistry[courseId];
+  const course = getCourseById(courseId);
+  const note = notesRegistry[courseId === 'linear-algebra' ? 'math-ai' : courseId];
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 

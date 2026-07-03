@@ -1,10 +1,11 @@
 import { Sigma } from 'lucide-react-native';
 import type { CourseModule } from '../types/course';
+import { linearAlgebraCourse } from './linearAlgebra';
 
 export const mathAICourse: CourseModule = {
   id: 'math-ai',
   title: 'Math for AI',
-  subtitle: 'Statistics, probability, Bayes, distributions',
+  subtitle: 'Linear algebra, statistics, probability, and Bayes',
   color: '#D4A843',
   accent: '#FFF5DC',
   Icon: Sigma,
@@ -12,9 +13,10 @@ export const mathAICourse: CourseModule = {
     founder: 'Centuries of mathematicians',
     released: 'Ancient–Modern',
     summary:
-      'Statistics and probability are the mathematical spine of AI. From Bayes\' theorem (1763) to modern gradient descent, every ML algorithm rests on these ideas.',
+      'Linear algebra, statistics, and probability are the mathematical spine of AI. From matrix multiplication in neural networks to Bayes\' theorem and gradient descent, every ML algorithm rests on these ideas.',
   },
   concepts: [
+    ...linearAlgebraCourse.concepts,
     'Mean, median, mode — measures of center',
     'Variance and standard deviation — spread',
     'Probability rules: P(A and B), P(A or B)',
@@ -25,6 +27,7 @@ export const mathAICourse: CourseModule = {
     'Sampling and the Central Limit Theorem',
   ],
   lessons: [
+    ...linearAlgebraCourse.lessons,
     {
       id: 'math-central',
       title: 'Mean, Median, and Variance',
@@ -334,6 +337,7 @@ export const mathAICourse: CourseModule = {
     },
   ],
   quiz: [
+    ...linearAlgebraCourse.quiz,
     {
       id: 'math-q1',
       prompt: 'What does standard deviation measure?',
@@ -406,6 +410,7 @@ export const mathAICourse: CourseModule = {
     },
   ],
   practice: [
+    ...linearAlgebraCourse.practice,
     {
       id: 'math-p1',
       title: 'Compute Mean and Std',

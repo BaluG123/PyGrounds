@@ -36,6 +36,7 @@ import { ProblemSolvingScreen } from '../screens/ProblemSolvingScreen';
 import { RoadmapScreen } from '../screens/RoadmapScreen';
 import { CourseStack } from './CourseStack';
 import { RefreshMindStack } from './RefreshMindStack';
+import { AcademicStack } from './AcademicStack';
 import { colors } from '../theme/theme';
 import { ensureFirebaseApp } from '../services/firebase';
 
@@ -62,6 +63,12 @@ function MatplotlibIcon({ color, size }: { color: string; size: number }) {
 }
 function MathIcon({ color, size }: { color: string; size: number }) {
   return <Sigma color={color} size={size} {...iconProps} />;
+}
+function GraduationCapIcon({ color, size }: { color: string; size: number }) {
+  return <BookOpen color={color} size={size} {...iconProps} />;
+}
+function MathTheoryIcon({ color, size }: { color: string; size: number }) {
+  return <BookOpen color={color} size={size} {...iconProps} />;
 }
 function LinearAlgebraIcon({ color, size }: { color: string; size: number }) {
   return <Grid3x3 color={color} size={size} {...iconProps} />;
@@ -115,7 +122,9 @@ function NumPyStack() { return <CourseStack courseId="numpy" />; }
 function PandasStack() { return <CourseStack courseId="pandas" />; }
 function MatplotlibStack() { return <CourseStack courseId="matplotlib" />; }
 function MathAIStack() { return <CourseStack courseId="math-ai" />; }
-function LinearAlgebraStack() { return <CourseStack courseId="linear-algebra" />; }
+function MasterAIHubStack() { return <AcademicStack />; }
+function AcademicDeepDiveStack() { return <AcademicStack />; }
+function LinearAlgebraStack() { return <CourseStack courseId="math-ai" />; }
 function MachineLearningStack() { return <CourseStack courseId="machine-learning" />; }
 function SklearnStack() { return <CourseStack courseId="scikit-learn" />; }
 function DeepLearningStack() { return <CourseStack courseId="deep-learning" />; }
@@ -173,8 +182,7 @@ const drawerMenu: DrawerMenuSection[] = [
     Icon: MathIcon,
     color: colors.violet,
     items: [
-      { route: 'Math for AI', label: 'Math for AI', detail: 'Statistics, probability, optimization', Icon: MathIcon },
-      { route: 'Linear Algebra', label: 'Linear Algebra', detail: 'Vectors, matrices, dot products, SVD', Icon: LinearAlgebraIcon },
+      { route: 'Math for AI', label: 'Math for AI', detail: 'Linear algebra, stats, probability, theory & labs', Icon: MathIcon },
     ],
   },
   {
@@ -215,12 +223,15 @@ const drawerMenu: DrawerMenuSection[] = [
   },
 ];
 
+const featuredRoutes: DrawerMenuItem[] = [
+  { route: 'Master AI Hub', label: 'Master AI Hub', detail: 'Theory · Labs · Quizzes', Icon: GraduationCapIcon },
+  { route: 'Roadmap', label: 'Roadmap', detail: 'Your zero-to-hero path', Icon: RoadmapIcon },
+  { route: 'Refresh Mind', label: 'Quick Quiz', detail: 'Fast recall drills', Icon: RefreshMindIcon },
+];
 const utilityRoutes: DrawerMenuItem[] = [
-  { route: 'Roadmap', label: 'Roadmap', detail: 'Zero-to-hero AI path', Icon: RoadmapIcon },
-  { route: 'Problem Solving', label: 'Problem Solving', detail: 'Coding challenges and patterns', Icon: ProblemSolvingIcon },
-  { route: 'Playground', label: 'Playground', detail: 'Run Python experiments', Icon: PlaygroundIcon },
-  { route: 'Refresh Mind', label: 'Refresh Mind', detail: 'Quick quizzes for recall', Icon: RefreshMindIcon },
-  { route: 'Account', label: 'Account', detail: 'Profile and progress settings', Icon: AccountIcon },
+  { route: 'Problem Solving', label: 'Challenges', detail: 'Coding patterns & practice', Icon: ProblemSolvingIcon },
+  { route: 'Playground', label: 'Playground', detail: 'Run Python live', Icon: PlaygroundIcon },
+  { route: 'Account', label: 'Account', detail: 'Progress & settings', Icon: AccountIcon },
 ];
 
 function getSafeUser(): FirebaseAuthTypes.User | null {
@@ -323,6 +334,26 @@ function DrawerHeader(props: any) {
           </View>
         </Pressable>
 
+        <Text style={styles.drawerEyebrow}>Featured</Text>
+        <View style={styles.featuredRow}>
+          {featuredRoutes.map(item => {
+            const ItemIcon = item.Icon;
+            const focused = activeRouteName === item.route;
+            return (
+              <Pressable
+                key={item.route}
+                style={[styles.featuredPill, focused && styles.featuredPillActive]}
+                onPress={() => navigateTo(item.route)}
+              >
+                <ItemIcon color={focused ? colors.surface : colors.navy} size={18} />
+                <Text style={[styles.featuredLabel, focused && styles.featuredLabelActive]} numberOfLines={1}>
+                  {item.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
         <Text style={styles.drawerEyebrow}>Curriculum</Text>
         {drawerMenu.map(section => {
           const expanded = openSection === section.id;
@@ -423,7 +454,10 @@ export function AppNavigator() {
         <Drawer.Screen name="Pandas" component={PandasStack} options={{ drawerIcon: PandasIcon }} />
         <Drawer.Screen name="Matplotlib" component={MatplotlibStack} options={{ drawerIcon: MatplotlibIcon }} />
         <Drawer.Screen name="Math for AI" component={MathAIStack} options={{ drawerIcon: MathIcon }} />
-        <Drawer.Screen name="Linear Algebra" component={LinearAlgebraStack} options={{ drawerIcon: LinearAlgebraIcon }} />
+        <Drawer.Screen name="Master AI Hub" component={MasterAIHubStack} options={{ drawerIcon: GraduationCapIcon, title: 'Master AI Hub' }} />
+        <Drawer.Screen name="Academic Deep Dive" component={AcademicDeepDiveStack} options={{ drawerItemStyle: { display: 'none' }, title: 'Master AI Hub' }} />
+        <Drawer.Screen name="Math Theory Guide" component={MasterAIHubStack} options={{ drawerItemStyle: { display: 'none' }, title: 'Master AI Hub' }} />
+        <Drawer.Screen name="Linear Algebra" component={LinearAlgebraStack} options={{ drawerItemStyle: { display: 'none' }, title: 'Math for AI' }} />
         <Drawer.Screen name="Machine Learning" component={MachineLearningStack} options={{ drawerIcon: MachineLearningIcon }} />
         <Drawer.Screen name="Scikit-Learn" component={SklearnStack} options={{ drawerIcon: SklearnIcon }} />
         <Drawer.Screen name="Deep Learning" component={DeepLearningStack} options={{ drawerIcon: DeepLearningIcon }} />
@@ -553,6 +587,38 @@ const styles = StyleSheet.create({
   homeDetailActive: {
     color: '#EAF7F1',
   },
+  featuredRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 16,
+  },
+  featuredPill: {
+    flexGrow: 1,
+    flexBasis: '30%',
+    minWidth: 100,
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.line,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    gap: 6,
+  },
+  featuredPillActive: {
+    backgroundColor: colors.navy,
+    borderColor: colors.navy,
+  },
+  featuredLabel: {
+    color: colors.ink,
+    fontSize: 11,
+    fontWeight: '900',
+    textAlign: 'center',
+  },
+  featuredLabelActive: {
+    color: colors.surface,
+  },
   drawerEyebrow: {
     color: colors.muted,
     fontSize: 11,
@@ -564,7 +630,7 @@ const styles = StyleSheet.create({
   },
   menuSection: {
     backgroundColor: colors.surface,
-    borderRadius: 8,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: colors.line,
     marginBottom: 10,

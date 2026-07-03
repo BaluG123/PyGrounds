@@ -1,11 +1,10 @@
-import type { CourseModule } from '../types/course';
+import type { CourseModule, LibraryId, QuizQuestion } from '../types/course';
 import { pythonBasicsCourse } from './pythonBasics';
 import { pythonAdvancedCourse } from './pythonAdvanced';
 import { numpyCourse } from './numpyCourse';
 import { pandasCourse } from './pandasCourse';
 import { matplotlibCourse } from './matplotlibCourse';
 import { mathAICourse } from './mathAI';
-import { linearAlgebraCourse } from './linearAlgebra';
 import { machineLearningCourse } from './machineLearning';
 import { scikitLearnCourse } from './scikitLearn';
 import { deepLearningCourse } from './deepLearning';
@@ -16,6 +15,8 @@ import { reinforcementLearningCourse } from './reinforcementLearning';
 import { aiEngineeringCourse } from './aiEngineering';
 import { aiProjectsCourse } from './aiProjects';
 import { withSupplementalQuizzes } from './supplementalQuizzes';
+import { getTrackByCourseId } from './academic';
+import { getTrackQuiz } from './academic/quizzes';
 
 const baseCourses: CourseModule[] = [
   pythonBasicsCourse,
@@ -24,7 +25,6 @@ const baseCourses: CourseModule[] = [
   pandasCourse,
   matplotlibCourse,
   mathAICourse,
-  linearAlgebraCourse,
   machineLearningCourse,
   scikitLearnCourse,
   deepLearningCourse,
@@ -37,6 +37,40 @@ const baseCourses: CourseModule[] = [
 ];
 
 export const courses: CourseModule[] = withSupplementalQuizzes(baseCourses);
+
+/** Resolves legacy `linear-algebra` course id to the unified Math for AI course. */
+export function getCourseById(id: string): CourseModule | undefined {
+  const resolved = id === 'linear-algebra' ? 'math-ai' : id;
+  return courses.find(course => course.id === resolved);
+}
+
+/** Merges course quiz + track mastery questions into one pool per course. */
+export function getUnifiedQuizForCourse(courseId: LibraryId): QuizQuestion[] {
+  const course = getCourseById(courseId);
+  if (!course) return [];
+
+  const merged = [...course.quiz];
+  const seen = new Set(course.quiz.map(q => q.id));
+  const track = getTrackByCourseId(courseId);
+  const trackQuiz = track ? getTrackQuiz(track.id) : undefined;
+
+  if (trackQuiz) {
+    for (const q of trackQuiz.questions) {
+      let id = q.id;
+      if (seen.has(id)) id = `track-${q.id}`;
+      seen.add(id);
+      merged.push({
+        id,
+        prompt: q.prompt,
+        options: q.options,
+        answerIndex: q.answerIndex,
+        explanation: q.explanation,
+      });
+    }
+  }
+
+  return merged;
+}
 
 export const aiRoadmap = [
   {

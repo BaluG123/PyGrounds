@@ -27,7 +27,6 @@ test('ships a complete foundation course for every core library', () => {
     'pandas',
     'matplotlib',
     'math-ai',
-    'linear-algebra',
     'machine-learning',
     'scikit-learn',
     'deep-learning',

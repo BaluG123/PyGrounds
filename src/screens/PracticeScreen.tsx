@@ -2,14 +2,14 @@ import React from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Lightbulb, TerminalSquare } from 'lucide-react-native';
-import { courses } from '../content/courses';
+import { getCourseById } from '../content/courses';
 import type { CourseStackParamList } from '../navigation/types';
 import { colors } from '../theme/theme';
 
 type Props = NativeStackScreenProps<CourseStackParamList, 'Practice'>;
 
 export function PracticeScreen({ route, navigation }: Props) {
-  const course = courses.find(item => item.id === route.params.courseId)!;
+  const course = getCourseById(route.params.courseId)!;
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
