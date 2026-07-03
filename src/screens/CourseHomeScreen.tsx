@@ -15,6 +15,7 @@ import {
 } from 'lucide-react-native';
 import { getCourseById, getUnifiedQuizForCourse } from '../content/courses';
 import { getLabsForCourse, getModulesForCourse, getTrackByCourseId } from '../content/academic';
+import { BRAND } from '../constants/brand';
 import { TopicProgressBadge } from '../components/MathForAI/TopicProgressBadge';
 import type { CourseStackParamList } from '../navigation/types';
 import { useAcademicProgress } from '../services/AcademicProgressContext';
@@ -52,7 +53,7 @@ export function CourseHomeScreen({ route, navigation }: Props) {
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <View style={[styles.header, { backgroundColor: course.color }]}>
         <Icon color={colors.surface} size={36} />
-        <Text style={styles.moduleLabel}>Master AI Hub · Unified Course</Text>
+        <Text style={styles.moduleLabel}>{BRAND.appName} · Unified Course</Text>
         <Text style={styles.title}>{course.title}</Text>
         <Text style={styles.subtitle}>{course.subtitle}</Text>
         <View style={styles.headerStats}>

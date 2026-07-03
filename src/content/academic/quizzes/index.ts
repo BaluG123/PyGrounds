@@ -1,4 +1,5 @@
 import type { AcademicTrackQuiz } from '../../../types/academicQuiz';
+import { EXTRA_TRACK_QUESTIONS } from './extraTrackQuizzes';
 
 export const ACADEMIC_TRACK_QUIZZES: AcademicTrackQuiz[] = [
   {
@@ -108,5 +109,11 @@ export const ACADEMIC_TRACK_QUIZZES: AcademicTrackQuiz[] = [
 ];
 
 export function getTrackQuiz(trackId: string) {
-  return ACADEMIC_TRACK_QUIZZES.find(q => q.trackId === trackId);
+  const base = ACADEMIC_TRACK_QUIZZES.find(q => q.trackId === trackId);
+  if (!base) return undefined;
+  const extra = EXTRA_TRACK_QUESTIONS[trackId] ?? [];
+  return {
+    ...base,
+    questions: [...base.questions, ...extra],
+  };
 }

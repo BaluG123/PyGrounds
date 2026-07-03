@@ -1,6 +1,6 @@
 import type { CourseModule, QuizQuestion } from '../types/course';
 
-const TARGET_QUIZ_COUNT = 30;
+const TARGET_QUIZ_COUNT = 45;
 
 const fallbackConcepts = [
   'data quality',

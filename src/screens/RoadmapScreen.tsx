@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { BookOpen, GraduationCap, Target } from 'lucide-react-native';
 import { aiRoadmap } from '../content/courses';
+import { BRAND } from '../constants/brand';
 import { colors } from '../theme/theme';
 
 export function RoadmapScreen() {
@@ -11,7 +12,7 @@ export function RoadmapScreen() {
         <View style={styles.heroIcon}>
           <GraduationCap color={colors.surface} size={30} />
         </View>
-        <Text style={styles.kicker}>PyGrounds AI Curriculum</Text>
+        <Text style={styles.kicker}>{BRAND.appName} Curriculum</Text>
         <Text style={styles.title}>AI Mastery Roadmap</Text>
         <Text style={styles.subtitle}>
           A structured path from Python foundations to production AI systems, built like a serious academic syllabus with practical labs.

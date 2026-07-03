@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Linking, Pressable, Text, View, StyleSheet, Alert } from 'react-native';
+import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { CommonActions, DrawerActions } from '@react-navigation/native';
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
@@ -39,6 +39,8 @@ import { RefreshMindStack } from './RefreshMindStack';
 import { AcademicStack } from './AcademicStack';
 import { colors } from '../theme/theme';
 import { ensureFirebaseApp } from '../services/firebase';
+import { BRAND } from '../constants/brand';
+import { openWhatsAppSupport } from '../services/whatsappSupport';
 
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 const iconProps = { strokeWidth: 2.3 };
@@ -266,19 +268,11 @@ function DrawerHeader(props: any) {
   }, []);
 
   function handleWhatsAppSupport() {
-    const phoneNumber = '919380552833';
-    const message = 'Hi, I need help with PyGrounds app';
-    const whatsappUrl = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
-    const webUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-
-    Linking.openURL(whatsappUrl)
-      .catch(() => Linking.openURL(webUrl))
-      .then(() => {
+    openWhatsAppSupport().then(opened => {
+      if (opened) {
         props.navigation.dispatch(DrawerActions.closeDrawer());
-      })
-      .catch(() => {
-        Alert.alert('Contact Support', 'Unable to open WhatsApp. Please message +91 9380552833.');
-      });
+      }
+    });
   }
 
   function navigateTo(routeName: DrawerRouteName) {
@@ -304,10 +298,12 @@ function DrawerHeader(props: any) {
           )}
           <View style={styles.brandLeft}>
             <View style={styles.brandTitleRow}>
-              <BookOpen color={colors.yellow} size={22} />
-              <Text style={styles.brandTitle}>PyGrounds</Text>
+              <Image source={require('../assets/neuralearn-logo.png')} style={styles.brandLogo} />
+              <View>
+                <Text style={styles.brandTitle}>{BRAND.appName}</Text>
+                <Text style={styles.brandSub}>{BRAND.drawerSubtitle}</Text>
+              </View>
             </View>
-            <Text style={styles.brandSub}>AI & Python Learning Lab</Text>
           </View>
           <Pressable
             accessibilityRole="button"
@@ -499,7 +495,12 @@ const styles = StyleSheet.create({
   brandTitleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 10,
+  },
+  brandLogo: {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
   },
   closeButton: {
     width: 36,

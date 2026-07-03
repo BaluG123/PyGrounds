@@ -41,7 +41,7 @@ test('ships a complete foundation course for every core library', () => {
   courses.forEach(course => {
     expect(course.lessons.length).toBeGreaterThanOrEqual(3);
     expect(course.concepts.length).toBeGreaterThanOrEqual(8);
-    expect(course.quiz.length).toBeGreaterThanOrEqual(30);
+    expect(course.quiz.length).toBeGreaterThanOrEqual(45);
     expect(new Set(course.quiz.map(question => question.answerIndex)).size).toBeGreaterThan(1);
     expect(course.practice.length).toBeGreaterThanOrEqual(2);
     expect(course.history.founder).toBeTruthy();
