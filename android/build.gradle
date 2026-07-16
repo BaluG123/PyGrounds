@@ -20,3 +20,9 @@ buildscript {
 }
 
 apply plugin: "com.facebook.react.rootproject"
+
+
+// PYGROUNDS_UPLOAD_STORE_FILE=pygrounds-upload-key.keystore
+// PYGROUNDS_UPLOAD_STORE_PASSWORD=dX7TT7TTnjdykGRjUzVwc1fLGMARmt5F
+// PYGROUNDS_UPLOAD_KEY_ALIAS=pygrounds-upload
+// PYGROUNDS_UPLOAD_KEY_PASSWORD=dX7TT7TTnjdykGRjUzVwc1fLGMARmt5F
